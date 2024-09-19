@@ -2,3 +2,6 @@ streamlit
 requests
 fastapi
 pydantic
+uvicorn
+streamlit-chat
+openai
