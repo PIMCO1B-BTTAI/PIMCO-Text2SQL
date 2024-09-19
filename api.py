@@ -1,11 +1,13 @@
-import openai
+import os
+from openai import OpenAI
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import os
 import sqlite3
 
-# Set up OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Set up OpenAI client with API key
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),
+)
 
 app = FastAPI()
 
@@ -19,40 +21,42 @@ def generate_sql(question: str) -> str:
     1. fund_info (id, fund_name, manager, inception_date)
     2. holdings (fund_id, security_name, quantity, market_value)
     3. performance (fund_id, date, return)
-    """ ##TBD
+    """
     prompt = f"""
     Given the following database schema:
     {schema_info}
-    
+
     Generate an SQL query to answer this question:
     Question: {question}
     SQL Query:
     """
 
-    response = openai.ChatCompletion.create(
+    chat_completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant that generates SQL queries based on natural language questions about financial data."},
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that generates SQL queries based on natural language questions about financial data."
+            },
             {"role": "user", "content": prompt}
-        ]
+        ],
     )
-    
-    return response.choices[0].message.content.strip()
+
+    return chat_completion.choices[0].message.content.strip()
 
 # Database SQL Retrieval
 def execute_sql(query: str) -> list:
-    conn = sqlite3.connect('financial_data.db')
-    cursor = conn.cursor()
     try:
+        conn = sqlite3.connect('financial_data.db')
+        cursor = conn.cursor()
         cursor.execute(query)
         results = cursor.fetchall()
     except sqlite3.Error as e:
-        raise HTTPException(status_code=400, detail=f"SQL Error: {str(e)}")
+        # Return the error message instead of raising an exception
+        return [f"Database error: {str(e)}"]
     finally:
         conn.close()
     return results
-
-
 # Frontend HTTP access point
 @app.post("/query")
 async def process_query(query: Query):
@@ -60,6 +64,6 @@ async def process_query(query: Query):
     results = execute_sql(sql_query)
     return {"sql_query": sql_query, "results": results}
 
-##if __name__ == "__main__":
-##    import uvicorn
-##    uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
