@@ -1,0 +1,3008 @@
+{
+    "tables": [
+        {
+            "url": "SUBMISSION.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "FILING_DATE",
+                        "titles": "FILING DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Filing date"
+                    },
+                    {
+                        "name": "FILE_NUM",
+                        "titles": "FILE NUM",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "File number"
+                    },
+                    {
+                        "name": "SUB_TYPE",
+                        "titles": "SUB TYPE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 15
+                        },
+                        "dc:description": "NPORT-P, NPORT-P/A, NT NPORT-P"
+                    },
+                    {
+                        "name": "REPORT_ENDING_PERIOD",
+                        "titles": "REPORT ENDING PERIOD",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Date of fiscal year-end"
+                    },
+                    {
+                        "name": "REPORT_DATE",
+                        "titles": "REPORT DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Date as of which information is reported"
+                    },
+                    {
+                        "name": "IS_LAST_FILING",
+                        "titles": "IS LAST FILING",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Does the Fund anticipate that this will be its final filing on Form N-PORT"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "REGISTRANT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "CIK",
+                        "titles": "CIK",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "CIK number"
+                    },
+                    {
+                        "name": "REGISTRANT_NAME",
+                        "titles": "REGISTRANT NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of Registrant"
+                    },
+                    {
+                        "name": "FILE_NUM",
+                        "titles": "FILE NUM",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "Investment Company Act file number"
+                    },
+                    {
+                        "name": "LEI",
+                        "titles": "LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI of Registrant"
+                    },
+                    {
+                        "name": "ADDRESS1",
+                        "titles": "ADDRESS1",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 40
+                        },
+                        "dc:description": "Address line 1"
+                    },
+                    {
+                        "name": "ADDRESS2",
+                        "titles": "ADDRESS2",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 40
+                        },
+                        "dc:description": "Address line 2"
+                    },
+                    {
+                        "name": "CITY",
+                        "titles": "CITY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "City"
+                    },
+                    {
+                        "name": "STATE",
+                        "titles": "STATE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 5
+                        },
+                        "dc:description": "State"
+                    },
+                    {
+                        "name": "COUNTRY",
+                        "titles": "COUNTRY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Country"
+                    },
+                    {
+                        "name": "ZIP",
+                        "titles": "ZIP",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Zip code"
+                    },
+                    {
+                        "name": "PHONE",
+                        "titles": "PHONE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "Phone"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FUND_REPORTED_INFO.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "SERIES_NAME",
+                        "titles": "SERIES NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of Series"
+                    },
+                    {
+                        "name": "SERIES_ID",
+                        "titles": "SERIES ID",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "EDGAR Series Identifier"
+                    },
+                    {
+                        "name": "SERIES_LEI",
+                        "titles": "SERIES LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI of Series."
+                    },
+                    {
+                        "name": "TOTAL_ASSETS",
+                        "titles": "TOTAL ASSETS",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Total assets"
+                    },
+                    {
+                        "name": "TOTAL_LIABILITIES",
+                        "titles": "TOTAL LIABILITIES",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Total liabilities"
+                    },
+                    {
+                        "name": "NET_ASSETS",
+                        "titles": "NET ASSETS",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Net assets"
+                    },
+                    {
+                        "name": "ASSETS_ATTRBT_TO_MISC_SECURITY",
+                        "titles": "ASSETS ATTRBT TO MISC SECURITY",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Assets attributable to miscellaneous securities"
+                    },
+                    {
+                        "name": "ASSETS_INVESTED",
+                        "titles": "ASSETS INVESTED",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Assets invested in a Controlled Foreign Corporation"
+                    },
+                    {
+                        "name": "BORROWING_PAY_WITHIN_1YR",
+                        "titles": "BORROWING PAY WITHIN 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to banks or other financial institutions for borrowings within one year"
+                    },
+                    {
+                        "name": "CTRLD_COMPANIES_PAY_WITHIN_1YR",
+                        "titles": "CTRLD COMPANIES PAY WITHIN 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to controlled companies within one year"
+                    },
+                    {
+                        "name": "OTHER_AFFILIA_PAY_WITHIN_1YR",
+                        "titles": "OTHER AFFILIA PAY WITHIN 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to other affiliates within one year"
+                    },
+                    {
+                        "name": "OTHER_PAY_WITHIN_1YR",
+                        "titles": "OTHER PAY WITHIN 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to others within one year"
+                    },
+                    {
+                        "name": "BORROWING_PAY_AFTER_1YR",
+                        "titles": "BORROWING PAY AFTER 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to banks or other financial institutions for borrowings after one year"
+                    },
+                    {
+                        "name": "CTRLD_COMPANIES_PAY_AFTER_1YR",
+                        "titles": "CTRLD COMPANIES PAY AFTER 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to controlled companies after one year"
+                    },
+                    {
+                        "name": "OTHER_AFFILIA_PAY_AFTER_1YR",
+                        "titles": "OTHER AFFILIA PAY AFTER 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to other affiliates after one year"
+                    },
+                    {
+                        "name": "OTHER_PAY_AFTER_1YR",
+                        "titles": "OTHER PAY AFTER 1YR",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amounts payable to others after one year"
+                    },
+                    {
+                        "name": "DELAYED_DELIVERY",
+                        "titles": "DELAYED DELIVERY",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Payables for investments purchased on a delayed delivery, when-issued, or other firm commitment basis"
+                    },
+                    {
+                        "name": "STANDBY_COMMITMENT",
+                        "titles": "STANDBY COMMITMENT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Payables for investments purchased on a standby commitment basis"
+                    },
+                    {
+                        "name": "LIQUIDATION_PREFERENCE",
+                        "titles": "LIQUIDATION PREFERENCE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Liquidation preference of outstanding preferred stock issued by the Fund"
+                    },
+                    {
+                        "name": "CASH_NOT_RPTD_IN_C_OR_D",
+                        "titles": "CASH NOT RPTD IN C OR D",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Cash and cash equivalents not reported in Parts C or D"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_3MON_INVEST",
+                        "titles": "CREDIT SPREAD 3MON INVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by investment grade for 3 month maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_1YR_INVEST",
+                        "titles": "CREDIT SPREAD 1YR INVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by investment grade for 1 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_5YR_INVEST",
+                        "titles": "CREDIT SPREAD 5YR INVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by investment grade for 5 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_10YR_INVEST",
+                        "titles": "CREDIT SPREAD 10YR INVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by investment grade for 10 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_30YR_INVEST",
+                        "titles": "CREDIT SPREAD 30YR INVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by investment grade for 30 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_3MON_NONINVEST",
+                        "titles": "CREDIT SPREAD 3MON NONINVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by non investment grade for 3 month maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_1YR_NONINVEST",
+                        "titles": "CREDIT SPREAD 1YR NONINVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by non investment grade for 1 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_5YR_NONINVEST",
+                        "titles": "CREDIT SPREAD 5YR NONINVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by non investment grade for 5 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_10YR_NONINVEST",
+                        "titles": "CREDIT SPREAD 10YR NONINVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by non investment grade for 10 year maturity"
+                    },
+                    {
+                        "name": "CREDIT_SPREAD_30YR_NONINVEST",
+                        "titles": "CREDIT SPREAD 30YR NONINVEST",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied to the option adjusted spread, aggregated by non investment grade for 30 year maturity"
+                    },
+                    {
+                        "name": "IS_NON_CASH_COLLATERAL",
+                        "titles": "IS NON CASH COLLATERAL",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Did any securities lending counterparty provide any non-cash collateral"
+                    },
+                    {
+                        "name": "NET_REALIZE_GAIN_NONDERIV_MON1",
+                        "titles": "NET REALIZE GAIN NONDERIV MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First month net realized gain (loss) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZE_AP_NONDERIV_MON1",
+                        "titles": "NET UNREALIZE AP NONDERIV MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First month net change in unrealized appreciation (or depreciation) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "NET_REALIZE_GAIN_NONDERIV_MON2",
+                        "titles": "NET REALIZE GAIN NONDERIV MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second month net realized gain (loss) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZE_AP_NONDERIV_MON2",
+                        "titles": "NET UNREALIZE AP NONDERIV MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second month net change in unrealized appreciation (or depreciation) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "NET_REALIZE_GAIN_NONDERIV_MON3",
+                        "titles": "NET REALIZE GAIN NONDERIV MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third month net realized gain (loss) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZE_AP_NONDERIV_MON3",
+                        "titles": "NET UNREALIZE AP NONDERIV MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third month net change in unrealized appreciation (or depreciation) attributable to investments other than derivatives"
+                    },
+                    {
+                        "name": "SALES_FLOW_MON1",
+                        "titles": "SALES FLOW MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First Month Total net asset value of shares sold"
+                    },
+                    {
+                        "name": "REINVESTMENT_FLOW_MON1",
+                        "titles": "REINVESTMENT FLOW MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First Month Total net asset value of shares sold in connection with reinvestments of dividends and distributions"
+                    },
+                    {
+                        "name": "REDEMPTION_FLOW_MON1",
+                        "titles": "REDEMPTION FLOW MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First Month Total net asset value of shares redeemed or repurchased, including exchanges"
+                    },
+                    {
+                        "name": "SALES_FLOW_MON2",
+                        "titles": "SALES FLOW MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second Month Total net asset value of shares sold"
+                    },
+                    {
+                        "name": "REINVESTMENT_FLOW_MON2",
+                        "titles": "REINVESTMENT FLOW MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second Month Total net asset value of shares sold in connection with reinvestments of dividends and distributions"
+                    },
+                    {
+                        "name": "REDEMPTION_FLOW_MON2",
+                        "titles": "REDEMPTION FLOW MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second Month Total net asset value of shares redeemed or repurchased, including exchanges"
+                    },
+                    {
+                        "name": "SALES_FLOW_MON3",
+                        "titles": "SALES FLOW MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third Month Total net asset value of shares sold"
+                    },
+                    {
+                        "name": "REINVESTMENT_FLOW_MON3",
+                        "titles": "REINVESTMENT FLOW MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third Month Total net asset value of shares sold in connection with reinvestments of dividends and distributions"
+                    },
+                    {
+                        "name": "REDEMPTION_FLOW_MON3",
+                        "titles": "REDEMPTION FLOW MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third Month Total net asset value of shares redeemed or repurchased, including exchanges"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "INTEREST_RATE_RISK.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "INTEREST_RATE_RISK_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "INTEREST_RATE_RISK_ID",
+                        "titles": "INTEREST RATE RISK ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "required": true,
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_3MON_DV01",
+                        "titles": "INTRST RATE CHANGE 3MON DV01",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 3 months"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_1YR_DV01",
+                        "titles": "INTRST RATE CHANGE 1YR DV01",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 1 year"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_5YR_DV01",
+                        "titles": "INTRST RATE CHANGE 5YR DV01",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 5 years"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_10YR_DV01",
+                        "titles": "INTRST RATE CHANGE 10YR DV01",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 10 years"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_30YR_DV01",
+                        "titles": "INTRST RATE CHANGE 30YR DV01",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 30 years"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_3MON_DV100",
+                        "titles": "INTRST RATE CHANGE 3MON DV100",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 3 months"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_1YR_DV100",
+                        "titles": "INTRST RATE CHANGE 1YR DV100",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 1 year"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_5YR_DV100",
+                        "titles": "INTRST RATE CHANGE 5YR DV100",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 5 years"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_10YR_DV100",
+                        "titles": "INTRST RATE CHANGE 10YR DV100",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 10 years"
+                    },
+                    {
+                        "name": "INTRST_RATE_CHANGE_30YR_DV100",
+                        "titles": "INTRST RATE CHANGE 30YR DV100",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 30 years"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "BORROWER.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "BORROWER_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "BORROWER_ID",
+                        "titles": "BORROWER ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "NAME",
+                        "titles": "NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of borrower"
+                    },
+                    {
+                        "name": "LEI",
+                        "titles": "LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI (if any) of borrower."
+                    },
+                    {
+                        "name": "AGGREGATE_VALUE",
+                        "titles": "AGGREGATE VALUE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Aggregate value of all securities on loan to the borrower."
+                    }
+                ]
+            }
+        },
+        {
+            "url": "BORROW_AGGREGATE.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "BORROW_AGGREGATE_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "BORROW_AGGREGATE_ID",
+                        "titles": "BORROW AGGREGATE ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "AMOUNT",
+                        "titles": "AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Aggregate principal amount"
+                    },
+                    {
+                        "name": "COLLATERAL",
+                        "titles": "COLLATERAL",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Aggregate value of collateral"
+                    },
+                    {
+                        "name": "INVESTMENT_CAT",
+                        "titles": "INVESTMENT CAT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "Category of investments"
+                    },
+                    {
+                        "name": "OTHER_DESC",
+                        "titles": "OTHER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30000
+                        },
+                        "dc:description": "Brief description if category of investment is Other Instrument"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "MONTHLY_TOTAL_RETURN.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "MONTHLY_TOTAL_RETURN_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "MONTHLY_TOTAL_RETURN_ID",
+                        "titles": "MONTHLY TOTAL RETURN ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "CLASS_ID",
+                        "titles": "CLASS ID",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Class identification number(s) (if any) of the Class(es) for which returns are reported."
+                    },
+                    {
+                        "name": "MONTHLY_TOTAL_RETURN1",
+                        "titles": "MONTHLY TOTAL RETURN1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First Month total returns of the Fund"
+                    },
+                    {
+                        "name": "MONTHLY_TOTAL_RETURN2",
+                        "titles": "MONTHLY TOTAL RETURN2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second Month total returns of the Fund"
+                    },
+                    {
+                        "name": "MONTHLY_TOTAL_RETURN3",
+                        "titles": "MONTHLY TOTAL RETURN3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third Month total returns of the Fund"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "MONTHLY_RETURN_CAT_INSTRUMENT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "ASSET_CAT",
+                    "INSTRUMENT_KIND"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "ASSET_CAT",
+                        "titles": "ASSET CAT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "Asset category"
+                    },
+                    {
+                        "name": "INSTRUMENT_KIND",
+                        "titles": "INSTRUMENT KIND",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "From each asset category further breakdown by derivatives instrument: forward, future, option, swaption, swap, warrant, and other"
+                    },
+                    {
+                        "name": "NET_REALIZED_GAIN_MON1",
+                        "titles": "NET REALIZED GAIN MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First month net realized gain (loss) attributable to derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZED_AP_MON1",
+                        "titles": "NET UNREALIZED AP MON1",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "First month net change in unrealized appreciation (or depreciation) attributable to derivatives"
+                    },
+                    {
+                        "name": "NET_REALIZED_GAIN_MON2",
+                        "titles": "NET REALIZED GAIN MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second month net realized gain (loss) attributable to derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZED_AP_MON2",
+                        "titles": "NET UNREALIZED AP MON2",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Second month net change in unrealized appreciation (or depreciation) attributable to derivatives"
+                    },
+                    {
+                        "name": "NET_REALIZED_GAIN_MON3",
+                        "titles": "NET REALIZED GAIN MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third month net realized gain (loss) attributable to derivatives"
+                    },
+                    {
+                        "name": "NET_UNREALIZED_AP_MON3",
+                        "titles": "NET UNREALIZED AP MON3",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Third month net change in unrealized appreciation (or depreciation) attributable to derivatives"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FUND_VAR_INFO.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "DESIGNATED_INDEX_NAME",
+                        "titles": "DESIGNATED INDEX NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 250
+                        },
+                        "dc:description": "For Funds subject to Relative VaR Test during the period, the name of the Fund's Designated Index, or a statement that the Fund's Designated Reference Portfolio is the Fund's Securities Portfolio"
+                    },
+                    {
+                        "name": "DESIGNATED_INDEX_IDENTIFIER",
+                        "titles": "DESIGNATED INDEX IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "The index identifier for the Fund's Designated Index."
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FUND_REPORTED_HOLDING.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "ISSUER_NAME",
+                        "titles": "ISSUER NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of issuer"
+                    },
+                    {
+                        "name": "ISSUER_LEI",
+                        "titles": "ISSUER LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI (if any) of issuer. In the case of a holding in a fund that is a series of a series trust, report the LEI of the series"
+                    },
+                    {
+                        "name": "ISSUER_TITLE",
+                        "titles": "ISSUER TITLE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Title of the issue or description of the investment."
+                    },
+                    {
+                        "name": "ISSUER_CUSIP",
+                        "titles": "ISSUER CUSIP",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 9
+                        },
+                        "dc:description": "CUSIP"
+                    },
+                    {
+                        "name": "BALANCE",
+                        "titles": "BALANCE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Balance"
+                    },
+                    {
+                        "name": "UNIT",
+                        "titles": "UNIT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 5
+                        },
+                        "dc:description": "Indicate whether balance amount is expressed in number of shares, principal amount, or other units"
+                    },
+                    {
+                        "name": "OTHER_UNIT_DESC",
+                        "titles": "OTHER UNIT DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other units description"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "CURRENCY_VALUE",
+                        "titles": "CURRENCY VALUE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Value"
+                    },
+                    {
+                        "name": "EXCHANGE_RATE",
+                        "titles": "EXCHANGE RATE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Exchange rate"
+                    },
+                    {
+                        "name": "PERCENTAGE",
+                        "titles": "PERCENTAGE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Percentage value compared to net assets of the Fund"
+                    },
+                    {
+                        "name": "PAYOFF_PROFILE",
+                        "titles": "PAYOFF PROFILE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Payoff profile -- long, short, N/A"
+                    },
+                    {
+                        "name": "ASSET_CAT",
+                        "titles": "ASSET CAT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Asset type"
+                    },
+                    {
+                        "name": "OTHER_ASSET",
+                        "titles": "OTHER ASSET",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "If Asset type is Other, provide a brief description."
+                    },
+                    {
+                        "name": "ISSUER_TYPE",
+                        "titles": "ISSUER TYPE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "Issuer type"
+                    },
+                    {
+                        "name": "OTHER_ISSUER",
+                        "titles": "OTHER ISSUER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "If Issuer type is Other, provide a brief description."
+                    },
+                    {
+                        "name": "INVESTMENT_COUNTRY",
+                        "titles": "INVESTMENT COUNTRY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Report the ISO country code that corresponds to the country where the issuer is organized"
+                    },
+                    {
+                        "name": "IS_RESTRICTED_SECURITY",
+                        "titles": "IS RESTRICTED SECURITY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Is the investment a Restricted Security"
+                    },
+                    {
+                        "name": "FAIR_VALUE_LEVEL",
+                        "titles": "FAIR VALUE LEVEL",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "The level within the fair value hierarchy in which the fair value measurements fall pursuant  to US GAAP"
+                    },
+                    {
+                        "name": "DERIVATIVE_CAT",
+                        "titles": "DERIVATIVE CAT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Type of derivative instrument"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "IDENTIFIERS.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "IDENTIFIERS_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "IDENTIFIERS_ID",
+                        "titles": "IDENTIFIERS ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "IDENTIFIER_ISIN",
+                        "titles": "IDENTIFIER ISIN",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 12
+                        },
+                        "dc:description": "ISIN"
+                    },
+                    {
+                        "name": "IDENTIFIER_TICKER",
+                        "titles": "IDENTIFIER TICKER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 50
+                        },
+                        "dc:description": "Ticker"
+                    },
+                    {
+                        "name": "OTHER_IDENTIFIER",
+                        "titles": "OTHER IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier"
+                    },
+                    {
+                        "name": "OTHER_IDENTIFIER_DESC",
+                        "titles": "OTHER IDENTIFIER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier type used"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DEBT_SECURITY.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "MATURITY_DATE",
+                        "titles": "MATURITY DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Maturity date"
+                    },
+                    {
+                        "name": "COUPON_TYPE",
+                        "titles": "COUPON TYPE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "The category that most closely reflects the coupon type among the following: fixed, floating, variable, none."
+                    },
+                    {
+                        "name": "ANNUALIZED_RATE",
+                        "titles": "ANNUALIZED RATE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Annualized rate."
+                    },
+                    {
+                        "name": "IS_DEFAULT",
+                        "titles": "IS DEFAULT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Currently in default"
+                    },
+                    {
+                        "name": "ARE_ANY_INTEREST_PAYMENT",
+                        "titles": "ARE ANY INTEREST PAYMENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Are there any interest payments in arrears or have any coupon payments been legally deferred by the issuer"
+                    },
+                    {
+                        "name": "IS_ANY_PORTION_INTEREST_PAID",
+                        "titles": "IS ANY PORTION INTEREST PAID",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Is any portion of the interest paid in kind?"
+                    },
+                    {
+                        "name": "IS_CONVTIBLE_MANDATORY",
+                        "titles": "IS CONVTIBLE MANDATORY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Is it Mandatory convertible"
+                    },
+                    {
+                        "name": "IS_CONVTIBLE_CONTINGENT",
+                        "titles": "IS CONVTIBLE CONTINGENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Is it Contingent convertible"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DEBT_SECURITY_REF_INSTRUMENT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "DEBT_SECURITY_REF_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "DEBT_SECURITY_REF_ID",
+                        "titles": "DEBT SECURITY REF ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "ISSUER_NAME",
+                        "titles": "ISSUER NAME",
+                        "required": true,
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of issuer"
+                    },
+                    {
+                        "name": "ISSUE_TITLE",
+                        "titles": "ISSUE TITLE",
+                        "required": true,
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Title of issue"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "required": true,
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "CUSIP",
+                        "titles": "CUSIP",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 9
+                        },
+                        "dc:description": "CUSIP of reference instrument"
+                    },
+                    {
+                        "name": "ISIN",
+                        "titles": "ISIN",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 12
+                        },
+                        "dc:description": "ISIN"
+                    },
+                    {
+                        "name": "TICKER",
+                        "titles": "TICKER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 50
+                        },
+                        "dc:description": "Ticker"
+                    },
+                    {
+                        "name": "OTHER_IDENTIFIER",
+                        "titles": "OTHER IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier"
+                    },
+                    {
+                        "name": "OTHER_DESC",
+                        "titles": "OTHER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Type of identifier if 'other' identifier provided"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "CONVERTIBLE_SECURITY_CURRENCY.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "CONVERTIBLE_SECURITY_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "CONVERTIBLE_SECURITY_ID",
+                        "titles": "CONVERTIBLE SECURITY ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "CONVERSION_RATIO",
+                        "titles": "CONVERSION RATIO",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Conversion ratio"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "REPURCHASE_AGREEMENT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "TRANSACTION_TYPE",
+                        "titles": "TRANSACTION TYPE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30
+                        },
+                        "dc:description": "Category that most closely reflects the transaction (repurchase, reverse repurchase)"
+                    },
+                    {
+                        "name": "IS_CLEARED",
+                        "titles": "IS CLEARED",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Cleared by central counterparty"
+                    },
+                    {
+                        "name": "CENTRAL_COUNTER_PARTY",
+                        "titles": "CENTRAL COUNTER PARTY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of the central counterparty"
+                    },
+                    {
+                        "name": "IS_TRIPARTY",
+                        "titles": "IS TRIPARTY",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Tri-party"
+                    },
+                    {
+                        "name": "REPURCHASE_RATE",
+                        "titles": "REPURCHASE RATE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Repurchase rate"
+                    },
+                    {
+                        "name": "MATURITY_DATE",
+                        "titles": "MATURITY DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Maturity date"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "REPURCHASE_COUNTERPARTY.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "REPURCHASE_COUNTERPARTY_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "REPURCHASE_COUNTERPARTY_ID",
+                        "titles": "REPURCHASE COUNTERPARTY ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "NAME",
+                        "titles": "NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of counterparty"
+                    },
+                    {
+                        "name": "LEI",
+                        "titles": "LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI (if any) of counterparty"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "REPURCHASE_COLLATERAL.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "REPURCHASE_COLLATERAL_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "REPURCHASE_COLLATERAL_ID",
+                        "titles": "REPURCHASE COLLATERAL ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "PRINCIPAL_AMOUNT",
+                        "titles": "PRINCIPAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Principal amount"
+                    },
+                    {
+                        "name": "PRINCIPAL_CURRENCY_CODE",
+                        "titles": "PRINCIPAL CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Principal currency code"
+                    },
+                    {
+                        "name": "COLLATERAL_AMOUNT",
+                        "titles": "COLLATERAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Value of collateral"
+                    },
+                    {
+                        "name": "COLLATERAL_CURRENCY_CODE",
+                        "titles": "COLLATERAL CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Collateral currency code"
+                    },
+                    {
+                        "name": "INVESTMENT_CAT",
+                        "titles": "INVESTMENT CAT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "Category of investments that most closely represents the collateral"
+                    },
+                    {
+                        "name": "OTHER_INTRUMENT_DESC",
+                        "titles": "OTHER INTRUMENT DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Brief description if category of investment is Other Instrument"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DERIVATIVE_COUNTERPARTY.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "DERIVATIVE_COUNTERPARTY_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "DERIVATIVE_COUNTERPARTY_ID",
+                        "titles": "DERIVATIVE COUNTERPARTY ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "DERIVATIVE_COUNTERPARTY_NAME",
+                        "titles": "DERIVATIVE COUNTERPARTY NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 200
+                        },
+                        "dc:description": "Name of counterparty"
+                    },
+                    {
+                        "name": "DERIVATIVE_COUNTERPARTY_LEI",
+                        "titles": "DERIVATIVE COUNTERPARTY LEI",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "LEI (if any) of counterparty"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "SWAPTION_OPTION_WARNT_DERIV.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "PUT_OR_CALL",
+                        "titles": "PUT OR CALL",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 5
+                        },
+                        "dc:description": "Type, selected from among the following (put, call). Respond call for warrants"
+                    },
+                    {
+                        "name": "WRITTEN_OR_PURCHASED",
+                        "titles": "WRITTEN OR PURCHASED",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Payoff profile, selected from among the following (written, purchased). Respond purchased for warrants"
+                    },
+                    {
+                        "name": "SHARES_CNT",
+                        "titles": "SHARES CNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Number of shares of underlying reference instrument per contract"
+                    },
+                    {
+                        "name": "PRINCIPAL_AMOUNT",
+                        "titles": "PRINCIPAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Principal amount of underlying reference instrument per contract"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "EXERCISE_PRICE",
+                        "titles": "EXERCISE PRICE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Exercise price or rate"
+                    },
+                    {
+                        "name": "EXPIRATION_DATE",
+                        "titles": "EXPIRATION DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Expiration date."
+                    },
+                    {
+                        "name": "UNREALIZED_APPRECIATION",
+                        "titles": "UNREALIZED APPRECIATION",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Unrealized appreciation or depreciation. Depreciation shall be reported as a negative number"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DESC_REF_INDEX_BASKET.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "INDEX_NAME",
+                        "titles": "INDEX NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Index Name"
+                    },
+                    {
+                        "name": "INDEX_IDENTIFIER",
+                        "titles": "INDEX IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Index Identifier"
+                    },
+                    {
+                        "name": "NARRATIVE_DESC",
+                        "titles": "NARRATIVE DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Narrative Description"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DESC_REF_INDEX_COMPONENT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "DESC_REF_INDEX_COMPONENT_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "DESC_REF_INDEX_COMPONENT_ID",
+                        "titles": "DESC REF INDEX COMPONENT ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "NAME",
+                        "titles": "NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Name of component"
+                    },
+                    {
+                        "name": "CUSIP",
+                        "titles": "CUSIP",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 9
+                        },
+                        "dc:description": "CUSIP"
+                    },
+                    {
+                        "name": "ISIN",
+                        "titles": "ISIN",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 12
+                        },
+                        "dc:description": "ISIN"
+                    },
+                    {
+                        "name": "TICKER",
+                        "titles": "TICKER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 50
+                        },
+                        "dc:description": "Ticker"
+                    },
+                    {
+                        "name": "OTHER_IDENTIFIER",
+                        "titles": "OTHER IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier"
+                    },
+                    {
+                        "name": "OTHER_DESC",
+                        "titles": "OTHER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier type used"
+                    },
+                    {
+                        "name": "NOTIONAL_AMOUNT",
+                        "titles": "NOTIONAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Notional amount"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "VALUE",
+                        "titles": "VALUE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Value"
+                    },
+                    {
+                        "name": "ISSUER_CURRENCY_CODE",
+                        "titles": "ISSUER CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code of issuer"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "DESC_REF_OTHER.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "DESC_REF_OTHER_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "DESC_REF_OTHER_ID",
+                        "titles": "DESC REF OTHER ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "ISSUER_NAME",
+                        "titles": "ISSUER NAME",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Issuer name"
+                    },
+                    {
+                        "name": "ISSUE_TITLE",
+                        "titles": "ISSUE TITLE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Issuer title"
+                    },
+                    {
+                        "name": "CUSIP",
+                        "titles": "CUSIP",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 9
+                        },
+                        "dc:description": "CUSIP"
+                    },
+                    {
+                        "name": "ISIN",
+                        "titles": "ISIN",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 12
+                        },
+                        "dc:description": "ISIN"
+                    },
+                    {
+                        "name": "TICKER",
+                        "titles": "TICKER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 50
+                        },
+                        "dc:description": "Ticker"
+                    },
+                    {
+                        "name": "OTHER_IDENTIFIER",
+                        "titles": "OTHER IDENTIFIER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier"
+                    },
+                    {
+                        "name": "OTHER_DESC",
+                        "titles": "OTHER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other identifier type used"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FUT_FWD_NONFOREIGNCUR_CONTRACT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "PAYOFF_PROFILE",
+                        "titles": "PAYOFF PROFILE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Payoff profile, selected from among the following (long, short)."
+                    },
+                    {
+                        "name": "EXPIRATION_DATE",
+                        "titles": "EXPIRATION DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Expiration date."
+                    },
+                    {
+                        "name": "NOTIONAL_AMOUNT",
+                        "titles": "NOTIONAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Aggregate notional amount or contract value on trade date"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "UNREALIZED_APPRECIATION",
+                        "titles": "UNREALIZED APPRECIATION",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Unrealized appreciation or depreciation. Depreciation shall be reported as a negative number."
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FWD_FOREIGNCUR_CONTRACT_SWAP.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "CURRENCY_SOLD_AMOUNT",
+                        "titles": "CURRENCY SOLD AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amount of currency sold"
+                    },
+                    {
+                        "name": "DESC_CURRENCY_SOLD",
+                        "titles": "DESC CURRENCY SOLD",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Description of currency sold"
+                    },
+                    {
+                        "name": "CURRENCY_PURCHASED_AMOUNT",
+                        "titles": "CURRENCY PURCHASED AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Amount of currency purchased."
+                    },
+                    {
+                        "name": "DESC_CURRENCY_PURCHASED",
+                        "titles": "DESC CURRENCY PURCHASED",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Description of currency purchased."
+                    },
+                    {
+                        "name": "SETTLEMENT_DATE",
+                        "titles": "SETTLEMENT DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Settlement date"
+                    },
+                    {
+                        "name": "UNREALIZED_APPRECIATION",
+                        "titles": "UNREALIZED APPRECIATION",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Unrealized appreciation or depreciation. Depreciation shall be reported as a negative number"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "NONFOREIGN_EXCHANGE_SWAP.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "SWAP_FLAG",
+                        "titles": "SWAP FLAG",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Custom swap flag"
+                    },
+                    {
+                        "name": "TERMINATION_DATE",
+                        "titles": "TERMINATION DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Termination or maturity date"
+                    },
+                    {
+                        "name": "UPFRONT_PAYMENT",
+                        "titles": "UPFRONT PAYMENT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Upfront payments"
+                    },
+                    {
+                        "name": "PMNT_CURRENCY_CODE",
+                        "titles": "PMNT CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Payment currency code"
+                    },
+                    {
+                        "name": "UPFRONT_RECEIPT",
+                        "titles": "UPFRONT RECEIPT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Upfront receipts"
+                    },
+                    {
+                        "name": "RCPT_CURRENCY_CODE",
+                        "titles": "RCPT CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Receipts currency code"
+                    },
+                    {
+                        "name": "NOTIONAL_AMOUNT",
+                        "titles": "NOTIONAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Notional amount"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    },
+                    {
+                        "name": "UNREALIZED_APPRECIATION",
+                        "titles": "UNREALIZED APPRECIATION",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Unrealized appreciation or depreciation. Depreciation shall be reported as a negative number."
+                    },
+                    {
+                        "name": "FIXED_OR_FLOATING_RECEIPT",
+                        "titles": "FIXED OR FLOATING RECEIPT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Fixed, floating, or other receipt"
+                    },
+                    {
+                        "name": "FIXED_RATE_RECEIPT",
+                        "titles": "FIXED RATE RECEIPT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Receipt: fixed rate"
+                    },
+                    {
+                        "name": "FLOATING_RATE_INDEX_RECEIPT",
+                        "titles": "FLOATING RATE INDEX RECEIPT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Receipt: floating rate index"
+                    },
+                    {
+                        "name": "FLOATING_RATE_SPREAD_RECEIPT",
+                        "titles": "FLOATING RATE SPREAD RECEIPT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Receipt: floating rate spread"
+                    },
+                    {
+                        "name": "CURRENCY_CODE_RECEIPT",
+                        "titles": "CURRENCY CODE RECEIPT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Receipt: currency code"
+                    },
+                    {
+                        "name": "AMOUNT_RECEIPT",
+                        "titles": "AMOUNT RECEIPT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Receipt: amount"
+                    },
+                    {
+                        "name": "FIXED_OR_FLOATING_PAYMENT",
+                        "titles": "FIXED OR FLOATING PAYMENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Fixed, floating, or other payment"
+                    },
+                    {
+                        "name": "FIXED_RATE_PAYMENT",
+                        "titles": "FIXED RATE PAYMENT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Payment: fixed rate"
+                    },
+                    {
+                        "name": "FLOATING_RATE_INDEX_PAYMENT",
+                        "titles": "FLOATING RATE INDEX PAYMENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Payment: floating rate index"
+                    },
+                    {
+                        "name": "FLOATING_RATE_SPREAD_PAYMENT",
+                        "titles": "FLOATING RATE SPREAD PAYMENT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Payment: floating rate spread"
+                    },
+                    {
+                        "name": "CURRENCY_CODE_PAYMENT",
+                        "titles": "CURRENCY CODE PAYMENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Payment: currency code"
+                    },
+                    {
+                        "name": "AMOUNT_PAYMENT",
+                        "titles": "AMOUNT PAYMENT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Payment: amount"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "FLOATING_RATE_RESET_TENOR.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "RATE_RESET_TENOR_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "RATE_RESET_TENOR_ID",
+                        "titles": "RATE RESET TENOR ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "RECEIPT_OR_PAYMENT",
+                        "titles": "RECEIPT OR PAYMENT",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Receipt or payment"
+                    },
+                    {
+                        "name": "RESET_DATE",
+                        "titles": "RESET DATE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Rate reset date"
+                    },
+                    {
+                        "name": "RESET_DATE_UNIT",
+                        "titles": "RESET DATE UNIT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 5,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Rate reset unit"
+                    },
+                    {
+                        "name": "RATE_TENOR",
+                        "titles": "RATE TENOR",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 10
+                        },
+                        "dc:description": "Rate tenor"
+                    },
+                    {
+                        "name": "RATE_TENOR_UNIT",
+                        "titles": "RATE TENOR UNIT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 5,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Rate tenor unit"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "OTHER_DERIV.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "OTHER_DESC",
+                        "titles": "OTHER DESC",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 150
+                        },
+                        "dc:description": "Other description"
+                    },
+                    {
+                        "name": "TERMINATION_DATE",
+                        "titles": "TERMINATION DATE",
+                        "datatype": {
+                            "base": "date (DD-MON-YYYY)"
+                        },
+                        "dc:description": "Termination date or maturity date"
+                    },
+                    {
+                        "name": "UNREALIZED_APPRECIATION",
+                        "titles": "UNREALIZED APPRECIATION",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Unrealized appreciation or depreciation"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "OTHER_DERIV_NOTIONAL_AMOUNT.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID",
+                    "OTHER_DERIV_NOTIONAL_AMOUNT_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "OTHER_DERIV_NOTIONAL_AMOUNT_ID",
+                        "titles": "OTHER DERIV NOTIONAL AMOUNT ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "NOTIONAL_AMOUNT",
+                        "titles": "NOTIONAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Notional amount"
+                    },
+                    {
+                        "name": "CURRENCY_CODE",
+                        "titles": "CURRENCY CODE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 3
+                        },
+                        "dc:description": "Currency code"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "SECURITIES_LENDING.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "HOLDING_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "HOLDING_ID",
+                        "titles": "HOLDING ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Key for each holding in the schedule of portfolio investments"
+                    },
+                    {
+                        "name": "IS_CASH_COLLATERAL",
+                        "titles": "IS CASH COLLATERAL",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Does any amount of this investment represent reinvestment of cash collateral received for loaned securities"
+                    },
+                    {
+                        "name": "CASH_COLLATERAL_AMOUNT",
+                        "titles": "CASH COLLATERAL AMOUNT",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Provide the value of the investment representing cash collateral"
+                    },
+                    {
+                        "name": "IS_NON_CASH_COLLATERAL",
+                        "titles": "IS NON CASH COLLATERAL",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Does any portion of this investment represent non-cash collateral that is treated as a Fund asset and received for loaned securities"
+                    },
+                    {
+                        "name": "NON_CASH_COLLATERAL_VALUE",
+                        "titles": "NON CASH COLLATERAL VALUE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Provide the value of the securities representing non-cash collateral"
+                    },
+                    {
+                        "name": "IS_LOAN_BY_FUND",
+                        "titles": "IS LOAN BY FUND",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 1
+                        },
+                        "dc:description": "Is any portion of this investment on loan by the Fund"
+                    },
+                    {
+                        "name": "LOAN_VALUE",
+                        "titles": "LOAN VALUE",
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 36,
+                            "dataScale": 12
+                        },
+                        "dc:description": "Provide the value of the securities on loan"
+                    }
+                ]
+            }
+        },
+        {
+            "url": "EXPLANATORY_NOTE.tsv",
+            "tableSchema": {
+                "aboutUrl": "nport_readme.htm",
+                "PrimaryKey": [
+                    "ACCESSION_NUMBER",
+                    "EXPLANATORY_NOTE_ID"
+                ],
+                "columns": [
+                    {
+                        "name": "ACCESSION_NUMBER",
+                        "titles": "ACCESSION NUMBER",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 20
+                        },
+                        "dc:description": "The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission."
+                    },
+                    {
+                        "name": "EXPLANATORY_NOTE_ID",
+                        "titles": "EXPLANATORY NOTE ID",
+                        "required": true,
+                        "datatype": {
+                            "base": "NUMBER",
+                            "dataPrecision": 38,
+                            "dataScale": 0
+                        },
+                        "dc:description": "Surrogate Key"
+                    },
+                    {
+                        "name": "ITEM_NO",
+                        "titles": "ITEM NO",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 15
+                        },
+                        "dc:description": "Item number"
+                    },
+                    {
+                        "name": "EXPLANATORY_NOTE",
+                        "titles": "EXPLANATORY NOTE",
+                        "datatype": {
+                            "base": "string",
+                            "maxLength": 30000
+                        },
+                        "dc:description": "Explanatory note"
+                    }
+                ]
+            }
+        }
+    ]
+}
