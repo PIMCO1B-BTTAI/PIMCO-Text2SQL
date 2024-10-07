@@ -1,14 +1,13 @@
 import os
 from openai import OpenAI
-
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import sqlite3
 import json
 
 # Set up OpenAI client with API key
-print(f"Loaded OpenAI API key: {openai.api_key}")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+print(f"Loaded OpenAI API key: {client.api_key}")
 
 app = FastAPI()
 
@@ -27,7 +26,7 @@ def load_schema_from_json(file_path):
         raise HTTPException(status_code=500, detail="Error decoding JSON schema.")
 
 # Path to your JSON schema file
-SCHEMA_FILE = 'nport_metadata.json'
+SCHEMA_FILE = 'chatgpt_api/nport_metadata.json'
 
 # Load the schema
 db_schema = load_schema_from_json(SCHEMA_FILE)
