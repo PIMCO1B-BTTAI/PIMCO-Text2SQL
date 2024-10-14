@@ -1,0 +1,60 @@
+# may need to define functions: reasonings_schema_json, final_output_schema_json, get_columns_info
+
+# Define the latest available time period for data querying
+latest_time_period = "2023Y"
+
+# Background and Table Structure
+overall_task_instructions = f"""
+Task:
+The task is to convert the natural language query into a SQL query. 
+This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
+"""
+
+# The table name being queried in this case
+table_name = 'Joined'
+table_name_instructions = f"""
+SQL Table:
+There is only one table to be queried: The {table_name} table.
+"""
+
+# A detailed overview of the table to help guide the model on what the table contains and how to reference it
+table_overview = 'a specific holding tied to a unique combination of these factors and a specific time period'
+table_overview_instructions = f"""
+Table Overview:
+- This table holds security holdings of insurance companies, categorized by asset classes, and the information is present for each of a different set of time periods.
+- The security name in which the insurance company holds the investment, the amount invested in each holding, the sector of the holding, etc., are associated with the table.
+- Each row in the table represents {table_overview}.
+"""
+
+# Instructions about how to handle specific parts of the natural language query
+nlp_query_handling_instructions = f"""
+Natural Language Processing Instructions:
+- Break down the user's query to understand which asset classes, sectors, time periods, or specific security holdings they are asking for.
+- Look for keywords related to amounts invested, sectors, and specific time periods.
+- Extract time periods, sectors, and security names where explicitly mentioned, and default to the latest time period (2023Y) if no specific time period is provided.
+"""
+
+# The SQL Query Format template to guide the generated SQL command
+sql_query_template_instructions = f"""
+SQL Query Format:
+- The table should be queried using the format:
+    SELECT [columns] 
+    FROM 'SNFOEVPIN.CSA_FIG_LTV_OWN_RPT_SP_SNL_INS_INV_HOLDING_FACT' 
+    WHERE [conditions]
+- [columns] should be replaced with the relevant column names the query intends to extract.
+- [conditions] should be derived from the user query, specifically filtering by sectors, time periods, or amounts invested.
+"""
+
+# Define any default behavior if certain fields or conditions are not explicitly specified in the natural language query
+default_query_instructions = f"""
+Default Behavior:
+- If no time period is specified, assume the most recent one (latest_time_period: {latest_time_period}).
+- If no asset class or sector is mentioned, assume the user is asking for all available asset classes.
+- Return all security holdings if no specific holding or sector is mentioned.
+"""
+
+# Final prompt to send to the model
+full_prompt = overall_task_instructions + table_name_instructions + table_overview_instructions + nlp_query_handling_instructions + sql_query_template_instructions + default_query_instructions
+
+# Print or return this full prompt to be sent to the ChatGPT API for processing
+print(full_prompt)
