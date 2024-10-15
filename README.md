@@ -19,6 +19,7 @@ Deleted File: **api.py**
 - Content was transferred to new api file "api - with schema.py" and is deprecated
 
 \\
+
 Modified File: **api - with schema.py** (now **"api.py"**)
 - Deleted whitespace from name for better references 
 - Modified @app.post("/query") route, because only calls to OpenAI API is made; database yet to be connected   
