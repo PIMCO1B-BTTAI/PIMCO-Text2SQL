@@ -22,9 +22,7 @@ Deleted File: **api.py**
 Modified File: **api - with schema.py** (now **"api.py"**)
 - Deleted whitespace from name for better references 
 - Modified @app.post("/query") route, because only calls to OpenAI API is made; database yet to be connected   
-
-
-
+<br>
 
 ### First commit:
 For the first commit, because no database has been set up, `api.py` and `streamlit_chatbot.py` are very crude prototypes that do not function together as intended. To see the chatbot front end, follow these steps.
