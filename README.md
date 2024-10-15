@@ -13,16 +13,13 @@ Added File: **chatbot.py**
 - Modified version of streamlit_chatbot.py
 - streamlit_chatbot.py is kept for backup
 - Modified/simplified HTTP Request response parsing for phase 1 NL_to_SQL; will revert modifications to more complex HTTP Request response parsing and processing for phase 2 SQL_to_Data
-<br>
 
 Deleted File: **api.py**
 - Content was transferred to new api file "api - with schema.py" and is deprecated
-<br>
 
 Modified File: **api - with schema.py** (now **"api.py"**)
 - Deleted whitespace from name for better references 
 - Modified @app.post("/query") route, because only calls to OpenAI API is made; database yet to be connected   
-<br>
 
 ### First commit:
 For the first commit, because no database has been set up, `api.py` and `streamlit_chatbot.py` are very crude prototypes that do not function together as intended. To see the chatbot front end, follow these steps.
