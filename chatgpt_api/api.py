@@ -1,9 +1,13 @@
-import os
-from openai import OpenAI
+import openai
+import json
+import sqlite3
+import csv
+import io
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import sqlite3
-import json
+import os
+from fastapi.responses import StreamingResponse
+
 
 # Set up OpenAI client with API key
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -45,8 +49,16 @@ def format_schema_for_gpt(schema):
 
 schema_info = format_schema_for_gpt(db_schema)
 
+def get_prompt():
+    try:
+        import chat_prompt
+        return chat_prompt.full_prompt
+    except (ImportError, AttributeError):
+        return ""
+    
 # LLM prompting for SQL generation
 def generate_sql(question: str) -> str:
+    prompt = get_prompt()
     prompt = f"""
     ---
     OVERALL TASK:
@@ -84,18 +96,32 @@ def generate_sql(question: str) -> str:
     return chat_completion.choices[0].message.content.strip()
 
 # Database SQL Retrieval
-def execute_sql(query: str) -> list:
+def execute_sql(query: str) -> str:
     try:
         conn = sqlite3.connect('financial_data.db')
         cursor = conn.cursor()
+
+        # Execute the query
         cursor.execute(query)
-        results = cursor.fetchall()
+
+        # Fetch column names and rows
+        columns = [description[0] for description in cursor.description]
+        rows = cursor.fetchall()
+
+        # Convert the results to CSV
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(columns)  # Write header
+        writer.writerows(rows)
+        csv_data = output.getvalue()
+        output.close()
+
+        return csv_data
     except sqlite3.Error as e:
         # Return the error message instead of raising an exception
-        return [f"Database error: {str(e)}"]
+        return f"Database error: {str(e)}"
     finally:
         conn.close()
-    return results
 
 # Frontend HTTP access point
 @app.get("/")
@@ -105,8 +131,18 @@ async def root():
 @app.post("/query")
 async def process_query(query: Query):
     sql_query = generate_sql(query.question)
-    results = sql_query ## REPLACE LATER WITH execute_sql(sql_query)
-    return {"sql_query": sql_query, "results": results}
+    csv_results = execute_sql(sql_query)
+
+    # Check if there was a database error
+    if csv_results.startswith("Database error:"):
+        return {"sql_query": sql_query, "error": csv_results}
+    else:
+        # Return the CSV as a downloadable file
+        return StreamingResponse(
+            io.StringIO(csv_results),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=results.csv"}
+        )
 
 @app.get("/schema-raw")
 async def get_raw_schema():
