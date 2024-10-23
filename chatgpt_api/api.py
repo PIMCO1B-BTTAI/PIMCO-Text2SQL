@@ -1,66 +1,109 @@
-import openai
+from openai import OpenAI
 import json
 import sqlite3
 import csv
 import io
+import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import os
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
+from typing import Optional
 
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# Load environment variables
 load_dotenv()
 
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+if not client.api_key:
+    logger.error("OpenAI API key not found in environment variables")
+    raise ValueError("OpenAI API key not configured")
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
-print(f"Loaded OpenAI API key: {openai.api_key}")  # Temporary debug statement
+logger.info("OpenAI API key loaded successfully")
 
 app = FastAPI()
 
 class Query(BaseModel):
     question: str
 
-# Load the schema from the JSON file
-def load_schema_from_json(file_path):
+def load_schema_from_json(file_path: str) -> dict:
+    logger.debug(f"Attempting to load schema from {file_path}")
     try:
         with open(file_path, 'r') as f:
             schema = json.load(f)
+        logger.info("Schema loaded successfully")
         return schema
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Schema file not found.")
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=500, detail="Error decoding JSON schema.")
-
+        logger.error(f"Schema file not found at {file_path}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Schema file not found at {file_path}"
+        )
+    except json.JSONDecodeError as e:
+        logger.error(f"Error decoding JSON schema: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error decoding JSON schema: {str(e)}"
+        )
+    
 # Path to your JSON schema files
 SCHEMA_FILE = 'chatgpt_api/nport_metadata.json'
 
-# Load the schema
-db_schema = load_schema_from_json(SCHEMA_FILE)
+try:
+    db_schema = load_schema_from_json(SCHEMA_FILE)
+except Exception as e:
+    logger.error(f"Failed to load initial schema: {str(e)}")
+    db_schema = None
 
-# Format the schema for GPT
-def format_schema_for_gpt(schema):
-    formatted_schema = ""
 
-    for table in schema.get('tables', []):
-        table_name = table['url'].replace('.tsv', '')  # Use the table name without .tsv
-        columns = table['tableSchema']['columns']
-        column_list = ", ".join([f"{col['name']} {col['datatype']['base'].upper()}" for col in columns])
-        formatted_schema += f"{table_name}: {column_list}\n"
-
-    return formatted_schema
-
+def format_schema_for_gpt(schema: dict) -> str:
+    try:
+        formatted_schema = ""
+        for table in schema.get('tables', []):
+            table_name = table['url'].replace('.tsv', '')
+            columns = table['tableSchema']['columns']
+            column_list = ", ".join([
+                f"{col['name']} {col['datatype']['base'].upper()}"
+                for col in columns
+            ])
+            formatted_schema += f"{table_name}: {column_list}\n"
+        return formatted_schema
+    except Exception as e:
+        logger.error(f"Error formatting schema: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error formatting schema: {str(e)}"
+        )
+    
 schema_info = format_schema_for_gpt(db_schema)
 
-def get_prompt():
+def get_prompt() -> str:
     try:
-        import chat_prompt
+        from . import chat_prompt
         return chat_prompt.full_prompt
-    except (ImportError, AttributeError):
+    except (ImportError, AttributeError) as e:
+        logger.warning(f"Failed to load chat prompt: {str(e)}")
         return ""
     
 # LLM prompting for SQL generation
 def generate_sql(question: str) -> str:
+    logger.debug(f"Generating SQL for question: {question}")
+    
+    if not db_schema:
+        logger.error("Database schema not loaded")
+        raise HTTPException(
+            status_code=500,
+            detail="Database schema not loaded"
+        )
+
+    schema_info = format_schema_for_gpt(db_schema)
     prompt = get_prompt()
     prompt = f"""
     ---
@@ -88,7 +131,7 @@ def generate_sql(question: str) -> str:
     """
 
     try:
-        chat_completion = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -98,19 +141,30 @@ def generate_sql(question: str) -> str:
                 {"role": "user", "content": prompt}
             ]
         )
-        return chat_completion.choices[0].message.content.strip()
+        sql_query = response.choices[0].message.content.strip()
+        logger.info(f"Generated SQL query: {sql_query}")
+        return sql_query
+    except openai.APIStatusError as e:
+        logger.error(f"OpenAI API error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"OpenAI API error: {str(e)}"
+        )
     except Exception as e:
-        # Handle exceptions and return an appropriate error message
-        raise HTTPException(status_code=500, detail=f"Error generating SQL: {str(e)}")
+        logger.error(f"Unexpected error generating SQL: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating SQL: {str(e)}"
+        )
 
-
-# Database SQL Retrieval
 def execute_sql(query: str) -> str:
+    logger.debug(f"Executing SQL query: {query}")
+    conn = None
     try:
         conn = sqlite3.connect('financial_data.db')
         cursor = conn.cursor()
 
-        # Execute the query
+        # Execute the query with a timeout
         cursor.execute(query)
 
         # Fetch column names and rows
@@ -120,17 +174,28 @@ def execute_sql(query: str) -> str:
         # Convert the results to CSV
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(columns)  # Write header
+        writer.writerow(columns)
         writer.writerows(rows)
         csv_data = output.getvalue()
         output.close()
 
+        logger.info("SQL query executed successfully")
         return csv_data
     except sqlite3.Error as e:
-        # Return the error message instead of raising an exception
-        return f"Database error: {str(e)}"
+        logger.error(f"Database error: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Database error: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Unexpected error executing SQL: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error executing SQL: {str(e)}"
+        )
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 # Frontend HTTP access point
 @app.get("/")
@@ -139,18 +204,23 @@ async def root():
 
 @app.post("/query")
 async def process_query(query: Query):
-    sql_query = generate_sql(query.question)
-    csv_results = execute_sql(sql_query)
-
-    # Check if there was a database error
-    if csv_results.startswith("Database error:"):
-        return {"sql_query": sql_query, "error": csv_results}
-    else:
-        # Return the CSV as a downloadable file
+    logger.info(f"Processing query: {query.question}")
+    try:
+        sql_query = generate_sql(query.question)
+        csv_results = execute_sql(sql_query)
+        
         return StreamingResponse(
             io.StringIO(csv_results),
             media_type="text/csv",
             headers={"Content-Disposition": "attachment; filename=results.csv"}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error in process_query: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error: {str(e)}"
         )
 
 @app.get("/schema-raw")
@@ -160,7 +230,13 @@ async def get_raw_schema():
 
 @app.get("/schema")
 async def get_schema():
+    if not db_schema:
+        raise HTTPException(
+            status_code=500,
+            detail="Schema not loaded"
+        )
     return {"schema": format_schema_for_gpt(db_schema)}
+
 
 if __name__ == "__main__":
     import uvicorn
