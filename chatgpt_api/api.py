@@ -7,11 +7,14 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import os
 from fastapi.responses import StreamingResponse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-# Set up OpenAI client with API key
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-print(f"Loaded OpenAI API key: {client.api_key}")
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+print(f"Loaded OpenAI API key: {openai.api_key}")  # Temporary debug statement
 
 app = FastAPI()
 
@@ -29,7 +32,7 @@ def load_schema_from_json(file_path):
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Error decoding JSON schema.")
 
-# Path to your JSON schema file
+# Path to your JSON schema files
 SCHEMA_FILE = 'chatgpt_api/nport_metadata.json'
 
 # Load the schema
@@ -84,16 +87,22 @@ def generate_sql(question: str) -> str:
     ---
     """
 
-    chat_completion = client.chat.completions.create(model="gpt-3.5-turbo",
-    messages=[
-        {
-            "role": "system",
-            "content": "You are a helpful assistant that generates SQL queries based on natural language questions about financial data."
-        },
-        {"role": "user", "content": prompt}
-    ])
+    try:
+        chat_completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that generates SQL queries based on natural language questions about financial data."
+                },
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return chat_completion.choices[0].message.content.strip()
+    except Exception as e:
+        # Handle exceptions and return an appropriate error message
+        raise HTTPException(status_code=500, detail=f"Error generating SQL: {str(e)}")
 
-    return chat_completion.choices[0].message.content.strip()
 
 # Database SQL Retrieval
 def execute_sql(query: str) -> str:
