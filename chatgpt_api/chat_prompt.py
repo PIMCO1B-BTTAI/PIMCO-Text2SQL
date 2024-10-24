@@ -8,6 +8,7 @@ The task is to convert the natural language query into a SQL query.
 This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
 """
 
+# TO BE CHANGED based on our current database
 # SQL Table being queried
 table_name = 'Joined'
 table_name_instructions = f"""
@@ -16,6 +17,7 @@ The only table to be queried is the '{table_name}' table. This table is a join b
 which include details about EDGAR filings and registrant data, respectively.
 """
 
+# TO BE CHANGED based on our current database
 # Detailed overview of the table to guide the model
 table_overview_instructions = f"""
 Table Overview:
@@ -23,6 +25,39 @@ Table Overview:
 - It features unique filings identified by 'ACCESSION_NUMBER', linking submission-specific details with registrant identifiers.
 - Fields include dates, submission types, registrant names, CIK numbers, addresses, and more.
 - This table is critical for understanding the connection between filings and registrants across various reporting periods.
+"""
+
+# Schema information as plain text with descriptions for each column
+schema_info = """
+Database Schema:
+
+Table: SUBMISSION
+- **ACCESSION_NUMBER**: The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission.
+  - Data Type: `VARCHAR2(20)`
+  - Nullable: No
+  - Key: Yes (Primary Key)
+- **FILING_DATE**: Filing date.
+  - Data Type: `DATE`
+  - Nullable: Yes
+- **FILE_NUM**: File number associated with the filing.
+  - Data Type: `VARCHAR2(30)`
+  - Nullable: Yes
+- **SUB_TYPE**: Submission type (e.g., NPORT-P, NPORT-P/A, NT NPORT-P).
+  - Data Type: `VARCHAR2(15)`
+  - Nullable: Yes
+- **REPORT_ENDING_PERIOD**: Date of fiscal year-end for the report.
+  - Data Type: `DATE`
+  - Nullable: Yes
+  - Rule: A.3.a
+- **REPORT_DATE**: Date as of which the information is reported.
+  - Data Type: `DATE`
+  - Nullable: Yes
+  - Rule: A.3.b
+- **IS_LAST_FILING**: Indicates if this will be the fund's final filing on Form N-PORT.
+  - Data Type: `CHAR(1)`
+  - Nullable: Yes
+  - Rule: A.4
+
 """
 
 # Instructions for handling parts of the natural language query
