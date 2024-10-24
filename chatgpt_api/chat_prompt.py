@@ -32,6 +32,7 @@ schema_info = """
 Database Schema:
 
 Table: SUBMISSION
+- Contains information from the EDGAR submission
 - **ACCESSION_NUMBER**: The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission.
   - Data Type: `VARCHAR2(20)`
   - Nullable: No
