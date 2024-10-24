@@ -3,38 +3,47 @@ latest_time_period = "2024Y"
 
 # Background and Table Structure
 overall_task_instructions = """
+---
 Task:
 The task is to convert the natural language query into a SQL query.
 This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
+---
 """
 
 # SQL Table being queried
 table_name = 'Joined'
 table_name_instructions = f"""
+---
 SQL Table:
 The only table to be queried is the '{table_name}' table. This table is a join between the 'SUBMISSION' and 'REGISTRANT' tables,
 which include details about EDGAR filings and registrant data, respectively.
+---
 """
 
 # Detailed overview of the table to guide the model
 table_overview_instructions = f"""
+---
 Table Overview:
 - The '{table_name}' table combines information from the 'SUBMISSION' and 'REGISTRANT' tables.
 - It features unique filings identified by 'ACCESSION_NUMBER', linking submission-specific details with registrant identifiers.
 - Fields include dates, submission types, registrant names, CIK numbers, addresses, and more.
 - This table is critical for understanding the connection between filings and registrants across various reporting periods.
+---
 """
 
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
+---
 Natural Language Processing Instructions:
 - Decompose the user's query to identify requirements regarding asset classes, sectors, time periods, or specific filings.
 - Detect keywords related to filing dates, submission types, registrant details, and financial data.
 - Default to the most recent time period ('2024Y') if not specified, and consider all asset classes unless otherwise mentioned.
+---
 """
 
 # SQL Query Format template to guide the generated SQL command
 sql_query_template_instructions = """
+---
 SQL Query Format:
 - Use the following format to construct queries:
     SELECT [columns]
@@ -42,18 +51,22 @@ SQL Query Format:
     WHERE [conditions]
 - Replace '[columns]' with actual column names based on the query.
 - Construct '[conditions]' based on specifics derived from the natural language query.
+---
 """
 
 # Define default behavior for unspecified fields or conditions
 default_query_behavior = f"""
+---
 Default Behavior:
 - Assume the most recent data period ('{latest_time_period}') if no time period is specified.
 - Include all asset classes and sectors unless specified in the query.
 - Retrieve all filings if no specific criteria are provided.
+---
 """
 
 # Example Natural Language Queries and Corresponding SQL Translations
 example_queries = """
+---
 Examples:
 1. "List the top 5 registrants by total net assets, including their CIK and country."
    SQL: 
@@ -229,10 +242,12 @@ Examples:
     SELECT ASSET_CAT, Category_Count
     FROM AssetDistribution
     ORDER BY Category_Count DESC;
+    ---
 """
 
 
 example_queries_2 = """
+---
 Examples:
 1. "Find the top 10 funds with the highest average monthly returns in the past quarter."
    SQL: 
@@ -443,6 +458,7 @@ CategoryAllocation AS (
     SELECT SERIES_NAME, ACCESSION_NUMBER, Total_Derivative_Exposure
     FROM SignificantExposures
     ORDER BY Total_Derivative_Exposure DESC;
+    ---
     """
 
 # Full prompt 
