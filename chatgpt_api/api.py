@@ -10,6 +10,7 @@ import os
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from typing import Optional
+from chat_prompt import generate_sql_and_reasoning
 
 # Configure logging
 logging.basicConfig(
@@ -240,4 +241,4 @@ async def get_schema():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8501)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

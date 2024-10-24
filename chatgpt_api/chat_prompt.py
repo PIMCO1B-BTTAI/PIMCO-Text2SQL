@@ -3,47 +3,38 @@ latest_time_period = "2024Y"
 
 # Background and Table Structure
 overall_task_instructions = """
----
 Task:
 The task is to convert the natural language query into a SQL query.
 This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
----
 """
 
 # SQL Table being queried
 table_name = 'Joined'
 table_name_instructions = f"""
----
 SQL Table:
 The only table to be queried is the '{table_name}' table. This table is a join between the 'SUBMISSION' and 'REGISTRANT' tables,
 which include details about EDGAR filings and registrant data, respectively.
----
 """
 
 # Detailed overview of the table to guide the model
 table_overview_instructions = f"""
----
 Table Overview:
 - The '{table_name}' table combines information from the 'SUBMISSION' and 'REGISTRANT' tables.
 - It features unique filings identified by 'ACCESSION_NUMBER', linking submission-specific details with registrant identifiers.
 - Fields include dates, submission types, registrant names, CIK numbers, addresses, and more.
 - This table is critical for understanding the connection between filings and registrants across various reporting periods.
----
 """
 
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
----
 Natural Language Processing Instructions:
 - Decompose the user's query to identify requirements regarding asset classes, sectors, time periods, or specific filings.
 - Detect keywords related to filing dates, submission types, registrant details, and financial data.
 - Default to the most recent time period ('2024Y') if not specified, and consider all asset classes unless otherwise mentioned.
----
 """
 
 # SQL Query Format template to guide the generated SQL command
 sql_query_template_instructions = """
----
 SQL Query Format:
 - Use the following format to construct queries:
     SELECT [columns]
@@ -51,22 +42,18 @@ SQL Query Format:
     WHERE [conditions]
 - Replace '[columns]' with actual column names based on the query.
 - Construct '[conditions]' based on specifics derived from the natural language query.
----
 """
 
 # Define default behavior for unspecified fields or conditions
 default_query_behavior = f"""
----
 Default Behavior:
 - Assume the most recent data period ('{latest_time_period}') if no time period is specified.
 - Include all asset classes and sectors unless specified in the query.
 - Retrieve all filings if no specific criteria are provided.
----
 """
 
 # Example Natural Language Queries and Corresponding SQL Translations
 example_queries = """
----
 Examples:
 1. "List the top 5 registrants by total net assets, including their CIK and country."
    SQL: 
@@ -242,12 +229,10 @@ Examples:
     SELECT ASSET_CAT, Category_Count
     FROM AssetDistribution
     ORDER BY Category_Count DESC;
-    ---
 """
 
 
 example_queries_2 = """
----
 Examples:
 1. "Find the top 10 funds with the highest average monthly returns in the past quarter."
    SQL: 
@@ -458,8 +443,25 @@ CategoryAllocation AS (
     SELECT SERIES_NAME, ACCESSION_NUMBER, Total_Derivative_Exposure
     FROM SignificantExposures
     ORDER BY Total_Derivative_Exposure DESC;
-    ---
     """
+
+# Reasoning instructions
+reasoning_instruction = """
+```
+1. Reasoning you provide should first focus on why a nested query was chosen or why it wasn't chosen.
+2. It should give a query plan on how to solve this question - explain 
+the mapping of the columns to the words in the input question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+   For example, if there is a `GROUP BY`, an explanation should be given as to why it exists.
+4. If there's any `SUM()` or any other function used, it should be explained as to why it was required.
+```
+
+```
+Format the generated SQL with proper indentation - the columns in the 
+(`SELECT` statement should have more indentation than the keyword `SELECT` 
+and so on for each SQL clause.)
+```
+"""
 
 # Full prompt 
 full_prompt = (
@@ -470,7 +472,50 @@ full_prompt = (
     sql_query_template_instructions +
     default_query_behavior +
     example_queries +
-    example_queries_2
+    example_queries_2 +
+    reasoning_instruction
 )
 # Output the full prompt
 print(full_prompt)
+
+
+import openai
+import logging
+from fastapi import HTTPException
+
+# Set up the logger
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+# Construct the function that takes in the user's question 
+# and returning the SQL commands with reasoning in json format
+def generate_sql_and_reasoning(user_question: str) -> dict:
+    # Append the user question to the full prompt
+    prompt_with_question = full_prompt + f"\n\nUser Question: {user_question}\n"
+
+    try:
+        # Call the OpenAI API to generate the SQL query and reasoning
+        response = openai.Completion.create(
+            engine="gpt-3.5-turbo",  # Adjust model if needed
+            prompt=prompt_with_question,
+            max_tokens=300,  # Adjust token limit as per your need
+            temperature=0.7
+        )
+
+        # Extract the reasoning and the SQL query from the response
+        generated_text = response.choices[0].text.strip()
+
+        # Assuming reasoning and SQL are separated by a newline in the response
+        reasoning, sql_query = generated_text.split("\n", 1)
+
+        return {
+            "reasoning": reasoning.strip(),
+            "SQL Query": sql_query.strip()
+        }
+
+    except openai.error.OpenAIError as e:
+        logger.error(f"Error with OpenAI API: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"OpenAI API error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Unexpected error generating SQL: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
