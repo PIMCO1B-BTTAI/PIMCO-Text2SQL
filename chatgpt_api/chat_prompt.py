@@ -32,32 +32,36 @@ schema_info = """
 Database Schema:
 
 Table: SUBMISSION
-- Contains information from the EDGAR submission
-- **ACCESSION_NUMBER**: The 20-character string formed from the 18-digit number assigned by the Commission to each EDGAR submission.
-  - Data Type: `VARCHAR2(20)`
-  - Nullable: No
-  - Key: Yes (Primary Key)
-- **FILING_DATE**: Filing date.
-  - Data Type: `DATE`
-  - Nullable: Yes
-- **FILE_NUM**: File number associated with the filing.
-  - Data Type: `VARCHAR2(30)`
-  - Nullable: Yes
-- **SUB_TYPE**: Submission type (e.g., NPORT-P, NPORT-P/A, NT NPORT-P).
-  - Data Type: `VARCHAR2(15)`
-  - Nullable: Yes
-- **REPORT_ENDING_PERIOD**: Date of fiscal year-end for the report.
-  - Data Type: `DATE`
-  - Nullable: Yes
-  - Rule: A.3.a
-- **REPORT_DATE**: Date as of which the information is reported.
-  - Data Type: `DATE`
-  - Nullable: Yes
-  - Rule: A.3.b
-- **IS_LAST_FILING**: Indicates if this will be the fund's final filing on Form N-PORT.
-  - Data Type: `CHAR(1)`
-  - Nullable: Yes
-  - Rule: A.4
+- This table contains information from the EDGAR(Electronic Data Gathering, Analysis, and Retrieval) submission
+- ACCESSION_NUMBER (Primary Key): 
+    This is a 20-character identifier that is unique to every document 
+    submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+    The first 10 digits represent the entity making the filing, 
+    followed by the filing year (24 for 2024), and the sequence of the filing.
+    This unique number allows users and regulators to track this specific report.
+- FILING_DATE: 
+    This is the date when the report was officially submitted to the SEC, 
+    meaning the fund handed in its NPORT report on this specific filling date.
+- FILE_NUM: 
+    File number associated with the filing which is used to uniquely track and 
+    categorize the registration and regulatory documents of the investment 
+    company with the SEC. Filings may not have a file number if they are not 
+    directly associated with a specific fund registration.
+- SUB_TYPE: 
+    Type of submission 
+    NPORT-P: standard monthly report
+    NPORT-P/A: an amendment to correct or update a previously filed NPORT-P
+    NT NPORT-P: a notification that the regular NPORT-P filing will be late, requesting more time to submit it.
+- REPORT_ENDING_PERIOD: 
+    This is the final date of the period covered by the report. 
+    It is the date of fiscal year-end for the report, which marks the 
+    end of the company's or fund's business year for financial reporting purposes.
+- REPORT_DATE: 
+    Specific date on which the financial and portfolio data provided in the report 
+    are accurate and reflect the fund's holdings and performance. 
+- IS_LAST_FILING: 
+    This field indicates whether this is the fund's final report. 
+    'N' means this is not the last report for the fund, and the fund will continue to submit future reports.
 
 """
 
