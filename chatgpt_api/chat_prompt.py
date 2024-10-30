@@ -8,30 +8,28 @@ The task is to convert the natural language query into a SQL query.
 This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
 """
 
-# TO BE CHANGED based on our current database
 # SQL Table being queried
-table_name = 'Joined'
+table_name = 'FULL_DATABASE'
 table_name_instructions = f"""
 SQL Table:
-The only table to be queried is the '{table_name}' table. This table is a join between the 'SUBMISSION' and 'REGISTRANT' tables,
-which include details about EDGAR filings and registrant data, respectively.
+The only table to be queried is the '{table_name}' table. 
 """
 
-# TO BE CHANGED based on our current database
 # Detailed overview of the table to guide the model
 table_overview_instructions = f"""
 Table Overview:
-- The '{table_name}' table combines information from the 'SUBMISSION' and 'REGISTRANT' tables.
-- It features unique filings identified by 'ACCESSION_NUMBER', linking submission-specific details with registrant identifiers.
-- Fields include dates, submission types, registrant names, CIK numbers, addresses, and more.
-- This table is critical for understanding the connection between filings and registrants across various reporting periods.
+- The '{table_name}' table combines information from 30 tables of the NPORT dataset for the second quarter of 2024.
+- The FULL_DATABASE table consolidates information from 30 tables of the NPORT dataset for the second quarter of 2024.
+- The data includes a comprehensive view of fund-level information, holdings, debt securities, repurchase agreements, and derivative instruments.
+- Each row represents detailed information about financial transactions, security holdings, and fund performance, 
+  including identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
+- The table provides essential metrics like total assets, liabilities, interest rate risks, monthly returns, and details for securities lending and collateral.
+- The table aggregates all the data to provide a holistic view of financial activities for the 2024_q2 period.
 """
 
-# Schema information as plain text with descriptions for each column
+# Schema information as plain text with descriptions for each column in the database
 schema_info = """
-Table: SUBMISSION
-- This table contains information from the EDGAR(Electronic Data Gathering, Analysis, and Retrieval) submission
-- ACCESSION_NUMBER (Primary Key): 
+- ACCESSION_NUMBER: 
     This is a 20-character identifier that is unique to every document 
     submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
     The first 10 digits represent the entity making the filing, 
@@ -40,11 +38,7 @@ Table: SUBMISSION
 - FILING_DATE: 
     This is the date when the report was officially submitted to the SEC, 
     meaning the fund handed in its NPORT report on this specific filling date.
-- FILE_NUM: 
-    File number associated with the filing which is used to uniquely track and 
-    categorize the registration and regulatory documents of the investment 
-    company with the SEC.
-- SUB_TYPE: 
+ - SUB_TYPE: 
     Type of submission 
     NPORT-P: standard monthly report
     NPORT-P/A: an amendment to correct or update a previously filed NPORT-P
@@ -59,15 +53,6 @@ Table: SUBMISSION
 - IS_LAST_FILING: 
     This field indicates whether this is the fund's final report. 
     'N' means this is not the last report for the fund, and the fund will continue to submit future reports.
-
-Table: REGISTRANT 
-- This table contains information about the registrant
-- ACCESSION_NUMBER (Primary Key): 
-    This is a 20-character identifier that is unique to every document 
-    submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
-    The first 10 digits represent the entity making the filing, 
-    followed by the filing year (24 for 2024), and the sequence of the filing.
-    This unique number allows users and regulators to track this specific report.
 - CIK:
     CIK stands for Central Index Key. It is a 10-digit number assigned by the SEC 
     to companies and individuals submitting filings through EDGAR, used to uniquely identify them.
@@ -76,6 +61,9 @@ Table: REGISTRANT
 - FILE_NUM:
     This is the Investment Company Act file number, assigned to registrants like investment 
     companies or mutual funds, used to track filings under the Investment Company Act.
+    File number associated with the filing which is used to uniquely track and 
+    categorize the registration and regulatory documents of the investment 
+    company with the SEC.
 - LEI:
     LEI stands for Legal Entity Identifier, which is a 20-character alphanumeric code 
     used globally to identify legal entities participating in financial transactions. 
@@ -95,18 +83,6 @@ Table: REGISTRANT
     The ZIP code or postal code of the registrant's address.
 - PHONE:
     The phone number for the registrant.
-
-Table: FUND_REPORTED_INFO
-- This table contains information about the fund
-- ACCESSION_NUMBER (Primary Key): 
-    This is a 20-character identifier that is unique to every document 
-    submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
-    The first 10 digits represent the entity making the filing, 
-    followed by the filing year (24 for 2024), and the sequence of the filing.
-    This unique number allows users and regulators to track this specific report.
-- 
-
-
 """
 
 # Instructions for handling parts of the natural language query
