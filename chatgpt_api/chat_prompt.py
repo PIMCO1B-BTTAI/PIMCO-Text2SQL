@@ -93,17 +93,6 @@ Natural Language Processing Instructions:
 - Default to the most recent time period ('2024Y') if not specified, and consider all asset classes unless otherwise mentioned.
 """
 
-# SQL Query Format template to guide the generated SQL command
-sql_query_template_instructions = """
-SQL Query Format:
-- Use the following format to construct queries:
-    SELECT [columns]
-    FROM '{table_name}'
-    WHERE [conditions]
-- Replace '[columns]' with actual column names based on the query.
-- Construct '[conditions]' based on specifics derived from the natural language query.
-"""
-
 # Define default behavior for unspecified fields or conditions
 default_query_behavior = f"""
 Default Behavior:
