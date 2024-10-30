@@ -19,7 +19,6 @@ The only table to be queried is the '{table_name}' table.
 table_overview_instructions = f"""
 Table Overview:
 - The '{table_name}' table combines information from 30 tables of the NPORT dataset for the second quarter of 2024.
-- The FULL_DATABASE table consolidates information from 30 tables of the NPORT dataset for the second quarter of 2024.
 - The data includes a comprehensive view of fund-level information, holdings, debt securities, repurchase agreements, and derivative instruments.
 - Each row represents detailed information about financial transactions, security holdings, and fund performance, 
   including identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
@@ -35,6 +34,10 @@ schema_info = """
     The first 10 digits represent the entity making the filing, 
     followed by the filing year (24 for 2024), and the sequence of the filing.
     This unique number allows users and regulators to track this specific report.
+- HOLDING_ID:
+
+- CUSIP:
+    
 - FILING_DATE: 
     This is the date when the report was officially submitted to the SEC, 
     meaning the fund handed in its NPORT report on this specific filling date.
