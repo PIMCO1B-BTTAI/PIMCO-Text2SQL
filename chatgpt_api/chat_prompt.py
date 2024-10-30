@@ -96,6 +96,17 @@ Table: REGISTRANT
 - PHONE:
     The phone number for the registrant.
 
+Table: FUND_REPORTED_INFO
+- This table contains information about the fund
+- ACCESSION_NUMBER (Primary Key): 
+    This is a 20-character identifier that is unique to every document 
+    submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+    The first 10 digits represent the entity making the filing, 
+    followed by the filing year (24 for 2024), and the sequence of the filing.
+    This unique number allows users and regulators to track this specific report.
+- 
+
+
 """
 
 # Instructions for handling parts of the natural language query
