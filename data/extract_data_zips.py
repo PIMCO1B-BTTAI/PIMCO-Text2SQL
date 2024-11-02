@@ -11,16 +11,22 @@ def extract_all_zip_files():
     
     # Extract each .zip file
     for zip_file in zip_files:
-        with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-            # Create a folder name from the zip file (without .zip extension)
-            extract_folder = os.path.join(current_directory, os.path.splitext(zip_file)[0])
-            # Check if there is existing folder with that name
-            if os.path.isdir(extract_folder):
-                print(f"The folder '{extract_folder}' already exists in the current working directory.")
-            else:
+        print(f"Processing '{zip_file}'...")
+        try:
+            with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+                # Create a folder name from the zip file (without .zip extension)
+                extract_folder = os.path.join(current_directory, os.path.splitext(zip_file)[0])
+                
+                # Create directory if it doesn't exist
+                os.makedirs(extract_folder, exist_ok=True)
+                
                 # Extract all the contents into said folder
                 zip_ref.extractall(extract_folder)
-                print(f"Extracted {zip_file} to {extract_folder}")
+                print(f"Extracted '{zip_file}' to '{extract_folder}'")
+        except zipfile.BadZipFile:
+            print(f"Error: '{zip_file}' is not a valid zip file.")
+        except PermissionError:
+            print(f"Error: Permission denied while accessing '{zip_file}'.")
 
 if __name__ == "__main__":
     extract_all_zip_files()
