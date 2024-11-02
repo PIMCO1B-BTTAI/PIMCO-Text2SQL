@@ -3,3 +3,6 @@ venv/
 env/
 __pycache__/
 .env
+data/*
+!data/*.py
+!data/*.ipynb

@@ -10,7 +10,7 @@ import os
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from typing import Optional
-from chat_prompt import generate_sql_and_reasoning
+from chatgpt_api.chat_prompt import generate_sql_and_reasoning
 
 # Configure logging
 logging.basicConfig(
