@@ -44,9 +44,9 @@ Table: SUBMISSION
         categorize the registration and regulatory documents of the investment 
         company with the SEC.
     - SUB_TYPE: 
-        Type of submission 
-        NPORT-P: standard monthly report
-        NPORT-P/A: an amendment to correct or update a previously filed NPORT-P
+        Type of the submission, including the following types.
+        NPORT-P: standard monthly report.
+        NPORT-P/A: an amendment to correct or update a previously filed NPORT-P.
         NT NPORT-P: a notification that the regular NPORT-P filing will be late, requesting more time to submit it.
     - REPORT_ENDING_PERIOD: 
         This is the final date of the period covered by the report. 
@@ -95,6 +95,77 @@ Table: REGISTRANT
     - PHONE:
         The phone number for the registrant.
 
+Table: FUND_REPORTED_INFO
+    - This table contains information about the fund
+    - ACCESSION_NUMBER (Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - SERIES_NAME:
+        The official name assigned to the series or individual fund within a larger fund family.
+    - SERIES_ID: 
+        The EDGAR Series Identifier, which uniquely distinguishes each series within the SEC's database.
+    - SERIES_LEI: 
+        The Legal Entity Identifier (LEI) of the series, a globally recognized ID used in financial transactions.
+    - TOTAL_ASSETS: 
+        The complete value of the fund's assets, including cash, securities, and other investments, measured in monetary terms.
+    - TOTAL_LIABILITIES: 
+        The aggregate value of the fund's debts or obligations.
+    - NET_ASSETS: 
+        Calculated as total assets minus total liabilities, this value represents the fund's equity available to shareholders, 
+        reflecting its true economic value.
+    - ASSETS_ATTRBT_TO_MISC_SECURITY: 
+        Assets that are attributed to miscellaneous securities that don't fall under main asset classes.
+    - ASSETS_INVESTED: 
+        Refers to fund assets invested in a Controlled Foreign Corporation (CFC), 
+        which are entities in foreign jurisdictions where the fund holds a controlling interest.
+    - BORROWING_PAY_WITHIN_1YR: 
+        The total amount the fund owes to banks or other financial institutions for short-term loans, repayable within one year. 
+    - CTRLD_COMPANIES_PAY_WITHIN_1YR: 
+        The amount payable within one year to affiliated companies controlled by the same parent company.
+    - OTHER_AFFILIA_PAY_WITHIN_1YR: 
+        Short-term amounts payable to other affiliates not directly controlled by the parent company.
+    - OTHER_PAY_WITHIN_1YR: 
+        Total amount due within one year to non-affiliated third parties, 
+        which may include service providers, suppliers, or other unrelated creditors.
+    - BORROWING_PAY_AFTER_1YR: 
+        Total value of long-term debt to financial institutions, which is due for repayment beyond one year.
+    - CTRLD_COMPANIES_PAY_AFTER_1YR: 
+        Long-term debt obligations to controlled companies, repayable after one year. 
+    - OTHER_AFFILIA_PAY_AFTER_1YR: 
+        Payables due after one year to related parties outside the controlled group, 
+        reflecting long-term service or operational arrangements.
+    - OTHER_PAY_AFTER_1YR: 
+        Total long-term obligations to unrelated parties, not due within the next year.
+    - DELAYED_DELIVERY: 
+        Represents payables for securities bought under delayed delivery agreements, often where settlement is postponed.
+    - STANDBY_COMMITMENT: 
+        Payables arising from standby commitments, which are agreements granting the option to buy securities.
+    - LIQUIDATION_PREFERENCE: 
+        The preferred stock's claim on assets in a liquidation scenario, where this stock class has a priority claim over common shareholders.
+    - CASH_NOT_RPTD_IN_C_OR_D: 
+        Represents cash holdings or equivalents that haven't been categorized in specific asset parts (Parts C or D).
+    - CREDIT_SPREAD_3MON_INVEST: 
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied 
+        to the option adjusted spread, aggregated by investment grade for 3 month maturity.
+    - CREDIT_SPREAD_1YR_INVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied 
+        to the option adjusted spread, aggregated by investment grade for 1 year maturity.
+    - CREDIT_SPREAD_5YR_INVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied 
+        to the option adjusted spread, aggregated by investment grade for 5 year maturity.
+    - CREDIT_SPREAD_10YR_INVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied 
+        to the option adjusted spread, aggregated by investment grade for 10 year maturity.
+    - CREDIT_SPREAD_30YR_INVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied 
+        to the option adjusted spread, aggregated by investment grade for 30 year maturity.
+    - CREDIT_SPREAD_3MON_NONINVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
+        to the option adjusted spread, aggregated by non investment grade for 3 month maturity.
+    
 """
 
 # Instructions for handling parts of the natural language query
