@@ -1,33 +1,34 @@
 # Define the latest available time period for data querying
-latest_time_period = "2024Y"
+latest_time_period = "2024q3"
 
 # Background and Table Structure
 overall_task_instructions = """
-Task:
-The task is to convert the natural language query into a SQL query.
+```
+Task Description:
+The task is to transform the natural language query into a SQL query for SQLite database.
 This involves parsing the intent of the query and understanding the structure of the data to generate an appropriate SQL command.
+```
 """
 
-# SQL Table being queried
-table_name = 'FULL_DATABASE'
-table_name_instructions = f"""
-SQL Table:
-The only table to be queried is the '{table_name}' table. 
-"""
+
 
 # Detailed overview of the table to guide the model
-table_overview_instructions = f"""
-Table Overview:
-- The '{table_name}' table combines information from 30 tables of the NPORT dataset for the second quarter of 2024.
+database_overview_instructions = f"""```
+Database Overview:
+- The Database combines information from 30 tables of the NPORT dataset from quarter 4 of 2019 to quarter 3 of 2024.
 - The data includes a comprehensive view of fund-level information, holdings, debt securities, repurchase agreements, and derivative instruments.
-- Each row represents detailed information about financial transactions, security holdings, and fund performance, 
-  including identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
+- Each relation represents detailed information about financial transactions, security holdings, and fund performance, including key identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
 - The table provides essential metrics like total assets, liabilities, interest rate risks, monthly returns, and details for securities lending and collateral.
-- The table aggregates all the data to provide a holistic view of financial activities for the 2024_q2 period.
+- The table aggregates all the data to provide a holistic view of financial activities for the 2019q4 to 2024q3 period.
+```
 """
 
 # Schema information as plain text with descriptions for each column in the database
 schema_info = """
+```
+Schema description:
+Below is the schema desciprtion of some tables and their attributes
+
 Table: SUBMISSION
     - This table contains information from the EDGAR(Electronic Data Gathering, Analysis, and Retrieval) submission
     - ACCESSION_NUMBER (Primary Key): 
@@ -67,9 +68,6 @@ Table: REGISTRANT
         The first 10 digits represent the entity making the filing, 
         followed by the filing year (24 for 2024), and the sequence of the filing.
         This unique number allows users and regulators to track this specific report.
-    - CIK:
-        CIK stands for Central Index Key. It is a 10-digit number assigned by the SEC 
-        to companies and individuals submitting filings through EDGAR, used to uniquely identify them.
     - REGISTRANT_NAME:
         The official name of the entity or individual registering with the SEC.
     - FILE_NUM:
@@ -165,28 +163,32 @@ Table: FUND_REPORTED_INFO
     - CREDIT_SPREAD_3MON_NONINVEST:
         The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
         to the option adjusted spread, aggregated by non investment grade for 3 month maturity.
-    
-"""
+```"""
 
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
+```
 Natural Language Processing Instructions:
 - Decompose the user's query to identify requirements regarding asset classes, sectors, time periods, or specific filings.
 - Detect keywords related to filing dates, submission types, registrant details, and financial data.
-- Default to the most recent time period ('2024Y') if not specified, and consider all asset classes unless otherwise mentioned.
+- Default to the most recent time period ('2024q3') if not specified, and consider all asset classes unless otherwise mentioned.
+```
 """
 
 # Define default behavior for unspecified fields or conditions
 default_query_behavior = f"""
-Default Behavior:
-- Assume the most recent data period ('{latest_time_period}') if no time period is specified.
+```
+Default values and assumptions:
+- Assume the most recent filing period ('{latest_time_period}') if no time period is specified, which is indicated by QUARTER column in the database.
 - Include all asset classes and sectors unless specified in the query.
 - Retrieve all filings if no specific criteria are provided.
+```
 """
 
 # Example Natural Language Queries and Corresponding SQL Translations
 example_queries = """
-Examples:
+```
+Example queries set 1, where Natural language request is encased in double quotations " and desired output is the SQL query after 'SQL:'
 1. "List the top 5 registrants by total net assets, including their CIK and country."
    SQL: 
    WITH FundAssets AS (
@@ -361,11 +363,14 @@ Examples:
     SELECT ASSET_CAT, Category_Count
     FROM AssetDistribution
     ORDER BY Category_Count DESC;
+
+```
 """
 
 
 example_queries_2 = """
-Examples:
+```
+Example queries set 2, where Natural language request is encased in double quotations " and desired output is the SQL query after 'SQL:'
 1. "Find the top 10 funds with the highest average monthly returns in the past quarter."
    SQL: 
    WITH AvgMonthlyReturn AS (
@@ -575,11 +580,15 @@ CategoryAllocation AS (
     SELECT SERIES_NAME, ACCESSION_NUMBER, Total_Derivative_Exposure
     FROM SignificantExposures
     ORDER BY Total_Derivative_Exposure DESC;
-    """
+
+```
+"""
 
 # Reasoning instructions
 reasoning_instruction = """
+
 ```
+Reasoning Instructions:
 1. Reasoning you provide should first focus on why a nested query was chosen or why it wasn't chosen.
 2. It should give a query plan on how to solve this question - explain 
 the mapping of the columns to the words in the input question.
@@ -587,25 +596,31 @@ the mapping of the columns to the words in the input question.
    For example, if there is a `GROUP BY`, an explanation should be given as to why it exists.
 4. If there's any `SUM()` or any other function used, it should be explained as to why it was required.
 ```
+"""
 
+output_instruction = """
 ```
+Final output:
 Format the generated SQL with proper indentation - the columns in the 
 (`SELECT` statement should have more indentation than the keyword `SELECT` 
 and so on for each SQL clause.)
+Output only the SQLite's SQL query syntax, without blank padding on the left or right, any string prefix suffix, or any delimiters ```.
+
 ```
 """
 
 # Full prompt 
 full_prompt = (
     overall_task_instructions +
-    table_name_instructions +
-    table_overview_instructions +
+    #table_name_instructions +
+    database_overview_instructions +
     nlp_query_handling_instructions +
-    sql_query_template_instructions +
+    #sql_query_template_instructions +
     default_query_behavior +
     example_queries +
     example_queries_2 +
-    reasoning_instruction
+    reasoning_instruction +
+    output_instruction
 )
 # Output the full prompt
 print(full_prompt)

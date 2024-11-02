@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import json
 import pandas as pd
+import io
 
 # Page configuration
 st.set_page_config(
@@ -83,18 +84,20 @@ with st.form(key='input_form', clear_on_submit=True):
                 response.raise_for_status()
                 result = response.json()
                 sql_query = result.get('sql_query', 'No SQL query generated.')
-                query_results = sql_query ### REPLACE LATER WITH result.get('results', [])
-                
+
+                query_results = result.get('csv_results','')
+
                 # Convert results to DataFrame
                 if query_results:
-                    #df = pd.DataFrame(query_results)
-                    #df_html = df.to_html(index=False, classes='result-table', escape=False)
-                    df_html = "TEST_SQL_RESULTS"
+                    df = pd.read_csv(io.StringIO(query_results))
+                    df_html = df.to_html(index=False, classes='result-table', escape=False)
+                    #df_html = "TEST_SQL_RESULTS"
                 else:
                     df_html = "<p>No results found.</p>"
 
                 # Format assistant's response
-                assistant_message = str(sql_query) #REPLACE LATER WITH assistant_message = f"**SQL Query:**\n```sql\n{sql_query}\n```\n**Results:**\n{df_html}"
+                #assistant_message = str(sql_query) 
+                assistant_message = f"**SQL Query:**\n```sql\n{sql_query}\n```\n**Results:**\n{df_html}"
 
                 # Add assistant message to session state
                 st.session_state['messages'].append({'role': 'assistant', 'content': assistant_message})

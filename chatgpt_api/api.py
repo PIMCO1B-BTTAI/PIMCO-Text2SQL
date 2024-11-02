@@ -10,7 +10,7 @@ import os
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from typing import Optional
-from chatgpt_api.chat_prompt import generate_sql_and_reasoning
+#from chatgpt_api.chat_prompt import generate_sql_and_reasoning
 
 # Configure logging
 logging.basicConfig(
@@ -83,7 +83,7 @@ def format_schema_for_gpt(schema: dict) -> str:
             detail=f"Error formatting schema: {str(e)}"
         )
     
-schema_info = format_schema_for_gpt(db_schema)
+schema_info = format_schema_for_gpt(db_schema) 
 
 def get_prompt() -> str:
     try:
@@ -104,45 +104,31 @@ def generate_sql(question: str) -> str:
             detail="Database schema not loaded"
         )
 
-    schema_info = format_schema_for_gpt(db_schema)
-    prompt = get_prompt()
+    #schema_info = format_schema_for_gpt(db_schema) #This is currently unused
     prompt = f"""
-    ---
+    ```
     OVERALL TASK:
     I will provide a database schema, generate an SQL query that retrieves from the database the answer to this question.
-    ---
-    ---
+    
     DATABASE SCHEMA:
     Given the following database schema:
     {schema_info}
 
-    Generate an SQL query that retrieves from the database the answer to this question:
-    Question: {question}
-    ---
-    ---
-    OUTPUT FORMAT SPECIFICATION:
-    The answer output must be only text of the SQL query that satisfies what the question asks, without any extra text or description.
-    ---
-    ---
-    EXAMPLES:
-        Example 1: 
-        Question: i want accession number of 20 entries in SUBMISSION table
-        Answer: SELECT accession_number FROM SUBMISSION
-    ---
-    """
-
+    Generate an SQL query that retrieves from the database the answer to this question: {question}
+    ```
+    """ + get_prompt()
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful assistant that generates SQL queries based on natural language questions about financial data."
+                    "content": "You are a financial database assistant that generates SQL queries based on natural language questions about financial data."
                 },
                 {"role": "user", "content": prompt}
             ]
         )
-        sql_query = response.choices[0].message.content.strip()
+        sql_query = response.choices[0].message.content.strip().replace("```sql", "").replace("```", "").strip()
         logger.info(f"Generated SQL query: {sql_query}")
         return sql_query
     except openai.APIStatusError as e:
@@ -162,7 +148,7 @@ def execute_sql(query: str) -> str:
     logger.debug(f"Executing SQL query: {query}")
     conn = None
     try:
-        conn = sqlite3.connect('financial_data.db')
+        conn = sqlite3.connect('sqlite/nport.db')
         cursor = conn.cursor()
 
         # Execute the query with a timeout
@@ -208,13 +194,17 @@ async def process_query(query: Query):
     logger.info(f"Processing query: {query.question}")
     try:
         sql_query = generate_sql(query.question)
+        logger.info(f"Processing query: {query.question}")
         csv_results = execute_sql(sql_query)
-        
-        return StreamingResponse(
-            io.StringIO(csv_results),
-            media_type="text/csv",
-            headers={"Content-Disposition": "attachment; filename=results.csv"}
-        )
+        return {
+            "sql_query": sql_query,
+            "csv_results": csv_results  # CSV data embedded as a JSON field
+        }
+        #return StreamingResponse(
+        #    io.StringIO(csv_results),
+        #    media_type="text/csv",
+        #    headers={"Content-Disposition": "attachment; filename=results.csv"}
+        #)
     except HTTPException:
         raise
     except Exception as e:

@@ -1,5 +1,10 @@
 # PIMCO
 
+### Set up database before running app:
+1. open PIMCO1B_Database_2.ipynb
+2. run all (this should create a nport.db in your sqlite folder)
+3. proceed to run app
+
 ### How to run app:
 1. Open bash terminal, run 
 ```uvicorn chatgpt_api.api:app --host 0.0.0.0 --port 8000```
