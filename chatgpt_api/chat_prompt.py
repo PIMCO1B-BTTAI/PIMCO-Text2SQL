@@ -68,6 +68,9 @@ Table: REGISTRANT
         The first 10 digits represent the entity making the filing, 
         followed by the filing year (24 for 2024), and the sequence of the filing.
         This unique number allows users and regulators to track this specific report.
+    - CIK:
+        CIK stands for Central Index Key. It is a 10-digit number assigned by the SEC 
+        to companies and individuals submitting filings through EDGAR, used to uniquely identify them.
     - REGISTRANT_NAME:
         The official name of the entity or individual registering with the SEC.
     - FILE_NUM:
