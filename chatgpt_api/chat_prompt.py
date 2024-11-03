@@ -10,8 +10,6 @@ This involves parsing the intent of the query and understanding the structure of
 ```
 """
 
-
-
 # Detailed overview of the table to guide the model
 database_overview_instructions = f"""```
 Database Overview:
