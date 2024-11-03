@@ -25,10 +25,10 @@ Database Overview:
 
 # Schema information as plain text with descriptions for each column in the database
 schema_info = """
-```
 Schema description:
 Below is the schema desciprtion of some tables and their attributes
 
+```
 Table: SUBMISSION
     - This table contains information from the EDGAR(Electronic Data Gathering, Analysis, and Retrieval) submission
     - ACCESSION_NUMBER (Primary Key): 
@@ -59,7 +59,8 @@ Table: SUBMISSION
     - IS_LAST_FILING: 
         This field indicates whether this is the fund's final report. 
         'N' means this is not the last report for the fund, and the fund will continue to submit future reports.
-
+```
+```
 Table: REGISTRANT 
     - This table contains information about the registrant
     - ACCESSION_NUMBER (Primary Key): 
@@ -95,7 +96,8 @@ Table: REGISTRANT
         The ZIP code or postal code of the registrant's address.
     - PHONE:
         The phone number for the registrant.
-
+```
+```
 Table: FUND_REPORTED_INFO
     - This table contains information about the fund
     - ACCESSION_NUMBER (Primary Key): 
@@ -166,7 +168,150 @@ Table: FUND_REPORTED_INFO
     - CREDIT_SPREAD_3MON_NONINVEST:
         The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
         to the option adjusted spread, aggregated by non investment grade for 3 month maturity.
-```"""
+    - CREDIT_SPREAD_1YR_NONINVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
+        to the option adjusted spread, aggregated by non investment grade for 1 year maturity.
+    - CREDIT_SPREAD_5YR_NONINVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
+        to the option adjusted spread, aggregated by non investment grade for 5 year maturity.
+    - CREDIT_SPREAD_10YR_NONINVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
+        to the option adjusted spread, aggregated by non investment grade for 10 year maturity.
+    - CREDIT_SPREAD_30YR_NONINVEST:
+        The change in value of the portfolio resulting from a 1 basis point change in credit spreads where the shift is applied
+        to the option adjusted spread, aggregated by non investment grade for 30 year maturity.
+    - IS_NON_CASH_COLLATERAL: 
+        This field indicates whether any securities lending counterparties have provided non-cash collateral. 
+        A "yes" (Y) or "no" (N) value in this field shows if any part of the collateral received by the fund for loaned securities 
+        consists of non-cash items, such as securities rather than cash, which the fund may treat as assets.
+    - NET_REALIZE_GAIN_NONDERIV_MON1: 
+        This column captures the net realized gain or loss from non-derivative investments for the first month in the reporting period. 
+        Realized gains occur when assets are sold for more than the purchase price, 
+        while losses reflect sales at a price lower than the original purchase.
+    - NET_UNREALIZE_AP_NONDERIV_MON1: 
+        This column indicates the net change in unrealized appreciation or depreciation for non-derivative investments in the first month. 
+        Unrealized appreciation (or depreciation) reflects the increase or decrease in market value of holdings that the fund has not yet sold.
+    - NET_REALIZE_GAIN_NONDERIV_MON2: 
+        This column captures the net realized gain or loss from non-derivative investments for the second month in the reporting period. 
+        Realized gains occur when assets are sold for more than the purchase price, 
+        while losses reflect sales at a price lower than the original purchase.
+    - NET_UNREALIZE_AP_NONDERIV_MON2: 
+        This column indicates the net change in unrealized appreciation or depreciation for non-derivative investments in the second month. 
+        Unrealized appreciation (or depreciation) reflects the increase or decrease in market value of holdings that the fund has not yet sold.
+    - - NET_REALIZE_GAIN_NONDERIV_MON3: 
+        This column captures the net realized gain or loss from non-derivative investments for the third month in the reporting period. 
+        Realized gains occur when assets are sold for more than the purchase price, 
+        while losses reflect sales at a price lower than the original purchase.
+    - NET_UNREALIZE_AP_NONDERIV_MON3: 
+        This column indicates the net change in unrealized appreciation or depreciation for non-derivative investments in the third month. 
+        Unrealized appreciation (or depreciation) reflects the increase or decrease in market value of holdings that the fund has not yet sold.
+    - SALES_FLOW_MON1: 
+        This column reflects the total net asset value (NAV) of shares sold by the fund in the first month, 
+        showing new inflows from investor purchases of fund shares.
+    - REINVESTMENT_FLOW_MON1: 
+        This field reports the NAV of shares sold in the first month due to reinvestments of dividends and distributions. 
+        It indicates how much of the cash distributed to shareholders is reinvested into the fund, growing its asset base.
+    - REDEMPTION_FLOW_MON1: 
+        This captures the NAV of shares redeemed or repurchased, including exchanges, during the first month. 
+        Redemptions represent investor outflows as shares are sold back to the fund.
+    - SALES_FLOW_MON2: 
+        This column reflects the total net asset value (NAV) of shares sold by the fund in the second month, 
+        showing new inflows from investor purchases of fund shares.
+    - REINVESTMENT_FLOW_MON2: 
+        This field reports the NAV of shares sold in the second month due to reinvestments of dividends and distributions. 
+        It indicates how much of the cash distributed to shareholders is reinvested into the fund, growing its asset base.
+    - REDEMPTION_FLOW_MON2: 
+        This captures the NAV of shares redeemed or repurchased, including exchanges, during the second month. 
+        Redemptions represent investor outflows as shares are sold back to the fund.
+    - SALES_FLOW_MON3: 
+        This column reflects the total net asset value (NAV) of shares sold by the fund in the third month, 
+        showing new inflows from investor purchases of fund shares.
+    - REINVESTMENT_FLOW_MON3: 
+        This field reports the NAV of shares sold in the third month due to reinvestments of dividends and distributions. 
+        It indicates how much of the cash distributed to shareholders is reinvested into the fund, growing its asset base.
+    - REDEMPTION_FLOW_MON3: 
+        This captures the NAV of shares redeemed or repurchased, including exchanges, during the third month. 
+        Redemptions represent investor outflows as shares are sold back to the fund.
+```
+```
+Table: INTEREST_RATE_RISK
+    - This table contains information about interest rate risk
+    - ACCESSION_NUMBER (Dual Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - INTEREST_RATE_RISK_ID (Dual Primary Key): 
+        This is a surrogate key, which is an artificially created unique identifier for each record in this table. 
+        It distinguishes multiple records related to interest rate risks within the same filing.
+    - CURRENCY_CODE: 
+        This column represents the currency in which the interest rate risk is reported (e.g., USD, EUR, JPY). 
+    - INTRST_RATE_CHANGE_3MON_DV01:
+        Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 3 months.
+    - INTRST_RATE_CHANGE_1YR_DV01:
+        Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 1 year.
+    - INTRST_RATE_CHANGE_5YR_DV01:
+        Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 5 year.
+    - INTRST_RATE_CHANGE_10YR_DV01:
+        Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 10 year.
+    - INTRST_RATE_CHANGE_30YR_DV01:
+        Change in value of the portfolio resulting from a 1 basis point change in interest rates for maturity in 30 year.
+    - INTRST_RATE_CHANGE_3MON_DV100:
+        Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 3 months.
+    - INTRST_RATE_CHANGE_1YR_DV100:
+        Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 1 year.
+    - INTRST_RATE_CHANGE_5YR_DV100:
+        Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 5 year.
+    - INTRST_RATE_CHANGE_10YR_DV100:
+        Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 10 year.
+    - INTRST_RATE_CHANGE_30YR_DV100:
+        Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 30 year.
+```
+```
+Table: BORROWER
+    - This table contains information for each borrower in a securities lending transaction
+    - ACCESSION_NUMBER (Dual Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - BORROWER_ID (Dual Primary Key):
+        This is a surrogate key, which is an artificially created unique identifier for each record in this table. 
+        It helps distinguish multiple borrowers under the same filing.
+    - NAME: 
+        This column records the name of the borrower involved in the securities lending transaction, such as a bank or financial institution.
+    - LEI:
+        The Legal Entity Identifier (LEI) of the borrower. LEIs are global identifiers for entities participating in financial transactions, 
+        ensuring a standardized way to identify each borrower across different systems.
+    - AGGREGATE_VALUE:
+        This field shows the total value of all securities on loan to this specific borrower. 
+        It provides insight into the scale of the lending activity involving each borrower, reflecting their financial engagement in the securities loan.
+```
+```
+Table: BORROW_AGGREGATE
+    - This table contains information for each category of non-cash collateral received for loaned securities
+    - ACCESSION_NUMBER (Dual Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - BORROW_AGGREGATE_ID: 
+        This is a surrogate key serves as a unique identifier for each entry within a particular filing, 
+        distinguishing each type of non-cash collateral received for securities lending within a single EDGAR submission.
+    - AMOUNT: 
+        This field records the aggregate principal amount of the collateral provided by the borrower. 
+        This value gives a quantifiable measure of the collateral's nominal worth, providing an overview of the total exposure secured by the collateral.
+    - COLLATERAL: 
+        This column captures the aggregate value of the collateral provided, which may differ from the principal amount due to market or fair value adjustments. 
+        It reflects the total worth of the collateral, as recognized by the fund.
+    - INVESTMENT_CAT: 
+        This column specifies the category or type of the collateral provided. 
+        Common categories include well-defined asset classes such as UST (U.S. Treasury securities).
+```
+"""
 
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
