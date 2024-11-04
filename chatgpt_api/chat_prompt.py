@@ -309,8 +309,106 @@ Table: BORROW_AGGREGATE
         This column specifies the category or type of the collateral provided. 
         Common categories include well-defined asset classes such as UST (U.S. Treasury securities).
 ```
+```
+Table: DEBT_SECURITY_REF_INSTRUMENT
+    - This table contains information about each debt security reference instrument within a portfolio, including identifiers, issuer details, and currency information.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments. It links the debt security reference instrument to a specific holding.
+    - DEBT_SECURITY_REF_ID:
+        A surrogate key that uniquely identifies each debt security reference instrument entry within this table.
+    - ISSUER_NAME:
+        The official name of the entity or organization that issued the debt security. This field provides the name for identification and reference.
+    - ISSUE_TITLE:
+        The title or descriptive name of the debt security issue, indicating the type or series of the security.
+    - CURRENCY_CODE:
+        The 3-character code representing the currency in which the security is denominated.
+    - CUSIP:
+        A 9-character identifier assigned to the debt security in the United States.
+    - ISIN:
+        The 12-character International Securities Identification Number, a globally recognized code for uniquely identifying securities.
+    - TICKER:
+        The ticker symbol associated with the debt security.
+    - OTHER_IDENTIFIER:
+        An additional identifier for the debt security if one is available, providing an alternative means of identification beyond CUSIP or ISIN.
+    - OTHER_DESC:
+        A description of the type of identifier provided in the OTHER_IDENTIFIER field, specifying the kind of alternative identifier being used.
+```
+```
+Table: CONVERTIBLE_SECURITY_CURRENCY
+    - This table contains information about convertible securities, including identifiers, conversion ratio, and currency information associated with each security.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the convertible security to a specific holding.
+    - CONVERTIBLE_SECURITY_ID:
+        A surrogate key that uniquely identifies each convertible security entry within this table.
+    - CONVERSION_RATIO:
+        The conversion ratio for the convertible security, indicating the rate at which the security can be converted into another form.
+    - CURRENCY_CODE:
+        The 3-character code representing the currency associated with the convertible security.
+```
+```
+Table: REPURCHASE_AGREEMENT
+    - This table contains information about repurchase agreements, including transaction type, clearing details, counterparty information, repurchase rate, and maturity date.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the repurchase agreement to a specific holding.
+    - TRANSACTION_TYPE:
+        The category that most closely describes the type of transaction, indicating whether it is a repurchase or reverse repurchase agreement.
+    - IS_CLEARED:
+        Indicates whether the transaction is cleared by a central counterparty, with a designation of "Y" for cleared and "N" for not cleared.
+    - CENTRAL_COUNTER_PARTY:
+        The name of the central counterparty responsible for clearing the transaction, if applicable.
+    - IS_TRIPARTY:
+        Specifies if the transaction is a tri-party agreement, where a third party is involved in managing the collateral, with a designation of "Y" for yes and "N" for no.
+    - REPURCHASE_RATE:
+        The repurchase rate applied to the agreement, representing the interest rate or return rate associated with the transaction.
+    - MATURITY_DATE:
+        The maturity date of the repurchase agreement, indicating when the agreement is set to conclude.
+```
+```
+Table: REPURCHASE_COUNTERPARTY
+    - This table contains information about the counterparties involved in repurchase agreements, including unique identifiers, counterparty names, and LEI information.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the repurchase counterparty information to a specific holding.
+    - REPURCHASE_COUNTERPARTY_ID:
+        A surrogate key that uniquely identifies each counterparty entry within this table.
+    - NAME:
+        The name of the counterparty involved in the repurchase agreement, identifying the organization or entity responsible for the counterparty role.
+    - LEI:
+        The Legal Entity Identifier (LEI) of the counterparty, if available. This is a 20-character alphanumeric code used globally to identify legal entities in financial transactions.
+```
+```
+Table: REPURCHASE_COLLATERAL
+    This table contains information about the collateral associated with repurchase agreements, including principal and collateral amounts, currency codes, investment categories, and descriptions.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the repurchase collateral information to a specific holding.
+    - REPURCHASE_COLLATERAL_ID:
+        A surrogate key that identifies each collateral entry within this table.
+    - PRINCIPAL_AMOUNT:
+        The principal amount of the repurchase agreement, representing the initial amount provided in the transaction.
+    - PRINCIPAL_CURRENCY_CODE:
+        The 3-character currency code associated with the principal amount, indicating the currency in which the principal is denominated.
+    - COLLATERAL_AMOUNT:
+        The value of the collateral provided in the repurchase agreement, representing the worth of assets pledged as security.
+    - COLLATERAL_CURRENCY_CODE:
+        The 3-character currency code associated with the collateral amount, indicating the currency in which the collateral is valued.
+    - INVESTMENT_CAT:
+        The category of investments that most closely represents the type of collateral provided, such as specific asset classes.
+    - OTHER_INSTRUMENT_DESC:
+        A brief description provided if the category of the investment is designated as "Other Instrument," giving context about the collateral.
+```
+```
+Table: DERIVATIVE_COUNTERPARTY
+    - This table contains information about the counterparties involved in derivative transactions, including unique identifiers, counterparty names, and LEI information.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - DERIVATIVE_COUNTERPARTY_ID:
+        A surrogate key that uniquely identifies each derivative counterparty entry within this table.
+    - DERIVATIVE_COUNTERPARTY_NAME:
+        The name of the counterparty involved in the derivative transaction, identifying the organization or entity responsible for the counterparty role.
+    - DERIVATIVE_COUNTERPARTY_LEI:
+        The Legal Entity Identifier (LEI) of the counterparty, if available. This is a 20-character alphanumeric code used globally to identify legal entities in financial transactions.
+```
+```
 """
-
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
 ```
