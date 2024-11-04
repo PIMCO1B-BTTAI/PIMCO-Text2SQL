@@ -310,6 +310,150 @@ Table: BORROW_AGGREGATE
         Common categories include well-defined asset classes such as UST (U.S. Treasury securities).
 ```
 ```
+Table: MONTHLY_TOTAL_RETURN 
+    - This table contains monthly total return information for each of the preceding three months.
+    - ACCESSION_NUMBER (Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - MONTHLY_TOTAL_RETURN_ID (Primary Key):
+        Surrogate Key. This is a surrogate key that uniquely identifies each record of monthly total returns 
+        within the table. Surrogate keys are often used to ensure that each entry has a distinct identity, 
+        independent of the business logic.
+    - CLASS_ID: 
+        An identifier (if any) representing the classification of the fund or investment classes for which the returns are reported.
+    - MONTHLY_TOTAL_RETURN1: 
+        The total return for the fund for the first month of the reporting period.
+    - MONTHLY_TOTAL_RETURN2: 
+        The total return for the fund for the second month of the reporting period.
+    - MONTHLY_TOTAL_RETURN3: 
+        The total return for the fund for the third month of the reporting period.
+```
+```
+Table: MONTHLY_RETURN_CAT_INSTRUMENT 
+    - This table contains monthly return information attributable to derivatives for each of the preceding three month.
+    - ACCESSION_NUMBER (Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - ASSET_CAT (Primary Key):
+        This column categorizes the asset type to which the derivatives belong (e.g., equities, bonds, commodities).
+    - INSTRUMENT_KIND (Primary Key):
+         Type of derivatives instrument associated with the asset category, such as forward, future, option, swaption, swap, warrant, and other. 
+    - NET_REALIZED_GAIN_MON1:
+        Net realized gain (loss) attributable to derivatives for the first month of the reporting period.
+    - NET_UNREALIZED_AP_MON1:
+        Net change in unrealized appreciation (or depreciation) attributable to derivatives for the first month.
+    - NET_REALIZED_GAIN_MON2: 
+        Net realized gain (loss) attributable to derivatives for the second month of the reporting period.
+    - NET_UNREALIZED_AP_MON2:
+         Net change in unrealized appreciation (or depreciation) attributable to derivatives for the second month.
+    - NET_REALIZED_GAIN_MON3:
+        Net realized gain (loss) attributable to derivatives for the third month of the reporting period.
+    - NET_UNREALIZED_AP_MON3:
+        Net change in unrealized appreciation (or depreciation) attributable to derivatives for the third month.
+```
+```
+Table: FUND_VAR_INFO 
+    - This table provides information about the Fund's designated index.
+    - ACCESSION_NUMBER (Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - DESIGNATED_INDEX_NAME: 
+        Name of the designated index associated with the fund, particularly for those funds subject to the Relative Value at Risk (VaR) Test during the reporting period. 
+        If the fund's designated reference portfolio is its securities portfolio, this field may instead contain a statement indicating that. 
+    - DESIGNATED_INDEX_IDENTIFIER: 
+        The identifier for the fund's designated index, which may be a specific code or alphanumeric string 
+        used to uniquely identify the index in financial databases.
+```
+```
+Table: FUND_REPORTED_HOLDING 
+    - This table contains information about the holdings of the fund, including key identifiers, financial metrics, and contextual information about issuers and assets.
+    -  ACCESSION_NUMBER (Primary Key):
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    -  HOLDING_ID (Primary Key):
+        A surrogate key that uniquely identifies each holding in the fund's portfolio. 
+    -  ISSUER_NAME:
+        The name of the entity that issued the security or investment held by the fund.
+    -  ISSUER_LEI:
+        The Legal Entity Identifier (LEI) of the issuer, if available. For holdings in a fund that is a series of a series trust, this should reflect the LEI of the specific series.
+    -  ISSUER_TITLE:
+        The title of the issue or a description of the investment, providing additional context regarding the specific security held.
+    -  ISSUER_CUSIP:
+        The Committee on Uniform Securities Identification Procedures (CUSIP) number assigned to the security, which uniquely identifies it in the financial markets.
+    -  BALANCE:
+        The balance or amount held of the security, expressed in a numerical format. This reflects how much of the investment is currently owned by the fund.
+    -  UNIT:
+        Indicates the unit of measurement for the balance amount, such as shares, principal amount, or other units. It helps clarify how the balance is quantified.
+    -  CURRENCY_CODE:
+        The code representing the currency in which the balance is reported (e.g., USD for U.S. dollars, EUR for euros).
+    -  CURRENCY_VALUE:
+        The total value of the holding expressed in the specified currency.
+    -  PERCENTAGE:
+        The percentage value of the holding compared to the net assets of the fund, providing insights into how significant the holding is relative to the fund's overall portfolio.
+    -  PAYOFF_PROFILE:
+        Indicates the payoff profile of the investment, categorizing it as long, short, or not applicable (N/A).
+    -  ASSET_CAT:
+        Categorizes the asset type of the holding.
+    -  ISSUER_TYPE:
+        Indicates the type of issuer of the security, providing context for the holding's risk profile.
+    -  INVESTMENT_COUNTRY:
+        Reports the ISO country code corresponding to the country where the issuer is organized. This is important for understanding geographic exposure.
+    -  IS_RESTRICTED_SECURITY:
+        A flag indicating whether the investment is classified as a restricted security.
+    -  FAIR_VALUE_LEVEL:
+        Indicates the level within the fair value hierarchy as defined by US GAAP, which classifies fair value measurements based on the observability of inputs used in the valuation.
+```
+```
+Table: IDENTIFIERS
+    - This table contains other identifiers for the holding, ensuring comprehensive tracking and cross-referencing of securities.
+    - HOLDING_ID (Primary Key):
+        A surrogate key that uniquely identifies each holding in the fund's portfolio. 
+    - IDENTIFIERS_ID (Primary Key):
+        A surrogate key that uniquely identifies each record within the identifiers table. 
+    - IDENTIFIER_ISIN:
+        The International Securities Identification Number (ISIN) assigned to the security.
+    - IDENTIFIER_TICKER:
+        The ticker symbol for the security, which is a unique series of letters used to represent the security on stock exchanges.
+    - OTHER_IDENTIFIER:
+        Additional identifiers associated with the holding that are not covered by the ISIN or ticker.
+    - OTHER_IDENTIFIER_DESC:
+        A description of the type of other identifier used in the OTHER_IDENTIFIER field.
+```
+```
+Table: DEBT_SECURITY
+    - This table contains additional information for debt securities holdings, including metrics such as maturity dates, coupon types, and any default statuses.
+    - HOLDING_ID:
+        A surrogate key that uniquely identifies each holding in the fund's portfolio. 
+    - MATURITY_DATE:
+        The date on which the debt security is scheduled to mature, e.g. the date when the issuer must repay the principal amount to the holder.
+    - COUPON_TYPE:
+        Categorizes the coupon type of the debt security. The categories include fixed, floating, variable, or none.
+    - ANNUALIZED_RATE:
+        The annualized interest rate of the debt security, which provides essential information about the expected return from the security over a year.
+    - IS_DEFAULT:
+        A flag indicating whether the debt security is currently in default. This is a critical risk indicator, as default can affect the recoverability of the principal and interest payments.
+    - ARE_ANY_INTEREST_PAYMENT:
+        A flag indicating whether there are any interest payments that are in arrears or have any coupon payments that have been legally deferred by the issuer.
+    - IS_ANY_PORTION_INTEREST_PAID:
+        A flag indicating whether any portion of the interest on the debt security has been paid in kind (PIK). PIK interest is paid in the form of additional securities rather than cash.
+    - IS_CONVTIBLE_MANDATORY:
+        A flag indicating whether the debt security is a mandatory convertible security. 
+    - IS_CONVTIBLE_CONTINGENT:
+        A flag indicating whether the debt security is a contingent convertible security.
+```
+```
 Table: DEBT_SECURITY_REF_INSTRUMENT
     - This table contains information about each debt security reference instrument within a portfolio, including identifiers, issuer details, and currency information.
     - HOLDING_ID (Primary Key):
