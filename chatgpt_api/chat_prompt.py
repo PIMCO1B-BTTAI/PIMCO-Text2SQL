@@ -552,6 +552,124 @@ Table: DERIVATIVE_COUNTERPARTY
         The Legal Entity Identifier (LEI) of the counterparty, if available. This is a 20-character alphanumeric code used globally to identify legal entities in financial transactions.
 ```
 ```
+Table: SWAPTION_OPTION_WARNT_DERIV
+    - This table contains information about options and warrants, including attributes such as the type of option, payoff profile, and underlying share counts.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - PUT_OR_CALL:
+        Indicates if the option is a "put" or "call."
+    - WRITTEN_OR_PURCHASED: 
+        Specifies if the option was "written" or "purchased."
+    - SHARES_CNT:
+        The number of shares of the underlying instrument per contract.
+    - PRINCIPAL_AMOUNT:
+        Represents the principal amount of the underlying reference instrument per contract. 
+    - CURRENCY_CODE:
+        The currency code for the contract.
+    - EXERCISE_PRICE:
+        Specifies the exercise price or rate for the contract. 
+    - EXPIRATION_DATE:
+        The expiration date of the contract. 
+    - UNREALIZED_APPRECIATION:
+        Indicates unrealized appreciation or depreciation of the instrument. Depreciation is reported as a negative value. 
+```
+```
+Table: DESC_REF_INDEX_BASKET
+    - This table contains the index or custom basket reference instrument for options and warrants, including options on a derivative (swaptions).
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - INDEX_NAME:
+        Specifies the name of the index associated with the holding. 
+    - INDEX_IDENTIFIER:
+        Provides a unique identifier for the index. 
+    - NARRATIVE_DESC:
+        Contains a narrative description of the index. 
+```
+```
+Table: DESC_REF_INDEX_COMPONENT
+    - This table provides detailed information on individual components within index references associated with portfolio holdings.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - DESC_REF_INDEX_COMPONENT_ID:
+        A unique surrogate key for each component within an index reference. 
+    - NAME:
+        The name of the index component. 
+    - CUSIP:
+        The CUSIP identifier for the component, used for U.S.-based securities. 
+    - ISIN:
+        The ISIN (International Securities Identification Number) for the component. 
+    - TICKER:
+        The stock ticker symbol for the component. 
+    - OTHER_IDENTIFIER:
+        Another identifier for the component if CUSIP or ISIN are not applicable.
+    - OTHER_DESC:
+        The type of the alternative identifier used. 
+    - NOTIONAL_AMOUNT:
+        The notional amount for the component in the index. 
+    - CURRENCY_CODE:
+        The currency code in which the notional amount is denominated. 
+    - VALUE:
+        The current value of the component. 
+    - ISSUER_CURRENCY_CODE:
+        The currency code of the issuer for the component. 
+```
+```
+Table: DESC_REF_OTHER 
+    - This table stores information about other descriptive references associated with portfolio holdings.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - DESC_REF_OTHER_ID:
+        A unique surrogate key for each other reference. 
+    - ISSUER_NAME:
+        The name of the issuer for the referenced instrument. 
+    - ISSUE_TITLE:
+        The title or designation of the issue by the issuer. 
+    - CUSIP:
+        The CUSIP identifier for the instrument, specific to U.S. securities. 
+    - ISIN:
+        The ISIN (International Securities Identification Number) for the instrument. 
+    - TICKER:
+        The stock ticker symbol for the instrument. 
+    - OTHER_IDENTIFIER:
+        Another identifier if CUSIP or ISIN are not applicable. 
+    - OTHER_DESC:
+        Describes the type of alternative identifier used. 
+```
+```
+Table: FUT_FWD_NONFOREIGNCUR_CONTRA
+    - This table contains information about futures and forward contracts not denominated in foreign currency. 
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - PAYOFF_PROFILE:
+        Indicates the payoff profile of the contract, selected as either "long" or "short." 
+    - EXPIRATION_DATE:
+        The expiration date of the contract. 
+    - NOTIONAL_AMOUNT:
+        Represents the aggregate notional amount or contract value on the trade date. 
+    - CURRENCY_CODE:
+        The currency code in which the contract is denominated. 
+    - UNREALIZED_APPRECIATION:
+        Indicates the unrealized appreciation or depreciation of the contract, with depreciation recorded as a negative value. 
+```
+```
+Table: FWD_FOREIGNCUR_CONTRACT_SWAP
+    - This table contains information about forward contracts and currency swaps involving foreign currencies. 
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - CURRENCY_SOLD_AMOUNT: 
+        The amount of currency sold in the contract. 
+    - DESC_CURRENCY_SOLD:
+        A description or code for the currency sold. 
+    - CURRENCY_PURCHASED_AMOUNT:
+        The amount of currency purchased in the contract.
+    - DESC_CURRENCY_PURCHASED:
+        A description or code for the currency purchased. 
+    - SETTLEMENT_DATE:
+        The date when the contract is set to settle. 
+    - UNREALIZED_APPRECIATION: 
+        The unrealized appreciation or depreciation of the contract, with depreciation reported as a negative number. 
+```
+```
 """
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
