@@ -787,6 +787,7 @@ Table: EXPLANATORY_NOTE
         assumptions used in valuations, or other notable details that impact how data in the filing should be interpreted.
 ```
 """
+
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
 ```
