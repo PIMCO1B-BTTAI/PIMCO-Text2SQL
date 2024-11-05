@@ -1091,20 +1091,7 @@ Example queries set 2, where Natural language request is encased in double quota
    ORDER BY FV.Total_VaR DESC
    LIMIT 5;
 
-6. "Identify funds that are most sensitive to interest rate changes."
-   SQL: 
-   WITH SensitivityScores AS (
-       SELECT ACCESSION_NUMBER, SENSITIVITY_VALUE
-       FROM INTEREST_RATE_RISK
-       WHERE SENSITIVITY_VALUE IS NOT NULL
-   )
-   SELECT F.SERIES_NAME, SS.SENSITIVITY_VALUE
-   FROM SensitivityScores SS
-   JOIN FUND_REPORTED_INFO F ON SS.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-   ORDER BY SS.SENSITIVITY_VALUE DESC
-   LIMIT 5;
-
-7. "Retrieve funds that have experienced a net decrease in assets over the last three reporting periods."
+6. "Retrieve funds that have experienced a net decrease in assets over the last three reporting periods."
    SQL: 
    WITH AssetChanges AS (
        SELECT F.ACCESSION_NUMBER, F.SERIES_NAME, S.REPORT_DATE, F.NET_ASSETS,
@@ -1117,7 +1104,7 @@ Example queries set 2, where Natural language request is encased in double quota
    WHERE AC.NET_ASSETS < AC.Previous_Period_Assets
      AND AC.Previous_Period_Assets IS NOT NULL;
 
-8. "Analyze the composition of fund portfolios by categorizing assets and their total values."
+7. "Analyze the composition of fund portfolios by categorizing assets and their total values."
    SQL: 
    WITH PortfolioComposition AS (
     SELECT 
@@ -1142,7 +1129,7 @@ ORDER BY
     F.SERIES_NAME, 
     PC.Total_Value DESC;
 
-9. "Identify the most common asset categories across all fund portfolios."
+8. "Identify the most common asset categories across all fund portfolios."
     SQL: 
     WITH AssetCounts AS (
         SELECT ASSET_CAT, COUNT(*) AS Count
@@ -1154,7 +1141,7 @@ ORDER BY
     ORDER BY Count DESC
     LIMIT 5;
 
-10. "Determine the percentage allocation of each asset category within individual fund portfolios."
+9. "Determine the percentage allocation of each asset category within individual fund portfolios."
     SQL: 
     WITH TotalAssets AS (
     SELECT 
@@ -1190,7 +1177,7 @@ CategoryAllocation AS (
       F.SERIES_NAME, 
       Percentage_Allocation DESC;
 
-11. "Identify funds with significant derivative exposures exceeding one million in unrealized appreciation."
+10. "Identify funds with significant derivative exposures exceeding one million in unrealized appreciation."
     SQL: 
     WITH SignificantExposures AS (
         SELECT F.ACCESSION_NUMBER, F.SERIES_NAME, SUM(D.UNREALIZED_APPRECIATION) AS Total_Derivative_Exposure

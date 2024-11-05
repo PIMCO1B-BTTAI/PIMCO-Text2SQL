@@ -65,6 +65,7 @@ def compare_csv(ground_truth_query: str, llm_query: str):
             #diff_cells = diff.count().sum()
             #difference_percentage = (diff_cells / total_cells) * 100
             #print(f"Mismatch found. Difference percentage: {difference_percentage:.2f}%")
+            print("Mismatch found.")
             return False
     except Exception as e:
         logger.error(f"Error comparing CSVs: {str(e)}")
