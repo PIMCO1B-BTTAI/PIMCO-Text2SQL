@@ -56,6 +56,7 @@ def load_schema_from_json(file_path: str) -> dict:
     
 # Path to your JSON schema files
 SCHEMA_FILE = 'chatgpt_api/nport_metadata.json'
+print(f"Expected schema path: {SCHEMA_FILE}")  # Add this line to see the path in logs
 
 try:
     db_schema = load_schema_from_json(SCHEMA_FILE)
