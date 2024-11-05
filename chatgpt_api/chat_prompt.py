@@ -670,7 +670,124 @@ Table: FWD_FOREIGNCUR_CONTRACT_SWAP
         The unrealized appreciation or depreciation of the contract, with depreciation reported as a negative number. 
 ```
 ```
+Table: NONFOREIGN_EXCHANGE_SWAP
+    - This table contains swap information (other than foreign exchange swaps).
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - SWAP_FLAG: 
+        An indicator of whether this is a custom or standard swap. This flag differentiates customized swaps from standardized market swaps.
+    - TERMINATION_DATE: 
+        The date on which the swap agreement ends, marking the maturity or close of the swap transaction.
+    - UPFRONT_PAYMENT: 
+        The amount paid upfront to initiate the swap. Upfront payments are often made for certain types of swaps as an initial commitment.
+    - PMNT_CURRENCY_CODE: 
+        The currency in which the upfront payment is made, represented by a currency code.
+    - UPFRONT_RECEIPT: 
+        Any amount received upfront in connection with the swap, recorded separately from the payment.
+    - RCPT_CURRENCY_CODE: 
+        The currency in which the upfront receipt is received.
+    - NOTIONAL_AMOUNT: 
+        The notional or face amount on which the swap payments are based, which represents the principal underlying the swap.
+    - CURRENCY_CODE: 
+        The currency in which the notional amount is denominated.
+    - UNREALIZED_APPRECIATION: 
+        The unrealized appreciation or depreciation of the swap's market value, reported as a positive or negative number, depending on gains or losses.
+    - FIXED_OR_FLOATING_RECEIPT: 
+        Indicates whether the swap involves a fixed, floating, or other type of receipt.
+    - FLOATING_RATE_INDEX_RECEIPT: 
+        The floating rate index used if the receipt is floating.
+    - FLOATING_RATE_SPREAD_RECEIPT: 
+        The spread added to the floating rate index to determine the interest rate for the receipt.
+    - CURRENCY_CODE_RECEIPT: 
+        The currency of the receipt, showing the denomination of payments received.
+    - AMOUNT_RECEIPT: 
+        The actual amount received in the swap transaction based on the terms.
+    - FIXED_OR_FLOATING_PAYMENT: 
+        Specifies if the payment under the swap is fixed, floating, or follows another type.
+    - FIXED_RATE_PAYMENT: 
+        The fixed rate applied to payments if the swap involves fixed payments.
+    - CURRENCY_CODE_PAYMENT: 
+        The currency of the payment, indicating the denomination.
+    - AMOUNT_PAYMENT: 
+        The payment amount calculated based on the swap terms, including any fixed or floating rates.
+```
+```
+Table: FLOATING_RATE_RESET_TENOR
+    - This table is for swaps, the terms of payments paid and received.
+    - HOLDING_ID (Dual Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - RATE_RESET_TENOR_ID (Dual Primary Key): 
+        A surrogate key that uniquely identifies each reset tenor entry within the swap.
+    - RECEIPT_OR_PAYMENT: 
+        This column specifies whether the entry is related to a receipt or payment under the swap. 
+        This distinction helps identify the direction of cash flows in the swap.
+    - RESET_DATE: 
+        The scheduled date for resetting the floating interest rate. This periodic reset adjusts the floating rate based on current market conditions.
+    - RESET_DATE_UNIT: 
+        Specifies the unit for the reset frequency, such as days or months, providing context for how often the rate adjusts.
+    - RATE_TENOR: 
+        The term or period used to calculate the interest rate for the reset. This term can influence the rate applied to each reset period.
+    - RATE_TENOR_UNIT: 
+        Specifies the unit for the rate tenor, such as days or months, indicating the length of the period over which the interest rate is calculated.
+```
+```
+Table: OTHER_DERIV
+    - This table contains information for other derivatives.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - OTHER_DESC: 
+        A brief description of the derivative instrument, explaining its nature if it does not fall under conventional categories.
+    - TERMINATION_DATE: 
+        The termination or maturity date of the derivative, marking the end of the contract.
+    - UNREALIZED_APPRECIATION: 
+        The unrealized appreciation or depreciation of the derivative, reflecting market value changes since the acquisition.
+```
+```
+Table: OTHER_DERIV_NOTIONAL_AMOUNT
+    - This table contains notional amount(s) for other derivatives.
+    - HOLDING_ID (Dual Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - OTHER_DERIV_NOTIONAL_AMOUNT_ID (Dual Primary Key): 
+        A surrogate key uniquely identifying each notional amount entry for “Other Derivative” instruments.
+    - NOTIONAL_AMOUNT: 
+        The face or notional amount of the derivative, serving as the reference amount for payment calculations.
+    - CURRENCY_CODE: 
+        The currency code representing the currency in which the notional amount is denominated.
+```
+```
+Table: SECURITIES_LENDING
+    - This table contains information for securities lending.
+    - HOLDING_ID (Primary Key):
+        This is a unique identifier for each holding in the schedule of portfolio investments, linking the derivative counterparty information to a specific holding.
+    - IS_CASH_COLLATERAL: 
+        A flag indicating whether cash collateral was received for the loaned securities. 
+        If set to “yes” (Y), cash was received; otherwise, another form of collateral was provided.
+    - IS_NON_CASH_COLLATERAL: 
+        A flag indicating whether any portion of the collateral received was non-cash, such as securities or other assets.
+    - IS_LOAN_BY_FUND: 
+        A flag indicating whether the fund itself is the lender of the securities. This shows if the fund is directly engaging in securities lending.
+```
+```
+Table: EXPLANATORY_NOTE
+    - This table contains any information provided by the fund in response to an item.
+    - ACCESSION_NUMBER (Dual Primary Key): 
+        This is a 20-character identifier that is unique to every document 
+        submitted to the SEC (Securities and Exchange Commission) through the EDGAR system. 
+        The first 10 digits represent the entity making the filing, 
+        followed by the filing year (24 for 2024), and the sequence of the filing.
+        This unique number allows users and regulators to track this specific report.
+    - EXPLANATORY_NOTE_ID (Dual Primary Key): 
+        This is a surrogate key that uniquely identifies each explanatory note entry within a single filing.
+    - ITEM_NO: 
+        This column indicates the specific item number from the filing form to which the explanatory note refers. 
+        Item numbers help pinpoint the section or data field that the note is clarifying or expanding upon, providing users with precise context.
+    - EXPLANATORY_NOTE: 
+        This is a text field that contains the actual explanatory note. It can include any remarks, descriptions, or additional information that 
+        the fund managers or preparers deem necessary for clarifying specific aspects of the filing. This could involve explanations about unusual transactions, 
+        assumptions used in valuations, or other notable details that impact how data in the filing should be interpreted.
+```
 """
+
 # Instructions for handling parts of the natural language query
 nlp_query_handling_instructions = """
 ```
