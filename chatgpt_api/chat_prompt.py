@@ -11,9 +11,10 @@ This involves parsing the intent of the query and understanding the structure of
 """
 
 # Detailed overview of the table to guide the model
-database_overview_instructions = f"""```
+database_overview_instructions = f"""
+```
 Database Overview:
-- The Database combines information from 29 tables of the NPORT dataset from quarter 4 of 2019 to quarter 3 of 2024.
+- The Database combines information from 30 tables of the NPORT dataset from quarter 4 of 2019 to quarter 3 of 2024.
 - The data includes a comprehensive view of fund-level information, holdings, debt securities, repurchase agreements, and derivative instruments.
 - Each relation represents detailed information about financial transactions, security holdings, and fund performance, including key identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
 - The table provides essential metrics like total assets, liabilities, interest rate risks, monthly returns, and details for securities lending and collateral.
