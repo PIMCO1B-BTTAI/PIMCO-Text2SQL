@@ -125,7 +125,7 @@ def generate_sql(question: str) -> str:
                 {
                     "role": "system",
                     "content": "You are a financial database assistant that generates SQL queries based on natural language questions about financial data."
-                },
+                },#add tools parameter and pass schema for reasoning
                 {"role": "user", "content": prompt}
             ]
         )

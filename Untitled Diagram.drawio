@@ -1,0 +1,61 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" version="24.8.4">
+  <diagram name="Page-1" id="y0CosYh0bD_pNOK0vMzz">
+    <mxGraphModel dx="1050" dy="1665" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-1" value="FUND_REPORTED_HOLDING_2024q3" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-440" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-3" value="FUND_REPORTED_HOLDING_2024q2" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-370" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-4" value="FUND_REPORTED_HOLDING_2024q1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-300" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-5" value="FUND_REPORTED_HOLDING_2023q4" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-230" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-6" value="FUND_REPORTED_HOLDING_2019q4" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-130" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-7" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="221" y="-136" as="sourcePoint" />
+            <mxPoint x="221" y="-166" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-11" value="FUND_REPORTED_HOLDING" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="-470" width="311" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-12" value="FUND_REPORTED_HOLDING_2024q3" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry x="20.5" y="45" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-13" value="FUND_REPORTED_HOLDING_2024q2" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry x="20.5" y="115" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-14" value="FUND_REPORTED_HOLDING_2024q1" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry x="20.5" y="185" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-15" value="FUND_REPORTED_HOLDING_2023q4" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry x="20.5" y="255" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-16" value="FUND_REPORTED_HOLDING_2019q4" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;" vertex="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry x="20.5" y="355" width="270" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-17" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;strokeColor=default;" edge="1" parent="kDdFvMixdT1-ljs2bHVH-11">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="161.5" y="349" as="sourcePoint" />
+            <mxPoint x="161.5" y="319" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-18" value="Initial Tables" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="-470" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kDdFvMixdT1-ljs2bHVH-19" value="Final table" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="-500" width="100" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
