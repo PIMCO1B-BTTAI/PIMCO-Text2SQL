@@ -1162,1331 +1162,2597 @@ Output only the SQLite's SQL query syntax, without blank padding on the left or 
 
 gpt_queries_easy = """
 ```
--- 1. What are the total net assets for all funds in our latest quarter?
-SELECT SERIES_NAME, NET_ASSETS 
-FROM FUND_REPORTED_INFO 
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+1. "Show me the top 5 largest funds by total assets"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC 
+LIMIT 5;
 
--- 2. Which funds have total assets exceeding $1 billion?
-SELECT f.SERIES_NAME, f.TOTAL_ASSETS
-FROM FUND_REPORTED_INFO f
-WHERE CAST(f.TOTAL_ASSETS AS DECIMAL) > 1000000000
-ORDER BY CAST(f.TOTAL_ASSETS AS DECIMAL) DESC;
+2. "Which registrants are based in New York?"
+SELECT 
+    REGISTRANT_NAME,
+    ADDRESS1,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'NY';
 
--- 3. Show me all holdings where fair value level is 3 (hardest to value)?
-SELECT ISSUER_NAME, ISSUER_TITLE, FAIR_VALUE_LEVEL, CURRENCY_VALUE
-FROM FUND_REPORTED_HOLDING
-WHERE FAIR_VALUE_LEVEL = '3'
-ORDER BY CAST(CURRENCY_VALUE AS DECIMAL) DESC;
+3. "List all funds with net assets over 1 billion dollars"
+SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(NET_ASSETS AS FLOAT) > 1000000000;
 
--- 4. What are our top 10 largest holdings by percentage?
-SELECT ISSUER_NAME, ISSUER_TITLE, PERCENTAGE
-FROM FUND_REPORTED_HOLDING
-ORDER BY CAST(PERCENTAGE AS DECIMAL) DESC
+4. "How many funds does each registrant have?"
+SELECT 
+    REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME) as Fund_Count
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    REGISTRANT_NAME;
+
+5. "What are the total assets of BlackRock funds?"
+SELECT 
+    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_BlackRock_Assets
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%BLACKROCK%';
+
+6. "List all funds with their registrant names"
+SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;
+
+7. "Which funds have the highest total liabilities?"
+SELECT 
+    SERIES_NAME,
+    TOTAL_LIABILITIES 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(TOTAL_LIABILITIES AS FLOAT) DESC 
 LIMIT 10;
 
--- 5. List all restricted securities in our portfolio
-SELECT ISSUER_NAME, ISSUER_TITLE, CURRENCY_VALUE
-FROM FUND_REPORTED_HOLDING
-WHERE IS_RESTRICTED_SECURITY = 'Y'
-ORDER BY CAST(CURRENCY_VALUE AS DECIMAL) DESC;
+8. "Show me all registrants in California"
+SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'CA';
 
--- 6. What's the monthly total return for each fund class in the latest quarter?
-SELECT m.CLASS_ID, m.MONTHLY_TOTAL_RETURN1, m.MONTHLY_TOTAL_RETURN2, m.MONTHLY_TOTAL_RETURN3
-FROM MONTHLY_TOTAL_RETURN m
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM MONTHLY_TOTAL_RETURN);
+9. "What's the latest filing date for each fund?"
+SELECT 
+    F.SERIES_NAME,
+    MAX(S.FILING_DATE) as Latest_Filing
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME;
 
--- 7. Show me all defaulted debt securities
-SELECT h.ISSUER_NAME, h.CURRENCY_VALUE, d.MATURITY_DATE
-FROM FUND_REPORTED_HOLDING h
-JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
-WHERE d.IS_DEFAULT = 'Y';
+10. "List all funds with negative net assets"
+SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(NET_ASSETS AS FLOAT) < 0;
 
--- 8. What's our exposure to different countries?
-SELECT INVESTMENT_COUNTRY, 
-       COUNT(*) as NUMBER_OF_HOLDINGS,
-       SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as TOTAL_VALUE
-FROM FUND_REPORTED_HOLDING
-GROUP BY INVESTMENT_COUNTRY
-ORDER BY TOTAL_VALUE DESC;
+11. "Show me the phone numbers of all Vanguard registrants"
+SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
 
--- 9. List all borrowers with aggregate value over $10 million
-SELECT NAME, AGGREGATE_VALUE
-FROM BORROWER
-WHERE CAST(AGGREGATE_VALUE AS DECIMAL) > 10000000
-ORDER BY CAST(AGGREGATE_VALUE AS DECIMAL) DESC;
+12. "Which funds have assets between 100M and 500M?"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;
 
--- 10. What's our credit spread exposure for investment grade bonds?
-SELECT SERIES_NAME,
-       CREDIT_SPREAD_3MON_INVEST,
-       CREDIT_SPREAD_1YR_INVEST,
-       CREDIT_SPREAD_5YR_INVEST
-FROM FUND_REPORTED_INFO
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+13. "List all registrants and their cities"
+SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    STATE 
+FROM 
+    REGISTRANT 
+ORDER BY 
+    STATE,
+    CITY;
 
--- 11. Show all repurchase agreements maturing in the next 30 days
-SELECT h.ISSUER_NAME, r.REPURCHASE_RATE, r.MATURITY_DATE
-FROM FUND_REPORTED_HOLDING h
-JOIN REPURCHASE_AGREEMENT r ON h.HOLDING_ID = r.HOLDING_ID
-WHERE DATE(r.MATURITY_DATE) <= DATE('now', '+30 days');
+14. "Show me the earliest filing date for each registrant"
+SELECT 
+    R.REGISTRANT_NAME,
+    MIN(S.FILING_DATE) as First_Filing
+FROM 
+    REGISTRANT R
+    JOIN SUBMISSION S 
+        ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;
 
--- 12. What's our total derivatives exposure by counterparty?
-SELECT dc.DERIVATIVE_COUNTERPARTY_NAME,
-       COUNT(*) as NUMBER_OF_CONTRACTS,
-       SUM(CAST(h.CURRENCY_VALUE AS DECIMAL)) as TOTAL_EXPOSURE
-FROM DERIVATIVE_COUNTERPARTY dc
-JOIN FUND_REPORTED_HOLDING h ON dc.HOLDING_ID = h.HOLDING_ID
-GROUP BY dc.DERIVATIVE_COUNTERPARTY_NAME
-ORDER BY TOTAL_EXPOSURE DESC;
+15. "Which funds have total assets equal to net assets?"
+SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS = NET_ASSETS;
 
--- 13. List all convertible securities with their conversion ratios
-SELECT h.ISSUER_NAME, c.CONVERSION_RATIO, c.CURRENCY_CODE
-FROM FUND_REPORTED_HOLDING h
-JOIN CONVERTIBLE_SECURITY_CURRENCY c ON h.HOLDING_ID = c.HOLDING_ID;
+16. "List all funds with 'Income' in their name"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';
 
--- 14. What are our total sales flows for the last three months?
-SELECT SERIES_NAME,
-       SALES_FLOW_MON1,
-       SALES_FLOW_MON2,
-       SALES_FLOW_MON3
-FROM FUND_REPORTED_INFO
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+17. "Show me all registrants in Texas with their CIK numbers"
+SELECT 
+    REGISTRANT_NAME,
+    CIK,
+    CITY 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'TX';
 
--- 15. Show me all holdings with fair value level 2 and value over $5 million
-SELECT ISSUER_NAME, ISSUER_TITLE, FAIR_VALUE_LEVEL, CURRENCY_VALUE
-FROM FUND_REPORTED_HOLDING
-WHERE FAIR_VALUE_LEVEL = '2'
-AND CAST(CURRENCY_VALUE AS DECIMAL) > 5000000;
+18. "Which funds have the highest liabilities to assets ratio?"
+SELECT 
+    SERIES_NAME,
+    CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) as Liability_Ratio
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    TOTAL_ASSETS != '0'
+ORDER BY 
+    Liability_Ratio DESC
+LIMIT 5;
 
--- 16. What's our interest rate risk exposure across different currencies?
-SELECT CURRENCY_CODE,
-       INTRST_RATE_CHANGE_3MON_DV01,
-       INTRST_RATE_CHANGE_1YR_DV01,
-       INTRST_RATE_CHANGE_5YR_DV01
-FROM INTEREST_RATE_RISK
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM INTEREST_RATE_RISK);
+19. "List all registrants with their fund count and total assets"
+SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME) as Fund_Count,
+    SUM(CAST(F.TOTAL_ASSETS AS FLOAT)) as Total_Assets
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;
 
--- 17. List all securities on loan with cash collateral
-SELECT h.ISSUER_NAME, h.CURRENCY_VALUE
-FROM FUND_REPORTED_HOLDING h
-JOIN SECURITIES_LENDING sl ON h.HOLDING_ID = sl.HOLDING_ID
-WHERE sl.IS_CASH_COLLATERAL = 'Y';
+20. "Show me all funds with 'Growth' in their name"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
 
--- 18. What's our total realized gains/losses for each asset category?
-SELECT ASSET_CAT,
-       SUM(CAST(NET_REALIZED_GAIN_MON1 AS DECIMAL)) as TOTAL_REALIZED_GAIN
-FROM MONTHLY_RETURN_CAT_INSTRUMENT
-GROUP BY ASSET_CAT
-ORDER BY TOTAL_REALIZED_GAIN DESC;
+21. "Which registrants are from Illinois?"
+SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    ADDRESS1 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'IL';
 
--- 19. Show all foreign currency forward contracts with unrealized appreciation
-SELECT h.ISSUER_NAME, f.CURRENCY_SOLD_AMOUNT, f.DESC_CURRENCY_SOLD,
-       f.CURRENCY_PURCHASED_AMOUNT, f.DESC_CURRENCY_PURCHASED,
-       f.UNREALIZED_APPRECIATION
-FROM FUND_REPORTED_HOLDING h
-JOIN FWD_FOREIGNCUR_CONTRACT_SWAP f ON h.HOLDING_ID = f.HOLDING_ID
-WHERE CAST(f.UNREALIZED_APPRECIATION AS DECIMAL) > 0;
-
--- 20. What are our top 10 largest debt security holdings?
-SELECT h.ISSUER_NAME, h.CURRENCY_VALUE, d.MATURITY_DATE, d.ANNUALIZED_RATE
-FROM FUND_REPORTED_HOLDING h
-JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
-ORDER BY CAST(h.CURRENCY_VALUE AS DECIMAL) DESC
+22. "List the top 10 funds by net assets"
+SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(NET_ASSETS AS FLOAT) DESC 
 LIMIT 10;
 
--- 21. List all holdings with explanatory notes
-SELECT h.ISSUER_NAME, e.ITEM_NO, e.EXPLANATORY_NOTE
-FROM FUND_REPORTED_HOLDING h
-JOIN EXPLANATORY_NOTE e ON h.ACCESSION_NUMBER = e.ACCESSION_NUMBER;
+23. "Show me all Fidelity funds"
+SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%FIDELITY%';
 
--- 22. What's our swap exposure by counterparty?
-SELECT dc.DERIVATIVE_COUNTERPARTY_NAME,
-       COUNT(*) as NUMBER_OF_SWAPS,
-       SUM(CAST(n.NOTIONAL_AMOUNT AS DECIMAL)) as TOTAL_NOTIONAL
-FROM NONFOREIGN_EXCHANGE_SWAP n
-JOIN DERIVATIVE_COUNTERPARTY dc ON n.HOLDING_ID = dc.HOLDING_ID
-GROUP BY dc.DERIVATIVE_COUNTERPARTY_NAME;
+24. "Which funds have zero liabilities?"
+SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_LIABILITIES = '0' 
+    OR TOTAL_LIABILITIES IS NULL;
 
--- 23. Show me all holdings with LEI identifiers
-SELECT ISSUER_NAME, ISSUER_LEI, CURRENCY_VALUE
-FROM FUND_REPORTED_HOLDING
-WHERE ISSUER_LEI IS NOT NULL;
+25. "List all registrants with their latest fund's assets"
+SELECT 
+    R.REGISTRANT_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;
 
--- 24. What's our total borrowing within 1 year vs after 1 year?
-SELECT SERIES_NAME,
-       BORROWING_PAY_WITHIN_1YR,
-       BORROWING_PAY_AFTER_1YR
-FROM FUND_REPORTED_INFO;
+26. "Show me all funds with 'International' in their name"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INTERNATIONAL%';
 
--- 25. List all triparty repurchase agreements
-SELECT h.ISSUER_NAME, r.REPURCHASE_RATE, r.MATURITY_DATE
-FROM FUND_REPORTED_HOLDING h
-JOIN REPURCHASE_AGREEMENT r ON h.HOLDING_ID = r.HOLDING_ID
-WHERE r.IS_TRIPARTY = 'Y';
+27. "Which registrants are from Massachusetts?"
+SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'MA';
 
--- 26. What's our asset allocation by category?
-SELECT ASSET_CAT,
-       COUNT(*) as NUMBER_OF_HOLDINGS,
-       SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as TOTAL_VALUE
-FROM FUND_REPORTED_HOLDING
-GROUP BY ASSET_CAT
-ORDER BY TOTAL_VALUE DESC;
+28. "List all funds with their submission dates"
+SELECT 
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER;
 
--- 27. Show all floating rate investments
-SELECT h.ISSUER_NAME, n.FLOATING_RATE_INDEX_RECEIPT, n.FLOATING_RATE_SPREAD_RECEIPT
-FROM FUND_REPORTED_HOLDING h
-JOIN NONFOREIGN_EXCHANGE_SWAP n ON h.HOLDING_ID = n.HOLDING_ID
-WHERE n.FIXED_OR_FLOATING_RECEIPT = 'Floating';
+29. "Show me the smallest 5 funds by total assets"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS IS NOT NULL
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) ASC 
+LIMIT 5;
 
--- 28. What's our exposure to different issuer types?
-SELECT ISSUER_TYPE,
-       COUNT(*) as NUMBER_OF_HOLDINGS,
-       SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as TOTAL_VALUE
-FROM FUND_REPORTED_HOLDING
-GROUP BY ISSUER_TYPE
-ORDER BY TOTAL_VALUE DESC;
+30. "Which registrants have multiple phone numbers?"
+SELECT 
+    REGISTRANT_NAME,
+    COUNT(DISTINCT PHONE) as Phone_Count
+FROM 
+    REGISTRANT
+GROUP BY 
+    REGISTRANT_NAME
+HAVING 
+    Phone_Count > 1;
 
--- 29. List all holdings with associated ISIN numbers
-SELECT h.ISSUER_NAME, i.IDENTIFIER_ISIN
-FROM FUND_REPORTED_HOLDING h
-JOIN IDENTIFIERS i ON h.HOLDING_ID = i.HOLDING_ID;
+31. "List all funds with 'Bond' in their name"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%BOND%';
 
--- 30. What's our total collateral received for securities lending?
-SELECT SUM(CAST(COLLATERAL_AMOUNT AS DECIMAL)) as TOTAL_COLLATERAL
-FROM REPURCHASE_COLLATERAL
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM REPURCHASE_COLLATERAL);
+32. "Show me all registrants from Florida"
+SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    ADDRESS1 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'FL';
 
--- 31. Show all options and their unrealized appreciation
-SELECT h.ISSUER_NAME, s.PUT_OR_CALL, s.WRITTEN_OR_PURCHASED,
-       s.EXERCISE_PRICE, s.UNREALIZED_APPRECIATION
-FROM FUND_REPORTED_HOLDING h
-JOIN SWAPTION_OPTION_WARNT_DERIV s ON h.HOLDING_ID = s.HOLDING_ID;
+33. "Which funds were filed in 2023?"
+SELECT 
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+WHERE 
+    S.FILING_DATE LIKE '2023%';
 
--- 32. What's our monthly redemption flow trend?
-SELECT SERIES_NAME,
-       REDEMPTION_FLOW_MON1,
-       REDEMPTION_FLOW_MON2,
-       REDEMPTION_FLOW_MON3
-FROM FUND_REPORTED_INFO
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+34. "List all funds with 'Index' in their name"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INDEX%';
 
--- 33. List all cleared derivative contracts
-SELECT h.ISSUER_NAME, r.CENTRAL_COUNTER_PARTY
-FROM FUND_REPORTED_HOLDING h
-JOIN REPURCHASE_AGREEMENT r ON h.HOLDING_ID = r.HOLDING_ID
-WHERE r.IS_CLEARED = 'Y';
+35. "Show me the registrants with the most recent filings"
+SELECT 
+    R.REGISTRANT_NAME,
+    MAX(S.FILING_DATE) as Latest_Filing
+FROM 
+    REGISTRANT R
+    JOIN SUBMISSION S 
+        ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    Latest_Filing DESC
+LIMIT 5;
 
--- 34. What's our exposure to different currencies?
-SELECT CURRENCY_CODE,
-       COUNT(*) as NUMBER_OF_HOLDINGS,
-       SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as TOTAL_VALUE
-FROM FUND_REPORTED_HOLDING
-GROUP BY CURRENCY_CODE
-ORDER BY TOTAL_VALUE DESC;
+36. "Which funds have 'ETF' in their name?"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%ETF%';
 
--- 35. Show all convertible securities that are mandatory convertible
-SELECT h.ISSUER_NAME, d.MATURITY_DATE
-FROM FUND_REPORTED_HOLDING h
-JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
-WHERE d.IS_CONVTIBLE_MANDATORY = 'Y';
+37. "List all registrants with their ZIP codes"
+SELECT 
+    REGISTRANT_NAME,
+    ZIP,
+    STATE 
+FROM 
+    REGISTRANT 
+ORDER BY 
+    ZIP;
 
--- 36. What's our total assets invested vs cash not reported?
-SELECT SERIES_NAME,
-       ASSETS_INVESTED,
-       CASH_NOT_RPTD_IN_C_OR_D
-FROM FUND_REPORTED_INFO
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+38. "Show me all funds from T. Rowe Price"
+SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%T ROWE%';
 
--- 37. List all index-based derivatives and their components
-SELECT h.ISSUER_NAME, d.INDEX_NAME, d.INDEX_IDENTIFIER
-FROM FUND_REPORTED_HOLDING h
-JOIN DESC_REF_INDEX_BASKET d ON h.HOLDING_ID = d.HOLDING_ID;
+39. "Which funds have assets over 10 billion?"
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) > 10000000000;
 
--- 38. What's our unrealized appreciation across different derivative types?
-SELECT h.ASSET_CAT,
-       SUM(CAST(o.UNREALIZED_APPRECIATION AS DECIMAL)) as TOTAL_UNREALIZED
-FROM FUND_REPORTED_HOLDING h
-JOIN OTHER_DERIV o ON h.HOLDING_ID = o.HOLDING_ID
-GROUP BY h.ASSET_CAT;
-
--- 39. Show all recent filings and their types
-SELECT ACCESSION_NUMBER, FILING_DATE, SUB_TYPE, REPORT_DATE
-FROM SUBMISSION
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM SUBMISSION)
-ORDER BY FILING_DATE DESC;
-
--- 40. What's our total liability breakdown?
-SELECT SERIES_NAME,
-       TOTAL_LIABILITIES,
-       BORROWING_PAY_WITHIN_1YR,
-       BORROWING_PAY_AFTER_1YR,
-       OTHER_PAY_WITHIN_1YR,
-       OTHER_PAY_AFTER_1YR
-FROM FUND_REPORTED_INFO
-WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO);
+40. "List all registrants with their country"
+SELECT 
+    REGISTRANT_NAME,
+    COUNTRY,
+    STATE 
+FROM 
+    REGISTRANT 
+ORDER BY 
+    COUNTRY,
+    STATE;
 ```
 """
 
 gpt_queries_medium = """
 ```
--- 1. What's the quarter-over-quarter change in net assets for each fund?
-WITH CurrentQuarter AS (
-    SELECT SERIES_NAME, NET_ASSETS, QUARTER
-    FROM FUND_REPORTED_INFO
-    WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
-),
-PreviousQuarter AS (
-    SELECT SERIES_NAME, NET_ASSETS, QUARTER
-    FROM FUND_REPORTED_INFO
-    WHERE QUARTER = (
-        SELECT QUARTER 
-        FROM FUND_REPORTED_INFO 
-        WHERE QUARTER < (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
-        ORDER BY QUARTER DESC
-        LIMIT 1
-    )
+1. "Can you show me which funds have had the biggest increase in total assets over the last quarter?"
+WITH AssetChanges AS (
+    SELECT 
+        F1.SERIES_NAME,
+        F1.TOTAL_ASSETS as Current_Assets,
+        F2.TOTAL_ASSETS as Previous_Assets
+    FROM 
+        FUND_REPORTED_INFO F1
+        JOIN SUBMISSION S1 
+            ON F1.ACCESSION_NUMBER = S1.ACCESSION_NUMBER
+        JOIN FUND_REPORTED_INFO F2 
+            ON F1.SERIES_NAME = F2.SERIES_NAME
+        JOIN SUBMISSION S2 
+            ON F2.ACCESSION_NUMBER = S2.ACCESSION_NUMBER
+    WHERE 
+        S1.QUARTER = '2023Q4'
+        AND S2.QUARTER = '2023Q3'
 )
 SELECT 
-    c.SERIES_NAME,
-    c.NET_ASSETS as current_assets,
-    p.NET_ASSETS as previous_assets,
-    (CAST(c.NET_ASSETS AS DECIMAL) - CAST(p.NET_ASSETS AS DECIMAL)) / 
-    CAST(p.NET_ASSETS AS DECIMAL) * 100 as percentage_change
-FROM CurrentQuarter c
-LEFT JOIN PreviousQuarter p ON c.SERIES_NAME = p.SERIES_NAME;
-
--- 2. Which holdings have increased their portfolio percentage the most over the last quarter?
-WITH CurrentHoldings AS (
-    SELECT ISSUER_NAME, PERCENTAGE, QUARTER
-    FROM FUND_REPORTED_HOLDING
-    WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-),
-PreviousHoldings AS (
-    SELECT ISSUER_NAME, PERCENTAGE, QUARTER
-    FROM FUND_REPORTED_HOLDING
-    WHERE QUARTER = (
-        SELECT QUARTER
-        FROM FUND_REPORTED_HOLDING
-        WHERE QUARTER < (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-        ORDER BY QUARTER DESC
-        LIMIT 1
-    )
-)
-SELECT 
-    c.ISSUER_NAME,
-    c.PERCENTAGE as current_percentage,
-    p.PERCENTAGE as previous_percentage,
-    CAST(c.PERCENTAGE AS DECIMAL) - CAST(p.PERCENTAGE AS DECIMAL) as percentage_change
-FROM CurrentHoldings c
-LEFT JOIN PreviousHoldings p ON c.ISSUER_NAME = p.ISSUER_NAME
-WHERE p.PERCENTAGE IS NOT NULL
-ORDER BY percentage_change DESC
+    SERIES_NAME,
+    CAST(Current_Assets AS FLOAT) - CAST(Previous_Assets AS FLOAT) as Asset_Growth
+FROM 
+    AssetChanges
+ORDER BY 
+    Asset_Growth DESC
 LIMIT 10;
 
--- 3. Calculate the weighted average credit spread across all investment grade holdings
-WITH SpreadData AS (
+2. "I'm looking for any funds with 'sustainable' or 'ESG' in their name - what's their total AUM?"
+WITH ESGFunds AS (
     SELECT 
         SERIES_NAME,
-        CAST(CREDIT_SPREAD_3MON_INVEST AS DECIMAL) as spread_3m,
-        CAST(CREDIT_SPREAD_1YR_INVEST AS DECIMAL) as spread_1y,
-        CAST(CREDIT_SPREAD_5YR_INVEST AS DECIMAL) as spread_5y,
-        CAST(TOTAL_ASSETS AS DECIMAL) as assets
-    FROM FUND_REPORTED_INFO
-    WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
+        TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        SERIES_NAME LIKE '%SUSTAINABLE%'
+        OR SERIES_NAME LIKE '%ESG%'
 )
 SELECT 
-    SUM(spread_3m * assets) / SUM(assets) as weighted_spread_3m,
-    SUM(spread_1y * assets) / SUM(assets) as weighted_spread_1y,
-    SUM(spread_5y * assets) / SUM(assets) as weighted_spread_5y
-FROM SpreadData;
+    COUNT(*) as Number_of_ESG_Funds,
+    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_ESG_Assets
+FROM 
+    ESGFunds;
 
--- 4. Find holdings with unusual fair value level changes
-WITH FairValueChanges AS (
+3. "Could you check which states have the most fund registrants? Top 5 would be great."
+WITH StateRegistrants AS (
     SELECT 
-        h1.ISSUER_NAME,
-        h1.FAIR_VALUE_LEVEL as current_level,
-        h2.FAIR_VALUE_LEVEL as previous_level,
-        h1.CURRENCY_VALUE as current_value
-    FROM FUND_REPORTED_HOLDING h1
-    LEFT JOIN FUND_REPORTED_HOLDING h2 ON 
-        h1.ISSUER_NAME = h2.ISSUER_NAME AND
-        h2.QUARTER = (
-            SELECT QUARTER
-            FROM FUND_REPORTED_HOLDING
-            WHERE QUARTER < (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-            ORDER BY QUARTER DESC
-            LIMIT 1
-        )
-    WHERE h1.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT *
-FROM FairValueChanges
-WHERE current_level != previous_level
-ORDER BY CAST(current_value AS DECIMAL) DESC;
-
--- 5. Calculate the duration-weighted exposure to interest rate changes
-WITH DurationExposure AS (
-    SELECT 
-        ir.CURRENCY_CODE,
-        CAST(ir.INTRST_RATE_CHANGE_3MON_DV01 AS DECIMAL) as dur_3m,
-        CAST(ir.INTRST_RATE_CHANGE_1YR_DV01 AS DECIMAL) as dur_1y,
-        CAST(ir.INTRST_RATE_CHANGE_5YR_DV01 AS DECIMAL) as dur_5y,
-        CAST(f.TOTAL_ASSETS AS DECIMAL) as assets
-    FROM INTEREST_RATE_RISK ir
-    JOIN FUND_REPORTED_INFO f ON ir.ACCESSION_NUMBER = f.ACCESSION_NUMBER
-    WHERE ir.QUARTER = (SELECT MAX(QUARTER) FROM INTEREST_RATE_RISK)
+        STATE,
+        COUNT(DISTINCT REGISTRANT_NAME) as Registrant_Count,
+        COUNT(DISTINCT F.SERIES_NAME) as Fund_Count
+    FROM 
+        REGISTRANT R
+        LEFT JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE 
+        STATE IS NOT NULL
+    GROUP BY 
+        STATE
 )
 SELECT 
-    CURRENCY_CODE,
-    SUM(dur_3m * assets) / SUM(assets) as weighted_dur_3m,
-    SUM(dur_1y * assets) / SUM(assets) as weighted_dur_1y,
-    SUM(dur_5y * assets) / SUM(assets) as weighted_dur_5y
-FROM DurationExposure
-GROUP BY CURRENCY_CODE;
+    STATE,
+    Registrant_Count,
+    Fund_Count
+FROM 
+    StateRegistrants
+ORDER BY 
+    Registrant_Count DESC
+LIMIT 5;
 
--- 6. Analyze the correlation between fund size and monthly returns
-WITH FundMetrics AS (
+4. "I need to find any funds that have more liabilities than assets - bit concerning if there are any!"
+WITH FundHealth AS (
     SELECT 
-        f.SERIES_NAME,
-        CAST(f.TOTAL_ASSETS AS DECIMAL) as assets,
-        CAST(m.MONTHLY_TOTAL_RETURN1 AS DECIMAL) as return_1,
-        CAST(m.MONTHLY_TOTAL_RETURN2 AS DECIMAL) as return_2,
-        CAST(m.MONTHLY_TOTAL_RETURN3 AS DECIMAL) as return_3
-    FROM FUND_REPORTED_INFO f
-    JOIN MONTHLY_TOTAL_RETURN m ON f.ACCESSION_NUMBER = m.ACCESSION_NUMBER
-    WHERE f.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
+        SERIES_NAME,
+        CAST(TOTAL_ASSETS AS FLOAT) as Assets,
+        CAST(TOTAL_LIABILITIES AS FLOAT) as Liabilities,
+        CAST(TOTAL_LIABILITIES AS FLOAT) / NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0) as Liability_Ratio
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        TOTAL_ASSETS IS NOT NULL 
+        AND TOTAL_LIABILITIES IS NOT NULL
 )
 SELECT 
     SERIES_NAME,
-    assets,
-    (return_1 + return_2 + return_3) / 3 as avg_monthly_return
-FROM FundMetrics
-ORDER BY assets DESC;
+    Assets,
+    Liabilities,
+    Liability_Ratio
+FROM 
+    FundHealth
+WHERE 
+    Liabilities > Assets
+ORDER BY 
+    Liability_Ratio DESC;
 
--- 7. Calculate concentration risk by identifying issuers with multiple holdings
-WITH IssuerExposure AS (
+5. Find out which investment firms manage the most diverse portfolio of fund types?"
+WITH FundTypes AS (
     SELECT 
-        ISSUER_NAME,
-        COUNT(*) as number_of_holdings,
-        SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as total_exposure,
-        STRING_AGG(ASSET_CAT, ', ') as asset_categories
-    FROM FUND_REPORTED_HOLDING
-    WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    GROUP BY ISSUER_NAME
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'BOND'
+                WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'EQUITY'
+                WHEN F.SERIES_NAME LIKE '%MONEY MARKET%' THEN 'MONEY MARKET'
+                WHEN F.SERIES_NAME LIKE '%INDEX%' THEN 'INDEX'
+                WHEN F.SERIES_NAME LIKE '%ETF%' THEN 'ETF'
+                ELSE 'OTHER'
+            END
+        ) as Fund_Type_Count
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME
 )
-SELECT *
-FROM IssuerExposure
-WHERE number_of_holdings > 1
-ORDER BY total_exposure DESC;
+SELECT 
+    REGISTRANT_NAME,
+    Fund_Type_Count
+FROM 
+    FundTypes
+WHERE 
+    Fund_Type_Count > 2
+ORDER BY 
+    Fund_Type_Count DESC
+LIMIT 10;
 
--- 8. Analyze derivative counterparty risk across different instrument types
+6. "I need to check which funds might be too concentrated - find ones where a single holding is more than 10% of their portfolio?"
+WITH HoldingConcentration AS (
+    SELECT 
+        F.SERIES_NAME,
+        H.ISSUER_NAME,
+        H.PERCENTAGE,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        CAST(H.PERCENTAGE AS FLOAT) > 10.0
+)
+SELECT 
+    SERIES_NAME,
+    ISSUER_NAME,
+    PERCENTAGE,
+    TOTAL_ASSETS
+FROM 
+    HoldingConcentration
+ORDER BY 
+    CAST(PERCENTAGE AS FLOAT) DESC;
+
+7. "Compare how our bond funds performed against equity funds in the last month"
+WITH FundReturns AS (
+    SELECT 
+        F.SERIES_NAME,
+        CASE 
+            WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'Bond'
+            WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'Equity'
+        END as Fund_Type,
+        M.MONTHLY_TOTAL_RETURN1
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%EQUITY%'
+)
+SELECT 
+    Fund_Type,
+    AVG(CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return,
+    COUNT(*) as Fund_Count
+FROM 
+    FundReturns
+GROUP BY 
+    Fund_Type;
+
+8. "Which investment firms seem to be growing the fastest based on their asset growth?"
+WITH AssetGrowth AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        SUM(CAST(F.TOTAL_ASSETS AS FLOAT)) as Current_Assets,
+        LAG(SUM(CAST(F.TOTAL_ASSETS AS FLOAT))) OVER (
+            PARTITION BY R.REGISTRANT_NAME 
+            ORDER BY S.FILING_DATE
+        ) as Previous_Assets,
+        S.FILING_DATE
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        JOIN SUBMISSION S 
+            ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME,
+        S.FILING_DATE
+)
+SELECT 
+    REGISTRANT_NAME,
+    ((Current_Assets - Previous_Assets) / Previous_Assets * 100) as Growth_Percentage
+FROM 
+    AssetGrowth
+WHERE 
+    Previous_Assets IS NOT NULL
+    AND Previous_Assets > 0
+ORDER BY 
+    Growth_Percentage DESC
+LIMIT 10;
+
+9. "Find any funds that seem to be taking on more risk lately? Look at their borrowing trends."
+WITH BorrowingTrends AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        F.BORROWING_PAY_WITHIN_1YR,
+        F.BORROWING_PAY_AFTER_1YR,
+        CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Short_Term_Borrow_Ratio,
+        CAST(F.BORROWING_PAY_AFTER_1YR AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Long_Term_Borrow_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+)
+SELECT 
+    SERIES_NAME,
+    Short_Term_Borrow_Ratio,
+    Long_Term_Borrow_Ratio,
+    Short_Term_Borrow_Ratio + Long_Term_Borrow_Ratio as Total_Borrow_Ratio
+FROM 
+    BorrowingTrends
+WHERE 
+    Short_Term_Borrow_Ratio + Long_Term_Borrow_Ratio > 10
+ORDER BY 
+    Total_Borrow_Ratio DESC;
+
+10. "Check which investment firms have the most diverse geographic exposure in their holdings"
+WITH GeographicDiversity AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT H.INVESTMENT_COUNTRY) as Country_Count,
+        COUNT(DISTINCT H.HOLDING_ID) as Total_Holdings
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.INVESTMENT_COUNTRY IS NOT NULL
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Country_Count,
+    Total_Holdings,
+    ROUND(CAST(Country_Count AS FLOAT) / CAST(Total_Holdings AS FLOAT) * 100, 2) as Diversity_Score
+FROM 
+    GeographicDiversity
+WHERE 
+    Total_Holdings > 10
+ORDER BY 
+    Country_Count DESC
+LIMIT 10;
+
+11. "Could you check which funds have significantly changed their cash positions in the last quarter?"
+WITH CashTrends AS (
+    SELECT 
+        F.SERIES_NAME,
+        S.QUARTER,
+        F.CASH_NOT_RPTD_IN_C_OR_D,
+        F.TOTAL_ASSETS,
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Cash_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+)
+SELECT 
+    ct1.SERIES_NAME,
+    ct1.Cash_Ratio as Current_Cash_Ratio,
+    ct2.Cash_Ratio as Previous_Cash_Ratio,
+    ct1.Cash_Ratio - ct2.Cash_Ratio as Change_In_Cash_Ratio
+FROM 
+    CashTrends ct1
+    JOIN CashTrends ct2 
+        ON ct1.SERIES_NAME = ct2.SERIES_NAME
+        AND ct1.QUARTER > ct2.QUARTER
+WHERE 
+    ABS(ct1.Cash_Ratio - ct2.Cash_Ratio) > 5
+ORDER BY 
+    ABS(ct1.Cash_Ratio - ct2.Cash_Ratio) DESC;
+
+12. "Find which investment styles are performing best this quarter? Like growth vs value funds?"
+WITH StylePerformance AS (
+    SELECT 
+        CASE 
+            WHEN F.SERIES_NAME LIKE '%GROWTH%' THEN 'Growth'
+            WHEN F.SERIES_NAME LIKE '%VALUE%' THEN 'Value'
+            WHEN F.SERIES_NAME LIKE '%BLEND%' THEN 'Blend'
+            ELSE 'Other'
+        END as Investment_Style,
+        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Monthly_Return,
+        COUNT(*) as Fund_Count
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    GROUP BY 
+        CASE 
+            WHEN F.SERIES_NAME LIKE '%GROWTH%' THEN 'Growth'
+            WHEN F.SERIES_NAME LIKE '%VALUE%' THEN 'Value'
+            WHEN F.SERIES_NAME LIKE '%BLEND%' THEN 'Blend'
+            ELSE 'Other'
+        END
+)
+SELECT 
+    Investment_Style,
+    Avg_Monthly_Return,
+    Fund_Count
+FROM 
+    StylePerformance
+WHERE 
+    Investment_Style != 'Other'
+ORDER BY 
+    Avg_Monthly_Return DESC;
+
+13. "Find me funds that might be too exposed to interest rate changes - check their duration risk"
+WITH InterestRateExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        IR.INTRST_RATE_CHANGE_30YR_DV01,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN INTEREST_RATE_RISK IR 
+            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+    WHERE 
+        IR.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as Ten_Year_Risk,
+    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Thirty_Year_Risk
+FROM 
+    InterestRateExposure
+WHERE 
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 1.0
+    OR CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 1.0
+ORDER BY 
+    Ten_Year_Risk DESC;
+
+14. "I need to find funds with strong and consistent returns over all three months"
+WITH ConsistentPerformers AS (
+    SELECT 
+        F.SERIES_NAME,
+        M.MONTHLY_TOTAL_RETURN1,
+        M.MONTHLY_TOTAL_RETURN2,
+        M.MONTHLY_TOTAL_RETURN3,
+        (CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) + 
+         CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
+         CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 3 as Avg_Return
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        M.MONTHLY_TOTAL_RETURN1 IS NOT NULL
+        AND M.MONTHLY_TOTAL_RETURN2 IS NOT NULL
+        AND M.MONTHLY_TOTAL_RETURN3 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    MONTHLY_TOTAL_RETURN1,
+    MONTHLY_TOTAL_RETURN2,
+    MONTHLY_TOTAL_RETURN3,
+    Avg_Return
+FROM 
+    ConsistentPerformers
+WHERE 
+    CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT) > 0
+    AND CAST(MONTHLY_TOTAL_RETURN2 AS FLOAT) > 0
+    AND CAST(MONTHLY_TOTAL_RETURN3 AS FLOAT) > 0
+ORDER BY 
+    Avg_Return DESC
+LIMIT 10;
+
+15. "Which funds have the most foreign currency exposure? Especially interested in emerging markets"
+WITH CurrencyExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT H.CURRENCY_CODE) as Currency_Count,
+        SUM(CASE 
+            WHEN H.CURRENCY_CODE NOT IN ('USD', 'EUR', 'GBP', 'JPY', 'CHF') 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Emerging_Market_Exposure
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.CURRENCY_CODE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Currency_Count,
+    Emerging_Market_Exposure
+FROM 
+    CurrencyExposure
+WHERE 
+    Currency_Count > 3
+ORDER BY 
+    Emerging_Market_Exposure DESC
+LIMIT 15;
+
+16. "Show me which asset categories had the best returns last month?"
+WITH CategoryReturns AS (
+    SELECT 
+        H.ASSET_CAT,
+        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return,
+        COUNT(DISTINCT F.SERIES_NAME) as Fund_Count
+    FROM 
+        FUND_REPORTED_HOLDING H
+        JOIN FUND_REPORTED_INFO F 
+            ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        H.ASSET_CAT IS NOT NULL
+    GROUP BY 
+        H.ASSET_CAT
+)
+SELECT 
+    ASSET_CAT,
+    Avg_Return,
+    Fund_Count
+FROM 
+    CategoryReturns
+WHERE 
+    Fund_Count > 5
+ORDER BY 
+    Avg_Return DESC;
+
+17. "Find me funds that might be taking on too much credit risk - look at their non-investment grade holdings"
+WITH CreditRiskExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        SUM(CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)) as NonInvest_Exposure,
+        SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) as Invest_Exposure,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    NonInvest_Exposure / NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0) * 100 as NonInvest_Percentage
+FROM 
+    CreditRiskExposure
+WHERE 
+    NonInvest_Exposure > Invest_Exposure
+ORDER BY 
+    NonInvest_Percentage DESC;
+
+18. "Which registrants have the most diverse mix of fund types in their lineup?"
+WITH FundTypes AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'BOND'
+                WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'EQUITY'
+                WHEN F.SERIES_NAME LIKE '%ETF%' THEN 'ETF'
+                WHEN F.SERIES_NAME LIKE '%INDEX%' THEN 'INDEX'
+                WHEN F.SERIES_NAME LIKE '%MONEY MARKET%' THEN 'MONEY MARKET'
+                WHEN F.SERIES_NAME LIKE '%BALANCED%' THEN 'BALANCED'
+                ELSE 'OTHER'
+            END
+        ) as Fund_Type_Count,
+        COUNT(*) as Total_Funds
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Fund_Type_Count,
+    Total_Funds,
+    (Fund_Type_Count * 100.0 / Total_Funds) as Diversity_Score
+FROM 
+    FundTypes
+WHERE 
+    Total_Funds >= 5
+ORDER BY 
+    Fund_Type_Count DESC, Total_Funds DESC;
+
+19. "Could you identify funds that might be style drifting? Check their recent holdings changes"
+WITH HoldingChanges AS (
+    SELECT 
+        F.SERIES_NAME,
+        S.QUARTER,
+        COUNT(CASE WHEN H.ASSET_CAT LIKE '%EQUITY%' THEN 1 END) * 100.0 / COUNT(*) as Equity_Percentage,
+        COUNT(CASE WHEN H.ASSET_CAT LIKE '%DEBT%' THEN 1 END) * 100.0 / COUNT(*) as Debt_Percentage
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN SUBMISSION S 
+            ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME,
+        S.QUARTER
+)
+SELECT 
+    h1.SERIES_NAME,
+    h1.Equity_Percentage - h2.Equity_Percentage as Equity_Change,
+    h1.Debt_Percentage - h2.Debt_Percentage as Debt_Change
+FROM 
+    HoldingChanges h1
+    JOIN HoldingChanges h2 
+        ON h1.SERIES_NAME = h2.SERIES_NAME
+        AND h1.QUARTER > h2.QUARTER
+WHERE 
+    ABS(h1.Equity_Percentage - h2.Equity_Percentage) > 10
+    OR ABS(h1.Debt_Percentage - h2.Debt_Percentage) > 10
+ORDER BY 
+    ABS(h1.Equity_Percentage - h2.Equity_Percentage) DESC;
+
+20. "Show me the funds with the highest quality fixed income portfolios"
+WITH BondQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        F.CREDIT_SPREAD_10YR_INVEST,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
+        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
+               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+)
+SELECT 
+    SERIES_NAME,
+    Investment_Grade_Ratio,
+    TOTAL_ASSETS
+FROM 
+    BondQuality
+WHERE 
+    Investment_Grade_Ratio > 80
+ORDER BY 
+    Investment_Grade_Ratio DESC
+LIMIT 15;
+
+21. "How have the largest funds performed compared to smaller ones this quarter?"
+WITH FundSizePerformance AS (
+    SELECT 
+        F.SERIES_NAME,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Assets,
+        CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) as Latest_Return,
+        NTILE(4) OVER (ORDER BY CAST(F.TOTAL_ASSETS AS FLOAT)) as Size_Quartile
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        F.TOTAL_ASSETS IS NOT NULL
+        AND M.MONTHLY_TOTAL_RETURN1 IS NOT NULL
+)
+SELECT 
+    Size_Quartile,
+    AVG(Latest_Return) as Avg_Return,
+    COUNT(*) as Fund_Count,
+    AVG(Assets) as Avg_Assets
+FROM 
+    FundSizePerformance
+GROUP BY 
+    Size_Quartile
+ORDER BY 
+    Size_Quartile;
+
+22. "Looking for funds that might have liquidity issues - check their cash versus short-term obligations"
+WITH LiquidityAnalysis AS (
+    SELECT 
+        F.SERIES_NAME,
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
+        CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) as Short_Term_Obligations,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio,
+    Cash / Total_Assets * 100 as Cash_Percentage
+FROM 
+    LiquidityAnalysis
+WHERE 
+    Short_Term_Obligations > 0
+ORDER BY 
+    Cash_Coverage_Ratio ASC
+LIMIT 15;
+
+23. "Which investment companies are most exposed to international markets?"
+WITH InternationalExposure AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(CASE WHEN H.INVESTMENT_COUNTRY != 'US' THEN 1 END) as International_Holdings,
+        COUNT(*) as Total_Holdings,
+        SUM(CASE WHEN H.INVESTMENT_COUNTRY != 'US' 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) ELSE 0 END) as International_Value
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    International_Holdings * 100.0 / NULLIF(Total_Holdings, 0) as International_Percentage,
+    International_Value
+FROM 
+    InternationalExposure
+WHERE 
+    Total_Holdings > 10
+ORDER BY 
+    International_Percentage DESC
+LIMIT 10;
+
+24. "Locate funds that have dramatically changed their asset mix recently?"
+WITH AssetMixChange AS (
+    SELECT 
+        F.SERIES_NAME,
+        S.QUARTER,
+        SUM(CASE WHEN H.ASSET_CAT LIKE '%EQUITY%' 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) ELSE 0 END) / 
+            NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Equity_Percentage
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN SUBMISSION S 
+            ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME,
+        S.QUARTER,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    a1.SERIES_NAME,
+    a1.Equity_Percentage as Current_Equity_Pct,
+    a2.Equity_Percentage as Previous_Equity_Pct,
+    a1.Equity_Percentage - a2.Equity_Percentage as Equity_Change
+FROM 
+    AssetMixChange a1
+    JOIN AssetMixChange a2 
+        ON a1.SERIES_NAME = a2.SERIES_NAME 
+        AND a1.QUARTER > a2.QUARTER
+WHERE 
+    ABS(a1.Equity_Percentage - a2.Equity_Percentage) > 15
+ORDER BY 
+    ABS(a1.Equity_Percentage - a2.Equity_Percentage) DESC;
+
+25. "Find the funds with the most consistent monthly returns - looking for low volatility"
+WITH ReturnVolatility AS (
+    SELECT 
+        F.SERIES_NAME,
+        CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) as Return1,
+        CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) as Return2,
+        CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT) as Return3,
+        STDDEV(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) OVER (
+            PARTITION BY F.SERIES_NAME
+        ) as Return_StdDev
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        M.MONTHLY_TOTAL_RETURN1 IS NOT NULL 
+        AND M.MONTHLY_TOTAL_RETURN2 IS NOT NULL 
+        AND M.MONTHLY_TOTAL_RETURN3 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Return_StdDev,
+    (Return1 + Return2 + Return3) / 3 as Avg_Return
+FROM 
+    ReturnVolatility
+WHERE 
+    Return_StdDev IS NOT NULL
+ORDER BY 
+    Return_StdDev ASC
+LIMIT 15;
+
+26. "Show me which funds are heavily invested in derivative instruments"
+WITH DerivativeExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT OD.HOLDING_ID) as Derivative_Count,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Derivative_Value,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN OTHER_DERIV OD 
+            ON H.HOLDING_ID = OD.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    Derivative_Count,
+    (Derivative_Value / Total_Assets * 100) as Derivative_Percentage
+FROM 
+    DerivativeExposure
+WHERE 
+    Total_Assets > 0
+ORDER BY 
+    Derivative_Percentage DESC
+LIMIT 10;
+
+27. "Help me find funds that might be too concentrated in specific sectors"
+WITH SectorConcentration AS (
+    SELECT 
+        F.SERIES_NAME,
+        H.ASSET_CAT,
+        COUNT(*) as Holdings_Count,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Sector_Value,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.ASSET_CAT IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        H.ASSET_CAT,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    ASSET_CAT,
+    (Sector_Value / Total_Assets * 100) as Sector_Percentage
+FROM 
+    SectorConcentration
+WHERE 
+    (Sector_Value / Total_Assets * 100) > 30
+ORDER BY 
+    Sector_Percentage DESC;
+
+28. "Which funds seem to be shifting towards safer assets lately?"
+WITH AssetSafetyTrend AS (
+    SELECT 
+        F.SERIES_NAME,
+        S.QUARTER,
+        SUM(CASE 
+            WHEN H.ASSET_CAT IN ('GOVT', 'TREASURY', 'CASH') 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Safe_Asset_Percentage
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN SUBMISSION S 
+            ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME,
+        S.QUARTER,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    a1.SERIES_NAME,
+    a1.Safe_Asset_Percentage as Current_Safe_Pct,
+    a2.Safe_Asset_Percentage as Previous_Safe_Pct,
+    a1.Safe_Asset_Percentage - a2.Safe_Asset_Percentage as Safety_Shift
+FROM 
+    AssetSafetyTrend a1
+    JOIN AssetSafetyTrend a2 
+        ON a1.SERIES_NAME = a2.SERIES_NAME
+        AND a1.QUARTER > a2.QUARTER
+WHERE 
+    a1.Safe_Asset_Percentage - a2.Safe_Asset_Percentage > 10
+ORDER BY 
+    Safety_Shift DESC;
+
+29. "Find funds with the highest quality fixed-income holdings"
+WITH FixedIncomeQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) as Investment_Grade_Exposure,
+        SUM(CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)) as NonInvestment_Grade_Exposure,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    (Investment_Grade_Exposure / NULLIF(Investment_Grade_Exposure + NonInvestment_Grade_Exposure, 0) * 100) as Quality_Score
+FROM 
+    FixedIncomeQuality
+WHERE 
+    Investment_Grade_Exposure + NonInvestment_Grade_Exposure > 0
+ORDER BY 
+    Quality_Score DESC
+LIMIT 15;
+
+30. "Which funds are taking on the most interest rate risk?"
+WITH InterestRateRisk AS (
+    SELECT 
+        F.SERIES_NAME,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        IR.INTRST_RATE_CHANGE_30YR_DV01,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN INTEREST_RATE_RISK IR 
+            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+    WHERE 
+        IR.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
+        OR IR.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as Ten_Year_Risk,
+    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Thirty_Year_Risk,
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) + CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Total_Risk
+FROM 
+    InterestRateRisk
+ORDER BY 
+    Total_Risk DESC
+LIMIT 10;
+
+31. "Identify funds with high portfolio turnover based on their trading activity?"
+WITH TradingActivity AS (
+    SELECT 
+        F.SERIES_NAME,
+        SUM(CAST(F.SALES_FLOW_MON1 AS FLOAT) + 
+            CAST(F.SALES_FLOW_MON2 AS FLOAT) + 
+            CAST(F.SALES_FLOW_MON3 AS FLOAT)) as Total_Sales,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Assets
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SALES_FLOW_MON1 IS NOT NULL 
+        AND F.SALES_FLOW_MON2 IS NOT NULL 
+        AND F.SALES_FLOW_MON3 IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    (Total_Sales / NULLIF(Assets, 0)) * 100 as Turnover_Rate
+FROM 
+    TradingActivity
+WHERE 
+    Assets > 0
+ORDER BY 
+    Turnover_Rate DESC
+LIMIT 15;
+
+32. "Which funds have the best risk-adjusted returns? Look at return consistency and magnitude."
+WITH RiskAdjusted AS (
+    SELECT 
+        F.SERIES_NAME,
+        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return,
+        STDDEV(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Return_StdDev,
+        COUNT(*) as Months_Reported
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME
+    HAVING 
+        COUNT(*) >= 3
+)
+SELECT 
+    SERIES_NAME,
+    Avg_Return,
+    Return_StdDev,
+    CASE 
+        WHEN Return_StdDev = 0 THEN NULL 
+        ELSE Avg_Return / Return_StdDev 
+    END as Sharpe_Ratio
+FROM 
+    RiskAdjusted
+WHERE 
+    Return_StdDev > 0
+ORDER BY 
+    Sharpe_Ratio DESC
+LIMIT 10;
+
+33. "Show me funds with heavy geographic concentration in emerging markets"
+WITH GeographicConcentration AS (
+    SELECT 
+        F.SERIES_NAME,
+        H.INVESTMENT_COUNTRY,
+        COUNT(*) as Holdings_Count,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Country_Value,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.INVESTMENT_COUNTRY NOT IN ('US', 'GB', 'FR', 'DE', 'JP', 'CA')
+        AND H.INVESTMENT_COUNTRY IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        H.INVESTMENT_COUNTRY,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    INVESTMENT_COUNTRY,
+    (Country_Value / Total_Assets * 100) as Country_Percentage
+FROM 
+    GeographicConcentration
+WHERE 
+    (Country_Value / Total_Assets * 100) > 15
+ORDER BY 
+    Country_Percentage DESC;
+
+34. "Help me find funds that look like they're changing their investment strategy"
+WITH StrategyShift AS (
+    SELECT 
+        F.SERIES_NAME,
+        S.QUARTER,
+        SUM(CASE 
+            WHEN H.ASSET_CAT LIKE '%EQUITY%' THEN CAST(H.CURRENCY_VALUE AS FLOAT)
+            ELSE 0 
+        END) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Equity_Pct,
+        SUM(CASE 
+            WHEN H.ASSET_CAT LIKE '%DEBT%' THEN CAST(H.CURRENCY_VALUE AS FLOAT)
+            ELSE 0 
+        END) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Debt_Pct
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN SUBMISSION S 
+            ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME,
+        S.QUARTER,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    s1.SERIES_NAME,
+    s1.Equity_Pct - s2.Equity_Pct as Equity_Shift,
+    s1.Debt_Pct - s2.Debt_Pct as Debt_Shift
+FROM 
+    StrategyShift s1
+    JOIN StrategyShift s2 
+        ON s1.SERIES_NAME = s2.SERIES_NAME
+        AND s1.QUARTER > s2.QUARTER
+WHERE 
+    ABS(s1.Equity_Pct - s2.Equity_Pct) > 10
+    OR ABS(s1.Debt_Pct - s2.Debt_Pct) > 10
+ORDER BY 
+    ABS(s1.Equity_Pct - s2.Equity_Pct) + ABS(s1.Debt_Pct - s2.Debt_Pct) DESC;
+
+35. "Let's see which fund families are most active in securities lending"
+WITH LendingActivity AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT F.SERIES_NAME) as Total_Funds,
+        COUNT(DISTINCT CASE 
+            WHEN SL.IS_LOAN_BY_FUND = 'Y' 
+            THEN F.SERIES_NAME 
+        END) as Lending_Funds
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING SL 
+            ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Lending_Funds,
+    Total_Funds,
+    (Lending_Funds * 100.0 / Total_Funds) as Lending_Percentage
+FROM 
+    LendingActivity
+WHERE 
+    Total_Funds >= 5
+ORDER BY 
+    Lending_Percentage DESC
+LIMIT 15;
+
+36. "Find funds that might be too leveraged through their borrowing activities"
+WITH LeverageAnalysis AS (
+    SELECT 
+        F.SERIES_NAME,
+        CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) +
+        CAST(F.BORROWING_PAY_AFTER_1YR AS FLOAT) as Total_Borrowing,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.BORROWING_PAY_WITHIN_1YR IS NOT NULL
+        AND F.BORROWING_PAY_AFTER_1YR IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    (Total_Borrowing / NULLIF(Total_Assets, 0) * 100) as Leverage_Ratio
+FROM 
+    LeverageAnalysis
+WHERE 
+    Total_Assets > 0
+ORDER BY 
+    Leverage_Ratio DESC
+LIMIT 10;
+
+37. "Which funds are most active in derivative trading across different types?"
+WITH DerivativeActivity AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT CASE 
+            WHEN FFN.HOLDING_ID IS NOT NULL THEN 'FUTURES_FORWARDS'
+            WHEN SW.HOLDING_ID IS NOT NULL THEN 'SWAPS'
+            WHEN OD.HOLDING_ID IS NOT NULL THEN 'OTHER_DERIVATIVES'
+        END) as Derivative_Types_Used,
+        COUNT(*) as Total_Derivative_Positions
+    FROM 
+        FUND_REPORTED_INFO F
+        LEFT JOIN FUT_FWD_NONFOREIGNCUR_CONTRACT FFN 
+            ON F.ACCESSION_NUMBER = FFN.HOLDING_ID
+        LEFT JOIN NONFOREIGN_EXCHANGE_SWAP SW 
+            ON F.ACCESSION_NUMBER = SW.HOLDING_ID
+        LEFT JOIN OTHER_DERIV OD 
+            ON F.ACCESSION_NUMBER = OD.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Derivative_Types_Used,
+    Total_Derivative_Positions
+FROM 
+    DerivativeActivity
+WHERE 
+    Derivative_Types_Used > 0
+ORDER BY 
+    Derivative_Types_Used DESC, 
+    Total_Derivative_Positions DESC;
+
+38. "Check for funds with significant counterparty exposure through their derivatives"
 WITH CounterpartyRisk AS (
     SELECT 
-        dc.DERIVATIVE_COUNTERPARTY_NAME,
-        h.ASSET_CAT,
-        COUNT(*) as number_of_contracts,
-        SUM(CAST(h.CURRENCY_VALUE AS DECIMAL)) as exposure
-    FROM DERIVATIVE_COUNTERPARTY dc
-    JOIN FUND_REPORTED_HOLDING h ON dc.HOLDING_ID = h.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    GROUP BY dc.DERIVATIVE_COUNTERPARTY_NAME, h.ASSET_CAT
+        F.SERIES_NAME,
+        DC.DERIVATIVE_COUNTERPARTY_NAME,
+        COUNT(*) as Transaction_Count,
+        COUNT(DISTINCT DC.HOLDING_ID) as Unique_Positions
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DERIVATIVE_COUNTERPARTY DC 
+            ON H.HOLDING_ID = DC.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME,
+        DC.DERIVATIVE_COUNTERPARTY_NAME
 )
 SELECT 
+    SERIES_NAME,
     DERIVATIVE_COUNTERPARTY_NAME,
-    STRING_AGG(ASSET_CAT || ': ' || exposure::text, ', ') as exposures_by_type,
-    SUM(exposure) as total_exposure
-FROM CounterpartyRisk
-GROUP BY DERIVATIVE_COUNTERPARTY_NAME
-ORDER BY total_exposure DESC;
-
--- 9. Find securities with significant valuation changes between fair value levels
-WITH ValuationChanges AS (
-    SELECT 
-        h1.ISSUER_NAME,
-        h1.FAIR_VALUE_LEVEL as current_level,
-        h2.FAIR_VALUE_LEVEL as previous_level,
-        CAST(h1.CURRENCY_VALUE AS DECIMAL) as current_value,
-        CAST(h2.CURRENCY_VALUE AS DECIMAL) as previous_value
-    FROM FUND_REPORTED_HOLDING h1
-    JOIN FUND_REPORTED_HOLDING h2 ON 
-        h1.ISSUER_NAME = h2.ISSUER_NAME AND
-        h2.QUARTER = (
-            SELECT QUARTER
-            FROM FUND_REPORTED_HOLDING
-            WHERE QUARTER < (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-            ORDER BY QUARTER DESC
-            LIMIT 1
-        )
-    WHERE h1.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT 
-    ISSUER_NAME,
-    current_level,
-    previous_level,
-    ((current_value - previous_value) / previous_value * 100) as value_change_percent
-FROM ValuationChanges
-WHERE current_level != previous_level
-AND ABS((current_value - previous_value) / previous_value * 100) > 10
-ORDER BY value_change_percent DESC;
-
--- 10. Calculate the effective duration of the portfolio considering derivatives
-WITH DerivativeDuration AS (
-    SELECT 
-        h.ACCESSION_NUMBER,
-        SUM(CAST(h.CURRENCY_VALUE AS DECIMAL) * 
-            CAST(COALESCE(n.NOTIONAL_AMOUNT, '0') AS DECIMAL)) as adjusted_duration
-    FROM FUND_REPORTED_HOLDING h
-    LEFT JOIN NONFOREIGN_EXCHANGE_SWAP n ON h.HOLDING_ID = n.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    GROUP BY h.ACCESSION_NUMBER
-)
-SELECT 
-    f.SERIES_NAME,
-    d.adjusted_duration / CAST(f.TOTAL_ASSETS AS DECIMAL) as effective_duration
-FROM DerivativeDuration d
-JOIN FUND_REPORTED_INFO f ON d.ACCESSION_NUMBER = f.ACCESSION_NUMBER;
-
--- 11. Analyze the maturity ladder of debt securities
-WITH MaturityBuckets AS (
-    SELECT 
-        h.ISSUER_NAME,
-        h.CURRENCY_VALUE,
-        d.MATURITY_DATE,
-        CASE 
-            WHEN DATE(d.MATURITY_DATE) <= DATE('now', '+1 year') THEN '0-1 year'
-            WHEN DATE(d.MATURITY_DATE) <= DATE('now', '+3 years') THEN '1-3 years'
-            WHEN DATE(d.MATURITY_DATE) <= DATE('now', '+5 years') THEN '3-5 years'
-            WHEN DATE(d.MATURITY_DATE) <= DATE('now', '+10 years') THEN '5-10 years'
-            ELSE 'Over 10 years'
-        END as maturity_bucket
-    FROM FUND_REPORTED_HOLDING h
-    JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT 
-    maturity_bucket,
-    COUNT(*) as number_of_securities,
-    SUM(CAST(CURRENCY_VALUE AS DECIMAL)) as total_value
-FROM MaturityBuckets
-GROUP BY maturity_bucket
+    Transaction_Count,
+    Unique_Positions
+FROM 
+    CounterpartyRisk
 ORDER BY 
-    CASE maturity_bucket
-        WHEN '0-1 year' THEN 1
-        WHEN '1-3 years' THEN 2
-        WHEN '3-5 years' THEN 3
-        WHEN '5-10 years' THEN 4
-        ELSE 5
-    END;
+    Transaction_Count DESC
+LIMIT 15;
 
--- 12. Calculate rolling 3-month volatility of returns by fund
-WITH MonthlyReturns AS (
+39. "Find funds with unusual monthly return patterns - looking for potential outliers"
+WITH ReturnPatterns AS (
     SELECT 
-        f.SERIES_NAME,
-        CAST(m.MONTHLY_TOTAL_RETURN1 AS DECIMAL) as return_1,
-        CAST(m.MONTHLY_TOTAL_RETURN2 AS DECIMAL) as return_2,
-        CAST(m.MONTHLY_TOTAL_RETURN3 AS DECIMAL) as return_3
-    FROM FUND_REPORTED_INFO f
-    JOIN MONTHLY_TOTAL_RETURN m ON f.ACCESSION_NUMBER = m.ACCESSION_NUMBER
-    WHERE f.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
-),
-ReturnStats AS (
-    SELECT 
-        SERIES_NAME,
-        (return_1 + return_2 + return_3) / 3 as avg_return,
-        SQRT(
-            (POWER(return_1 - (return_1 + return_2 + return_3) / 3, 2) +
-             POWER(return_2 - (return_1 + return_2 + return_3) / 3, 2) +
-             POWER(return_3 - (return_1 + return_2 + return_3) / 3, 2)) / 2
-        ) as volatility
-    FROM MonthlyReturns
-)
-SELECT *
-FROM ReturnStats
-ORDER BY volatility DESC;
-
--- 13. Analyze securities lending revenue and collateral coverage
-WITH LendingMetrics AS (
-    SELECT 
-        h.ISSUER_NAME,
-        h.CURRENCY_VALUE as security_value,
-        sl.IS_CASH_COLLATERAL,
-        sl.IS_NON_CASH_COLLATERAL,
-        COALESCE(rc.COLLATERAL_AMOUNT, '0') as collateral_amount
-    FROM FUND_REPORTED_HOLDING h
-    JOIN SECURITIES_LENDING sl ON h.HOLDING_ID = sl.HOLDING_ID
-    LEFT JOIN REPURCHASE_COLLATERAL rc ON h.HOLDING_ID = rc.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT 
-    ISSUER_NAME,
-    security_value,
-    CAST(collateral_amount AS DECIMAL) / CAST(security_value AS DECIMAL) * 100 as collateral_coverage_pct
-FROM LendingMetrics
-WHERE IS_CASH_COLLATERAL = 'Y' OR IS_NON_CASH_COLLATERAL = 'Y'
-ORDER BY CAST(security_value AS DECIMAL) DESC;
-
--- 14. Calculate exposure to different floating rate indices
-WITH FloatingRateExposure AS (
-    SELECT 
-        n.FLOATING_RATE_INDEX_RECEIPT as rate_index,
-        COUNT(*) as number_of_contracts,
-        SUM(CAST(n.NOTIONAL_AMOUNT AS DECIMAL)) as total_notional,
-        AVG(CAST(n.FLOATING_RATE_SPREAD_RECEIPT AS DECIMAL)) as avg_spread
-    FROM NONFOREIGN_EXCHANGE_SWAP n
-    WHERE n.FIXED_OR_FLOATING_RECEIPT = 'Floating'
-    AND n.QUARTER = (SELECT MAX(QUARTER) FROM NONFOREIGN_EXCHANGE_SWAP)
-    GROUP BY n.FLOATING_RATE_INDEX_RECEIPT
-)
-SELECT 
-    rate_index,
-    number_of_contracts,
-    total_notional,
-    avg_spread,
-    total_notional / SUM(total_notional) OVER () * 100 as percentage_of_portfolio
-FROM FloatingRateExposure
-ORDER BY total_notional DESC;
-
--- 15. Analyze derivative counterparty concentration risk
-WITH CounterpartyExposure AS (
-    SELECT 
-        dc.DERIVATIVE_COUNTERPARTY_NAME,
-        dc.DERIVATIVE_COUNTERPARTY_LEI,
-        COUNT(*) as number_of_contracts,
-        SUM(CAST(h.CURRENCY_VALUE AS DECIMAL)) as total_exposure
-    FROM DERIVATIVE_COUNTERPARTY dc
-    JOIN FUND_REPORTED_HOLDING h ON dc.HOLDING_ID = h.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    GROUP BY dc.DERIVATIVE_COUNTERPARTY_NAME, dc.DERIVATIVE_COUNTERPARTY_LEI
-),
-PortfolioStats AS (
-    SELECT SUM(total_exposure) as portfolio_total
-    FROM CounterpartyExposure
-)
-SELECT 
-    ce.*,
-    (ce.total_exposure / ps.portfolio_total * 100) as portfolio_percentage
-FROM CounterpartyExposure ce
-CROSS JOIN PortfolioStats ps
-WHERE (ce.total_exposure / ps.portfolio_total * 100) > 5
-ORDER BY portfolio_percentage DESC;
-
--- 16. Track changes in credit spreads across investment grade and non-investment grade
-WITH SpreadChanges AS (
-    SELECT 
-        f1.SERIES_NAME,
-        f1.CREDIT_SPREAD_5YR_INVEST as current_ig_spread,
-        f2.CREDIT_SPREAD_5YR_INVEST as previous_ig_spread,
-        f1.CREDIT_SPREAD_5YR_NONINVEST as current_non_ig_spread,
-        f2.CREDIT_SPREAD_5YR_NONINVEST as previous_non_ig_spread
-    FROM FUND_REPORTED_INFO f1
-    LEFT JOIN FUND_REPORTED_INFO f2 ON 
-        f1.SERIES_NAME = f2.SERIES_NAME AND
-        f2.QUARTER = (
-            SELECT QUARTER
-            FROM FUND_REPORTED_INFO
-            WHERE QUARTER < (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
-            ORDER BY QUARTER DESC
-            LIMIT 1
-        )
-    WHERE f1.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
+        F.SERIES_NAME,
+        CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) as Return1,
+        CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) as Return2,
+        CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT) as Return3,
+        ABS(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) - 
+            (CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
+             CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 2) as Return_Deviation
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        M.MONTHLY_TOTAL_RETURN1 IS NOT NULL
+        AND M.MONTHLY_TOTAL_RETURN2 IS NOT NULL
+        AND M.MONTHLY_TOTAL_RETURN3 IS NOT NULL
 )
 SELECT 
     SERIES_NAME,
-    CAST(current_ig_spread AS DECIMAL) - CAST(previous_ig_spread AS DECIMAL) as ig_spread_change,
-    CAST(current_non_ig_spread AS DECIMAL) - CAST(previous_non_ig_spread AS DECIMAL) as non_ig_spread_change
-FROM SpreadChanges
-ORDER BY ABS(CAST(current_ig_spread AS DECIMAL) - CAST(previous_ig_spread AS DECIMAL)) DESC;
+    Return1,
+    Return2,
+    Return3,
+    Return_Deviation
+FROM 
+    ReturnPatterns
+WHERE 
+    Return_Deviation > 5
+ORDER BY 
+    Return_Deviation DESC;
 
--- 17. Analyze the relationship between asset size and redemption flows
-WITH FlowMetrics AS (
+40. "Show me which funds have the most diverse debt security holdings by maturity"
+WITH MaturityDiversity AS (
     SELECT 
-        SERIES_NAME,
-        CAST(TOTAL_ASSETS AS DECIMAL) as assets,
-        CAST(REDEMPTION_FLOW_MON1 AS DECIMAL) as redemption_1,
-        CAST(REDEMPTION_FLOW_MON2 AS DECIMAL) as redemption_2,
-        CAST(REDEMPTION_FLOW_MON3 AS DECIMAL) as redemption_3
-    FROM FUND_REPORTED_INFO
-    WHERE QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
+        F.SERIES_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN DS.MATURITY_DATE <= DATE('now', '+1 year') THEN 'SHORT_TERM'
+                WHEN DS.MATURITY_DATE <= DATE('now', '+5 year') THEN 'MEDIUM_TERM'
+                ELSE 'LONG_TERM'
+            END
+        ) as Maturity_Types,
+        COUNT(*) as Total_Debt_Securities
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DEBT_SECURITY DS 
+            ON H.HOLDING_ID = DS.HOLDING_ID
+    WHERE 
+        DS.MATURITY_DATE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
 )
 SELECT 
     SERIES_NAME,
-    assets,
-    (redemption_1 + redemption_2 + redemption_3) / 3 as avg_monthly_redemption,
-    ((redemption_1 + redemption_2 + redemption_3) / 3) / assets * 100 as redemption_rate
-FROM FlowMetrics
-ORDER BY redemption_rate DESC;
-
--- 18. Calculate the weighted average maturity of repurchase agreements
-WITH RepoMaturity AS (
-    SELECT 
-        h.ISSUER_NAME,
-        r.MATURITY_DATE,
-        CAST(h.CURRENCY_VALUE AS DECIMAL) as value,
-        JULIANDAY(r.MATURITY_DATE) - JULIANDAY('now') as days_to_maturity
-    FROM FUND_REPORTED_HOLDING h
-    JOIN REPURCHASE_AGREEMENT r ON h.HOLDING_ID = r.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT 
-    COUNT(*) as number_of_repos,
-    SUM(value) as total_repo_value,
-    SUM(value * days_to_maturity) / SUM(value) as weighted_avg_maturity_days
-FROM RepoMaturity;
-
--- 19. Analyze cross-currency swap exposure
-WITH SwapExposure AS (
-    SELECT 
-        h.ISSUER_NAME,
-        n.CURRENCY_CODE_RECEIPT as receive_currency,
-        n.CURRENCY_CODE_PAYMENT as pay_currency,
-        CAST(n.NOTIONAL_AMOUNT AS DECIMAL) as notional,
-        CAST(n.UNREALIZED_APPRECIATION AS DECIMAL) as unrealized_pnl
-    FROM FUND_REPORTED_HOLDING h
-    JOIN NONFOREIGN_EXCHANGE_SWAP n ON h.HOLDING_ID = n.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    AND n.CURRENCY_CODE_RECEIPT != n.CURRENCY_CODE_PAYMENT
-)
-SELECT 
-    receive_currency || '/' || pay_currency as currency_pair,
-    COUNT(*) as number_of_swaps,
-    SUM(notional) as total_notional,
-    SUM(unrealized_pnl) as total_unrealized_pnl
-FROM SwapExposure
-GROUP BY receive_currency, pay_currency
-ORDER BY total_notional DESC;
-
--- 20. Calculate portfolio turnover rate
-WITH Flows AS (
-    SELECT 
-        f.SERIES_NAME,
-        CAST(f.TOTAL_ASSETS AS DECIMAL) as assets,
-        CAST(f.SALES_FLOW_MON1 AS DECIMAL) + 
-        CAST(f.SALES_FLOW_MON2 AS DECIMAL) + 
-        CAST(f.SALES_FLOW_MON3 AS DECIMAL) as total_sales,
-        CAST(f.REDEMPTION_FLOW_MON1 AS DECIMAL) + 
-        CAST(f.REDEMPTION_FLOW_MON2 AS DECIMAL) + 
-        CAST(f.REDEMPTION_FLOW_MON3 AS DECIMAL) as total_redemptions
-    FROM FUND_REPORTED_INFO f
-    WHERE f.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_INFO)
-)
-SELECT 
-    SERIES_NAME,
-    assets,
-    LEAST(total_sales, total_redemptions) / assets * 400 as annualized_turnover_rate
-FROM Flows
-ORDER BY annualized_turnover_rate DESC;
-
--- 21. Analyze option portfolio delta exposure
-WITH OptionExposure AS (
-    SELECT 
-        h.ISSUER_NAME,
-        s.PUT_OR_CALL,
-        s.WRITTEN_OR_PURCHASED,
-        CAST(s.SHARES_CNT AS DECIMAL) as contract_size,
-        CAST(s.EXERCISE_PRICE AS DECIMAL) as strike_price,
-        CAST(h.CURRENCY_VALUE AS DECIMAL) as market_value
-    FROM FUND_REPORTED_HOLDING h
-    JOIN SWAPTION_OPTION_WARNT_DERIV s ON h.HOLDING_ID = s.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-)
-SELECT 
-    PUT_OR_CALL,
-    WRITTEN_OR_PURCHASED,
-    COUNT(*) as position_count,
-    SUM(contract_size * market_value) as notional_exposure
-FROM OptionExposure
-GROUP BY PUT_OR_CALL, WRITTEN_OR_PURCHASED
-ORDER BY notional_exposure DESC;
-
--- 22. Calculate the effective yield of fixed income portfolio
-WITH FixedIncomeYields AS (
-    SELECT 
-        h.ISSUER_NAME,
-        CAST(h.CURRENCY_VALUE AS DECIMAL) as market_value,
-        CAST(d.ANNUALIZED_RATE AS DECIMAL) as yield
-    FROM FUND_REPORTED_HOLDING h
-    JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    AND d.COUPON_TYPE = 'Fixed'
-)
-SELECT 
-    COUNT(*) as number_of_securities,
-    SUM(market_value) as total_value,
-    SUM(market_value * yield) / SUM(market_value) as weighted_avg_yield
-FROM FixedIncomeYields;
-
--- 23. Analyze securities with multiple identifiers for reconciliation
-WITH MultipleIds AS (
-    SELECT 
-        h.ISSUER_NAME,
-        h.ISSUER_CUSIP,
-        i.IDENTIFIER_ISIN,
-        h.CURRENCY_VALUE
-    FROM FUND_REPORTED_HOLDING h
-    LEFT JOIN IDENTIFIERS i ON h.HOLDING_ID = i.HOLDING_ID
-    WHERE h.QUARTER = (SELECT MAX(QUARTER) FROM FUND_REPORTED_HOLDING)
-    AND (h.ISSUER_CUSIP IS NOT NULL OR i.IDENTIFIER_ISIN IS NOT NULL)
-)
-SELECT 
-    ISSUER_NAME,
-    COUNT(*) as number_of_identifiers,
-    STRING_AGG(COALESCE(ISSUER_CUSIP, '') || '|' || COALESCE(IDENTIFIER_ISIN, ''), ', ') as identifier_list
-FROM MultipleIds
-GROUP BY ISSUER_NAME
-HAVING COUNT(*) > 1
-ORDER BY COUNT(*) DESC;
-
--- 24. Calculate the duration-times-spread (DTS) risk measure
-WITH DTS AS (
-    SELECT 
-        h.ISSUER_NAME,
-        CAST(f.CREDIT_SPREAD_5YR_INVEST AS DECIMAL) as spread,
-        CAST(ir.INTRST_RATE_CHANGE_5YR_DV01 AS DECIMAL) as duration,
-        CAST(h.CURRENCY_VALUE AS DECIMAL) as market_value
-    FROM FUND_REPORTED_HOLDING h
-    JOIN FUND_REPORTED_INFO f ON h.ACCESSION_NUMBER = f.ACCESSION_NUMBER
-    JOIN INTEREST_RATE_RISK ir ON
-
--- 25. Are there funds that have more than 50 holdings?
-SELECT ACCESSION_NUMBER
-FROM FUND_REPORTED_HOLDING
-GROUP BY ACCESSION_NUMBER
-HAVING COUNT(*) > 50;
-
--- 26. Which companies have reported in all four quarters?
-SELECT REGISTRANT_NAME
-FROM REGISTRANT
-WHERE QUARTER IN ('Q1', 'Q2', 'Q3', 'Q4')
-GROUP BY REGISTRANT_NAME
-HAVING COUNT(DISTINCT QUARTER) = 4;
-
--- 27. What holdings are denominated in currencies other than USD?
-SELECT ISSUER_NAME FROM FUND_REPORTED_HOLDING WHERE CURRENCY_CODE <> 'USD';
-
--- 28. Which funds have significant cash not reported elsewhere?
-SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE CASH_NOT_RPTD_IN_C_OR_D > 100000;
-
--- 29. What is the sales flow in the first month for each fund?
-SELECT SERIES_NAME, SALES_FLOW_MON1 FROM FUND_REPORTED_INFO;
-
--- 30. Find holdings that are restricted securities.
-SELECT ISSUER_NAME FROM FUND_REPORTED_HOLDING WHERE IS_RESTRICTED_SECURITY = 'Yes';
-
--- 31. How many issuers are there per investment country?
-SELECT INVESTMENT_COUNTRY, COUNT(*) AS IssuerCount
-FROM FUND_REPORTED_HOLDING
-GROUP BY INVESTMENT_COUNTRY;
-
--- 32. Which funds have significant borrowings payable within one year?
-SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE BORROWING_PAY_WITHIN_1YR > 500000;
-
--- 33. Who is the company with the earliest filing date?
-SELECT REGISTRANT_NAME, FILING_DATE
-FROM SUBMISSION
-ORDER BY FILING_DATE ASC
-LIMIT 1;
-
--- 34. Are there funds where delayed delivery is not zero?
-SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE DELAYED_DELIVERY <> 0;
-
--- 35. Which holdings represent over 10% of the fund's assets?
-SELECT ISSUER_NAME FROM FUND_REPORTED_HOLDING WHERE PERCENTAGE > 10;
-
--- 36. How many borrowers are there per quarter?
-SELECT QUARTER, COUNT(*) AS BorrowerCount FROM BORROWER GROUP BY QUARTER;
-
--- 37. Which funds have standby commitments over $100,000?
-SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE STANDBY_COMMITMENT > 100000;
-
--- 38. What is the total unrealized appreciation across all funds in the third month?
-SELECT SUM(NET_UNREALIZE_AP_NONDERIV_MON3) FROM FUND_REPORTED_INFO;
-
--- 39. What is the total net realized gain on non-derivatives in the second month?
-SELECT SUM(NET_REALIZE_GAIN_NONDERIV_MON2) FROM FUND_REPORTED_INFO;
-
--- 40. Which holdings have 'Government' as the issuer type?
-SELECT ISSUER_NAME FROM FUND_REPORTED_HOLDING WHERE ISSUER_TYPE = 'Government';
+    Maturity_Types,
+    Total_Debt_Securities,
+    (Maturity_Types * 100.0 / 3) as Diversity_Score
+FROM 
+    MaturityDiversity
+WHERE 
+    Total_Debt_Securities >= 5
+ORDER BY 
+    Maturity_Types DESC, 
+    Total_Debt_Securities DESC;
 ```
 """
 
-gpt_queries_medium ="""
+gpt_queries_hard ="""
 ```
--- 1. Which funds have liabilities exceeding 50% of their total assets?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    (TOTAL_LIABILITIES / TOTAL_ASSETS) > 0.5;
+1. "Can you flag any worrying funds that have liabilities over half their assets? That's a bit of a red flag."
+SELECT 
+    F.SERIES_NAME,
+    CAST(F.TOTAL_LIABILITIES AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Liability_Percentage,
+    F.TOTAL_ASSETS,
+    F.TOTAL_LIABILITIES
+FROM 
+    FUND_REPORTED_INFO F
+WHERE 
+    CAST(F.TOTAL_LIABILITIES AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) > 0.5
+ORDER BY 
+    Liability_Percentage DESC;
 
--- 2. Find holdings that are the largest position in their respective funds.
-WITH MaxBalances AS (
-    SELECT
-        ACCESSION_NUMBER,
-        MAX(BALANCE) AS MaxBalance
-    FROM
-        FUND_REPORTED_HOLDING
-    GROUP BY
-        ACCESSION_NUMBER
+2. "I need to check for concentration risk - show me any holdings that are the biggest position in their funds."
+WITH HoldingPercentages AS (
+    SELECT 
+        F.SERIES_NAME,
+        H.ISSUER_NAME,
+        H.PERCENTAGE,
+        ROW_NUMBER() OVER (PARTITION BY F.SERIES_NAME ORDER BY CAST(H.PERCENTAGE AS FLOAT) DESC) as Position_Rank
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.PERCENTAGE IS NOT NULL
 )
-SELECT
-    H.ISSUER_NAME,
-    H.BALANCE
-FROM
-    FUND_REPORTED_HOLDING H
-JOIN
-    MaxBalances M ON H.ACCESSION_NUMBER = M.ACCESSION_NUMBER AND H.BALANCE = M.MaxBalance;
-
--- 3. Which funds have significant interest rate risk exposure in USD?
-SELECT
-    ACCESSION_NUMBER
-FROM
-    INTEREST_RATE_RISK
-WHERE
-    CURRENCY_CODE = 'USD' AND INTRST_RATE_CHANGE_10YR_DV01 > 100000;
-
--- 4. What are the top 5 funds by net assets growth between two quarters?
-WITH NetAssetsGrowth AS (
-    SELECT
-        F1.SERIES_ID,
-        F1.SERIES_NAME,
-        (F2.NET_ASSETS - F1.NET_ASSETS) AS NetAssetsGrowth
-    FROM
-        FUND_REPORTED_INFO F1
-    JOIN
-        FUND_REPORTED_INFO F2 ON F1.SERIES_ID = F2.SERIES_ID
-    WHERE
-        F1.QUARTER = 'Q1' AND F2.QUARTER = 'Q2'
-)
-SELECT
+SELECT 
     SERIES_NAME,
-    NetAssetsGrowth
-FROM
-    NetAssetsGrowth
-ORDER BY
-    NetAssetsGrowth DESC
+    ISSUER_NAME,
+    PERCENTAGE
+FROM 
+    HoldingPercentages
+WHERE 
+    Position_Rank = 1
+ORDER BY 
+    CAST(PERCENTAGE AS FLOAT) DESC;
+
+3. "With rates being so volatile, which USD funds are most exposed to interest rate changes?"
+SELECT 
+    F.SERIES_NAME,
+    IR.INTRST_RATE_CHANGE_10YR_DV01 as Ten_Year_Risk,
+    IR.INTRST_RATE_CHANGE_30YR_DV01 as Thirty_Year_Risk,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN INTEREST_RATE_RISK IR 
+        ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+WHERE 
+    IR.CURRENCY_CODE = 'USD'
+    AND (
+        CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 100000
+        OR CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 100000
+    )
+ORDER BY 
+    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) DESC;
+
+4. "Which funds are growing the fastest? Looking for top 5 by net asset growth between quarters."
+WITH QuarterlyGrowth AS (
+    SELECT 
+        F1.SERIES_NAME,
+        F1.QUARTER as Previous_Quarter,
+        F2.QUARTER as Current_Quarter,
+        CAST(F1.NET_ASSETS AS FLOAT) as Previous_Assets,
+        CAST(F2.NET_ASSETS AS FLOAT) as Current_Assets,
+        ((CAST(F2.NET_ASSETS AS FLOAT) - CAST(F1.NET_ASSETS AS FLOAT)) / 
+         NULLIF(CAST(F1.NET_ASSETS AS FLOAT), 0)) * 100 as Growth_Percentage
+    FROM 
+        FUND_REPORTED_INFO F1
+        JOIN FUND_REPORTED_INFO F2 
+            ON F1.SERIES_ID = F2.SERIES_ID
+            AND F1.QUARTER < F2.QUARTER
+)
+SELECT 
+    SERIES_NAME,
+    Previous_Quarter,
+    Current_Quarter,
+    Growth_Percentage,
+    Current_Assets - Previous_Assets as Absolute_Growth
+FROM 
+    QuarterlyGrowth
+ORDER BY 
+    Growth_Percentage DESC
 LIMIT 5;
 
--- 5. Are there holdings where the currency exposure differs from the investment country?
-SELECT
-    ISSUER_NAME
-FROM
-    FUND_REPORTED_HOLDING
-WHERE
-    CURRENCY_CODE <> INVESTMENT_COUNTRY;
-
--- 6. Which funds have derivatives exposure exceeding 20% of net assets?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    (ASSETS_ATTRBT_TO_MISC_SECURITY / NET_ASSETS) > 0.2;
-
--- 7. Find borrowers who increased their borrowing significantly between quarters.
-WITH BorrowingQ1 AS (
-    SELECT
-        BORROWER_ID,
-        AGGREGATE_VALUE
-    FROM
-        BORROWER
-    WHERE
-        QUARTER = 'Q1'
-),
-BorrowingQ2 AS (
-    SELECT
-        BORROWER_ID,
-        NAME,
-        AGGREGATE_VALUE
-    FROM
-        BORROWER
-    WHERE
-        QUARTER = 'Q2'
+5. "Looking for potential currency mismatches - any holdings where the currency doesn't match the country of investment?"
+WITH CurrencyMismatches AS (
+    SELECT 
+        F.SERIES_NAME,
+        H.ISSUER_NAME,
+        H.CURRENCY_CODE,
+        H.INVESTMENT_COUNTRY,
+        H.CURRENCY_VALUE
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.CURRENCY_CODE != H.INVESTMENT_COUNTRY
+        AND H.CURRENCY_CODE IS NOT NULL
+        AND H.INVESTMENT_COUNTRY IS NOT NULL
 )
-SELECT
-    B2.NAME
-FROM
-    BorrowingQ2 B2
-JOIN
-    BorrowingQ1 B1 ON B2.BORROWER_ID = B1.BORROWER_ID
-WHERE
-    (B2.AGGREGATE_VALUE - B1.AGGREGATE_VALUE) > 1000000;
+SELECT 
+    SERIES_NAME,
+    ISSUER_NAME,
+    CURRENCY_CODE as Holding_Currency,
+    INVESTMENT_COUNTRY,
+    CURRENCY_VALUE
+FROM 
+    CurrencyMismatches
+ORDER BY 
+    CAST(CURRENCY_VALUE AS FLOAT) DESC;
 
--- 8. Which funds had negative net realized gains in the first month?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    NET_REALIZE_GAIN_NONDERIV_MON1 < 0;
+-- Portfolio Risk & Derivatives Exposure --
+6. "Hey, let's identify any funds with heavy derivatives exposure - over 20% of net assets might be risky."
+WITH DerivativeExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.NET_ASSETS,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Derivative_Value
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN OTHER_DERIV OD ON H.HOLDING_ID = OD.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME,
+        F.NET_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    (Derivative_Value / CAST(NET_ASSETS AS FLOAT) * 100) as Derivative_Percentage
+FROM 
+    DerivativeExposure
+WHERE 
+    (Derivative_Value / CAST(NET_ASSETS AS FLOAT)) > 0.20
+ORDER BY 
+    Derivative_Percentage DESC;
 
--- 9. What holdings have the highest unrealized appreciation in futures contracts?
-SELECT
-    HOLDING_ID,
-    UNREALIZED_APPRECIATION
-FROM
-    FUT_FWD_NONFOREIGNCUR_CONTRACT
-ORDER BY
-    UNREALIZED_APPRECIATION DESC
-LIMIT 1;
+-- Borrower Analysis --
+7. "Which borrowers significantly increased their borrowing last quarter? Might signal some risk."
+WITH BorrowingTrends AS (
+    SELECT 
+        B2.NAME as Borrower_Name,
+        B2.AGGREGATE_VALUE as Current_Value,
+        B1.AGGREGATE_VALUE as Previous_Value,
+        ((CAST(B2.AGGREGATE_VALUE AS FLOAT) - CAST(B1.AGGREGATE_VALUE AS FLOAT)) / 
+         NULLIF(CAST(B1.AGGREGATE_VALUE AS FLOAT), 0)) * 100 as Increase_Percentage
+    FROM 
+        BORROWER B1
+        JOIN BORROWER B2 
+            ON B1.BORROWER_ID = B2.BORROWER_ID
+            AND B1.QUARTER < B2.QUARTER
+    WHERE 
+        B1.AGGREGATE_VALUE IS NOT NULL 
+        AND B2.AGGREGATE_VALUE IS NOT NULL
+)
+SELECT 
+    Borrower_Name,
+    Current_Value,
+    Previous_Value,
+    Increase_Percentage
+FROM 
+    BorrowingTrends
+WHERE 
+    Increase_Percentage > 25
+ORDER BY 
+    Increase_Percentage DESC;
 
--- 10. Are there funds with significant delayed delivery and standby commitments?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    DELAYED_DELIVERY > 100000 AND STANDBY_COMMITMENT > 100000;
+-- Performance Analysis --
+8. "Find any funds showing losses in their realized gains - might need a closer look at their trading."
+SELECT 
+    F.SERIES_NAME,
+    F.NET_REALIZE_GAIN_NONDERIV_MON1,
+    F.NET_REALIZE_GAIN_NONDERIV_MON2,
+    F.NET_REALIZE_GAIN_NONDERIV_MON3,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+WHERE 
+    CAST(NET_REALIZE_GAIN_NONDERIV_MON1 AS FLOAT) < 0
+    OR CAST(NET_REALIZE_GAIN_NONDERIV_MON2 AS FLOAT) < 0
+    OR CAST(NET_REALIZE_GAIN_NONDERIV_MON3 AS FLOAT) < 0
+ORDER BY 
+    CAST(NET_REALIZE_GAIN_NONDERIV_MON1 AS FLOAT);
 
--- 11. How many holdings are there per issuer type and fair value level?
-SELECT
+-- Futures Contract Analysis --
+9. "Which funds have the biggest unrealized gains in their futures positions? Might want to lock those in."
+SELECT 
+    F.SERIES_NAME,
+    FFC.UNREALIZED_APPRECIATION,
+    FFC.NOTIONAL_AMOUNT,
+    (CAST(FFC.UNREALIZED_APPRECIATION AS FLOAT) / 
+     NULLIF(CAST(FFC.NOTIONAL_AMOUNT AS FLOAT), 0)) * 100 as Return_Percentage
+FROM 
+    FUT_FWD_NONFOREIGNCUR_CONTRACT FFC
+    JOIN FUND_REPORTED_HOLDING H ON FFC.HOLDING_ID = H.HOLDING_ID
+    JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    FFC.UNREALIZED_APPRECIATION IS NOT NULL
+ORDER BY 
+    CAST(FFC.UNREALIZED_APPRECIATION AS FLOAT) DESC
+LIMIT 10;
+
+-- Commitment Risk --
+10. "Check for funds with large outstanding commitments - both delayed delivery and standby."
+WITH CommitmentExposure AS (
+    SELECT 
+        SERIES_NAME,
+        DELAYED_DELIVERY,
+        STANDBY_COMMITMENT,
+        TOTAL_ASSETS,
+        (CAST(DELAYED_DELIVERY AS FLOAT) + CAST(STANDBY_COMMITMENT AS FLOAT)) / 
+        NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0) * 100 as Total_Commitment_Percentage
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        DELAYED_DELIVERY IS NOT NULL 
+        AND STANDBY_COMMITMENT IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    DELAYED_DELIVERY,
+    STANDBY_COMMITMENT,
+    Total_Commitment_Percentage
+FROM 
+    CommitmentExposure
+WHERE 
+    Total_Commitment_Percentage > 5
+ORDER BY 
+    Total_Commitment_Percentage DESC;
+
+-- Fair Value Analysis --
+11. "Give me a breakdown of holdings by fair value level and issuer type - looking for valuation risk."
+SELECT 
     ISSUER_TYPE,
     FAIR_VALUE_LEVEL,
-    COUNT(*) AS HoldingCount
-FROM
+    COUNT(*) as Holding_Count,
+    SUM(CAST(CURRENCY_VALUE AS FLOAT)) as Total_Value,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (PARTITION BY ISSUER_TYPE) as Percentage_of_Type
+FROM 
     FUND_REPORTED_HOLDING
-GROUP BY
+WHERE 
+    ISSUER_TYPE IS NOT NULL 
+    AND FAIR_VALUE_LEVEL IS NOT NULL
+GROUP BY 
+    ISSUER_TYPE,
+    FAIR_VALUE_LEVEL
+ORDER BY 
     ISSUER_TYPE,
     FAIR_VALUE_LEVEL;
 
--- 12. Which funds reported significant non-cash collateral?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    IS_NON_CASH_COLLATERAL = 'Yes';
+-- Collateral Analysis --
+12. "Let's see which funds are heavy on non-cash collateral - might affect their liquidity position."
+SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS,
+    COUNT(SL.HOLDING_ID) as Collateral_Positions,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Collateral_Value
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    JOIN SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
+WHERE 
+    SL.IS_NON_CASH_COLLATERAL = 'Y'
+GROUP BY 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+ORDER BY 
+    Total_Collateral_Value DESC;
 
--- 13. What is the total net assets per state based on company headquarters?
-SELECT
+-- Geographic Exposure --
+13. "What's our exposure by state? Need to check geographic concentration."
+SELECT 
     R.STATE,
-    SUM(F.NET_ASSETS) AS TotalNetAssets
-FROM
+    COUNT(DISTINCT R.REGISTRANT_NAME) as Company_Count,
+    COUNT(DISTINCT F.SERIES_NAME) as Fund_Count,
+    SUM(CAST(F.NET_ASSETS AS FLOAT)) as Total_Net_Assets
+FROM 
     REGISTRANT R
-JOIN
-    FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-GROUP BY
-    R.STATE;
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.STATE IS NOT NULL
+GROUP BY 
+    R.STATE
+ORDER BY 
+    Total_Net_Assets DESC;
 
--- 14. List holdings involved in securities lending.
-SELECT
-    H.ISSUER_NAME
-FROM
+-- Securities Lending Activity --
+14. "Which securities are most actively lent out? Might signal some interesting market dynamics."
+SELECT 
+    H.ISSUER_NAME,
+    COUNT(*) as Lending_Instances,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Value_Lent
+FROM 
     FUND_REPORTED_HOLDING H
-JOIN
-    SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
-WHERE
-    SL.IS_LOAN_BY_FUND = 'Yes';
+    JOIN SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
+WHERE 
+    SL.IS_LOAN_BY_FUND = 'Y'
+GROUP BY 
+    H.ISSUER_NAME
+HAVING 
+    COUNT(*) > 1
+ORDER BY 
+    Lending_Instances DESC,
+    Total_Value_Lent DESC;
 
--- 15. Which funds have significant foreign currency forward contracts?
-SELECT
-    DISTINCT FRI.SERIES_NAME
-FROM
-    FWD_FOREIGNCUR_CONTRACT_SWAP FFC
-JOIN
-    FUND_REPORTED_INFO FRI ON FFC.ACCESSION_NUMBER = FRI.ACCESSION_NUMBER
-WHERE
-    FFC.UNREALIZED_APPRECIATION > 500000;
+-- Currency Risk --
+15. "Show me funds with big unrealized gains in their foreign currency forwards - might need hedging reviews."
+SELECT 
+    F.SERIES_NAME,
+    COUNT(*) as Forward_Contracts,
+    SUM(CAST(FFC.UNREALIZED_APPRECIATION AS FLOAT)) as Total_Unrealized_Gains,
+    AVG(CAST(FFC.UNREALIZED_APPRECIATION AS FLOAT)) as Avg_Unrealized_Gain
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    JOIN FWD_FOREIGNCUR_CONTRACT_SWAP FFC ON H.HOLDING_ID = FFC.HOLDING_ID
+GROUP BY 
+    F.SERIES_NAME
+HAVING 
+    SUM(CAST(FFC.UNREALIZED_APPRECIATION AS FLOAT)) > 500000
+ORDER BY 
+    Total_Unrealized_Gains DESC;
 
--- 16. What is the change in total assets for each fund between two quarters?
-WITH AssetsQ1 AS (
-    SELECT
-        SERIES_ID,
-        TOTAL_ASSETS
-    FROM
-        FUND_REPORTED_INFO
-    WHERE
-        QUARTER = 'Q1'
-),
-AssetsQ2 AS (
-    SELECT
-        SERIES_ID,
-        TOTAL_ASSETS
-    FROM
-        FUND_REPORTED_INFO
-    WHERE
-        QUARTER = 'Q2'
+-- Asset Growth Analysis --
+16. "How have our fund sizes changed over the past two quarters? Looking for notable shifts."
+WITH AssetChanges AS (
+    SELECT 
+        F1.SERIES_NAME,
+        F2.TOTAL_ASSETS as Current_Assets,
+        F1.TOTAL_ASSETS as Previous_Assets,
+        ((CAST(F2.TOTAL_ASSETS AS FLOAT) - CAST(F1.TOTAL_ASSETS AS FLOAT)) / 
+         NULLIF(CAST(F1.TOTAL_ASSETS AS FLOAT), 0)) * 100 as Growth_Rate
+    FROM 
+        FUND_REPORTED_INFO F1
+        JOIN FUND_REPORTED_INFO F2 
+            ON F1.SERIES_ID = F2.SERIES_ID
+            AND F1.QUARTER < F2.QUARTER
 )
-SELECT
-    A1.SERIES_ID,
-    (A2.TOTAL_ASSETS - A1.TOTAL_ASSETS) AS AssetsChange
-FROM
-    AssetsQ1 A1
-JOIN
-    AssetsQ2 A2 ON A1.SERIES_ID = A2.SERIES_ID;
+SELECT 
+    SERIES_NAME,
+    Current_Assets,
+    Previous_Assets,
+    Growth_Rate
+FROM 
+    AssetChanges
+WHERE 
+    ABS(Growth_Rate) > 10
+ORDER BY 
+    Growth_Rate DESC;
 
--- 17. Are there companies that haven't reported in the last two quarters?
-WITH RecentReports AS (
-    SELECT
-        DISTINCT ACCESSION_NUMBER
-    FROM
-        FUND_REPORTED_INFO
-    WHERE
-        QUARTER IN ('Q3', 'Q4')
+-- Regulatory Compliance --
+17. "Which companies might need attention - haven't filed reports recently?"
+WITH LatestFilings AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        MAX(S.FILING_DATE) as Last_Filing_Date,
+        COUNT(DISTINCT S.QUARTER) as Filing_Count
+    FROM 
+        REGISTRANT R
+        JOIN SUBMISSION S 
+            ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME
 )
-SELECT
-    REGISTRANT_NAME
-FROM
-    REGISTRANT
-WHERE
-    ACCESSION_NUMBER NOT IN (SELECT ACCESSION_NUMBER FROM RecentReports);
+SELECT 
+    REGISTRANT_NAME,
+    Last_Filing_Date,
+    Filing_Count,
+    JULIANDAY('now') - JULIANDAY(Last_Filing_Date) as Days_Since_Last_Filing
+FROM 
+    LatestFilings
+WHERE 
+    JULIANDAY('now') - JULIANDAY(Last_Filing_Date) > 100
+ORDER BY 
+    Days_Since_Last_Filing DESC;
 
--- 18. Which funds saw a decrease in net assets despite positive sales flows?
-WITH NetAssetsLag AS (
-    SELECT
-        SERIES_ID,
-        QUARTER,
-        NET_ASSETS,
-        LAG(NET_ASSETS) OVER (PARTITION BY SERIES_ID ORDER BY QUARTER) AS Prev_NET_ASSETS,
-        (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) AS Total_Sales_Flow
-    FROM
-        FUND_REPORTED_INFO
+-- Flow Analysis --
+18. "Find any funds where assets dropped despite positive sales - might indicate performance issues."
+WITH FundFlows AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.NET_ASSETS,
+        LAG(F.NET_ASSETS) OVER (PARTITION BY F.SERIES_ID ORDER BY F.QUARTER) as Prev_Assets,
+        (F.SALES_FLOW_MON1 + F.SALES_FLOW_MON2 + F.SALES_FLOW_MON3) as Total_Sales
+    FROM 
+        FUND_REPORTED_INFO F
 )
-SELECT
-    SERIES_ID
-FROM
-    NetAssetsLag
-WHERE
-    NET_ASSETS < Prev_NET_ASSETS AND Total_Sales_Flow > 0;
+SELECT 
+    SERIES_NAME,
+    NET_ASSETS,
+    Prev_Assets,
+    Total_Sales,
+    ((CAST(NET_ASSETS AS FLOAT) - CAST(Prev_Assets AS FLOAT)) / 
+     NULLIF(CAST(Prev_Assets AS FLOAT), 0)) * 100 as Asset_Change_Pct
+FROM 
+    FundFlows
+WHERE 
+    CAST(NET_ASSETS AS FLOAT) < CAST(Prev_Assets AS FLOAT)
+    AND CAST(Total_Sales AS FLOAT) > 0
+ORDER BY 
+    Asset_Change_Pct;
 
--- 19. Find holdings with significant differences between notional amount and value.
-SELECT
-    DESC_REF_INDEX_COMPONENT_ID
-FROM
-    DESC_REF_INDEX_COMPONENT
-WHERE
-    ABS(NOTIONAL_AMOUNT - VALUE) > 100000;
+-- Derivative Valuation --
+19. "Check for any big gaps between notional amounts and actual values in our derivatives."
+WITH NotionalValueGaps AS (
+    SELECT 
+        F.SERIES_NAME,
+        DRIC.NAME as Component_Name,
+        CAST(DRIC.NOTIONAL_AMOUNT AS FLOAT) as Notional_Amount,
+        CAST(DRIC.VALUE AS FLOAT) as Market_Value,
+        ABS(CAST(DRIC.NOTIONAL_AMOUNT AS FLOAT) - CAST(DRIC.VALUE AS FLOAT)) as Value_Gap
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DESC_REF_INDEX_COMPONENT DRIC ON H.HOLDING_ID = DRIC.HOLDING_ID
+    WHERE 
+        DRIC.NOTIONAL_AMOUNT IS NOT NULL 
+        AND DRIC.VALUE IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Component_Name,
+    Notional_Amount,
+    Market_Value,
+    Value_Gap,
+    (Value_Gap / NULLIF(Notional_Amount, 0)) * 100 as Gap_Percentage
+FROM 
+    NotionalValueGaps
+WHERE 
+    Value_Gap > 100000
+ORDER BY 
+    Gap_Percentage DESC;
 
--- 20. What is the average annualized rate for defaulted debt securities?
-SELECT
-    AVG(ANNUALIZED_RATE) AS AverageAnnualizedRate
-FROM
-    DEBT_SECURITY
-WHERE
-    IS_DEFAULT = 'Yes';
+-- Credit Risk Assessment --
+20. "What's the average yield on our defaulted bonds? Need to assess recovery potential."
+WITH DefaultedSecurities AS (
+    SELECT 
+        F.SERIES_NAME,
+        DS.ANNUALIZED_RATE,
+        H.CURRENCY_VALUE,
+        H.ISSUER_NAME
+    FROM 
+        DEBT_SECURITY DS
+        JOIN FUND_REPORTED_HOLDING H ON DS.HOLDING_ID = H.HOLDING_ID
+        JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE 
+        DS.IS_DEFAULT = 'Y'
+)
+SELECT 
+    SERIES_NAME,
+    ISSUER_NAME,
+    ANNUALIZED_RATE,
+    CURRENCY_VALUE
+FROM 
+    DefaultedSecurities
+ORDER BY 
+    CAST(ANNUALIZED_RATE AS FLOAT) DESC;
 
--- 21. Which funds have high credit spread sensitivity in non-investment-grade assets?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    CREDIT_SPREAD_10YR_NONINVEST > 50000;
+-- Credit Spread Risk --
+21. "Which funds are most exposed to high-yield credit spreads widening?"
+WITH CreditExposure AS (
+    SELECT 
+        SERIES_NAME,
+        CREDIT_SPREAD_10YR_NONINVEST,
+        TOTAL_ASSETS,
+        (CAST(CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) / 
+         NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0)) * 100 as HY_Exposure_Pct
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    HY_Exposure_Pct,
+    TOTAL_ASSETS
+FROM 
+    CreditExposure
+WHERE 
+    HY_Exposure_Pct > 10
+ORDER BY 
+    HY_Exposure_Pct DESC;
 
--- 22. Who are the derivative counterparties with the highest exposure?
-WITH ExposurePerCounterparty AS (
-    SELECT
+-- Counterparty Risk --
+22. "Give me our largest derivative counterparty exposures - need to check concentration risk."
+WITH CounterpartyExposure AS (
+    SELECT 
         DC.DERIVATIVE_COUNTERPARTY_NAME,
-        SUM(NFES.UNREALIZED_APPRECIATION) AS TotalExposure
-    FROM
+        COUNT(DISTINCT F.SERIES_NAME) as Fund_Count,
+        SUM(CAST(NFES.NOTIONAL_AMOUNT AS FLOAT)) as Total_Exposure
+    FROM 
         DERIVATIVE_COUNTERPARTY DC
-    JOIN
-        NONFOREIGN_EXCHANGE_SWAP NFES ON DC.HOLDING_ID = NFES.HOLDING_ID
-    GROUP BY
+        JOIN NONFOREIGN_EXCHANGE_SWAP NFES ON DC.HOLDING_ID = NFES.HOLDING_ID
+        JOIN FUND_REPORTED_HOLDING H ON DC.HOLDING_ID = H.HOLDING_ID
+        JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY 
         DC.DERIVATIVE_COUNTERPARTY_NAME
 )
-SELECT
+SELECT 
     DERIVATIVE_COUNTERPARTY_NAME,
-    TotalExposure
-FROM
-    ExposurePerCounterparty
-ORDER BY
-    TotalExposure DESC;
+    Fund_Count,
+    Total_Exposure,
+    Total_Exposure / SUM(Total_Exposure) OVER () * 100 as Exposure_Percentage
+FROM 
+    CounterpartyExposure
+ORDER BY 
+    Total_Exposure DESC;
 
--- 23. Which funds have a high liquidation preference amount?
-SELECT
-    SERIES_NAME
-FROM
+-- Liquidation Analysis --
+23. "Find funds with high liquidation preference relative to their size - might affect wind-down scenarios."
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS,
+    LIQUIDATION_PREFERENCE,
+    (CAST(LIQUIDATION_PREFERENCE AS FLOAT) / 
+     NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0)) * 100 as Preference_Ratio
+FROM 
     FUND_REPORTED_INFO
-WHERE
-    LIQUIDATION_PREFERENCE > 1000000;
+WHERE 
+    CAST(LIQUIDATION_PREFERENCE AS FLOAT) > 1000000
+ORDER BY 
+    Preference_Ratio DESC;
 
--- 24. Are there holdings that are convertible securities with a conversion ratio above 1?
-SELECT
-    H.ISSUER_NAME
-FROM
-    FUND_REPORTED_HOLDING H
-JOIN
-    CONVERTIBLE_SECURITY_CURRENCY CSC ON H.HOLDING_ID = CSC.HOLDING_ID
-WHERE
-    CSC.CONVERSION_RATIO > 1;
+-- Convertible Securities Analysis --
+24. "Let's look at convertible securities with high conversion ratios - could be significant upside."
+SELECT 
+    F.SERIES_NAME,
+    H.ISSUER_NAME,
+    CSC.CONVERSION_RATIO,
+    H.CURRENCY_VALUE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    JOIN CONVERTIBLE_SECURITY_CURRENCY CSC ON H.HOLDING_ID = CSC.HOLDING_ID
+WHERE 
+    CAST(CSC.CONVERSION_RATIO AS FLOAT) > 1
+ORDER BY 
+    CAST(CSC.CONVERSION_RATIO AS FLOAT) DESC;
 
--- 25. Which funds had significant net redemptions over the last three months?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    (REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) >
-    (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3);
-
--- 26. Find companies with holdings in a specific issuer across multiple quarters.
-SELECT
-    REGISTRANT_NAME
-FROM
-    REGISTRANT R
-JOIN
-    FUND_REPORTED_HOLDING H ON R.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-WHERE
-    H.ISSUER_NAME = 'Specific Issuer'
-GROUP BY
-    REGISTRANT_NAME
-HAVING
-    COUNT(DISTINCT H.QUARTER) > 1;
-
--- 27. Which funds have significant commitments in delayed delivery transactions?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    DELAYED_DELIVERY > 500000;
-
--- 28. Are there holdings with significant changes in fair value level over time?
-WITH HoldingsQ1 AS (
-    SELECT
-        HOLDING_ID,
-        ISSUER_NAME,
-        FAIR_VALUE_LEVEL
-    FROM
-        FUND_REPORTED_HOLDING
-    WHERE
-        QUARTER = 'Q1'
-),
-HoldingsQ2 AS (
-    SELECT
-        HOLDING_ID,
-        FAIR_VALUE_LEVEL
-    FROM
-        FUND_REPORTED_HOLDING
-    WHERE
-        QUARTER = 'Q2'
-)
-SELECT
-    H1.ISSUER_NAME
-FROM
-    HoldingsQ1 H1
-JOIN
-    HoldingsQ2 H2 ON H1.HOLDING_ID = H2.HOLDING_ID
-WHERE
-    H1.FAIR_VALUE_LEVEL <> H2.FAIR_VALUE_LEVEL;
-
--- 29. Which funds have significant borrowings payable after one year?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    BORROWING_PAY_AFTER_1YR > 1000000;
-
--- 30. Find derivative positions with high floating rate spreads.
-SELECT
-    HOLDING_ID
-FROM
-    NONFOREIGN_EXCHANGE_SWAP
-WHERE
-    FLOATING_RATE_SPREAD_RECEIPT > 2 OR FLOATING_RATE_SPREAD_PAYMENT > 2;
-
--- 31. Which funds reported non-cash collateral but no cash collateral?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    IS_NON_CASH_COLLATERAL = 'Yes' AND CASH_NOT_RPTD_IN_C_OR_D = 0;
-
--- 32. How many unique counterparties are there across all derivative contracts?
-SELECT
-    COUNT(DISTINCT DERIVATIVE_COUNTERPARTY_NAME) AS UniqueCounterparties
-FROM
-    DERIVATIVE_COUNTERPARTY;
-
--- 33. What holdings have significant unrealized appreciation in other derivatives?
-SELECT
-    HOLDING_ID
-FROM
-    OTHER_DERIV
-WHERE
-    UNREALIZED_APPRECIATION > 500000;
-
--- 34. Which funds have a high percentage of assets invested in Level 3 securities?
-WITH Level3Holdings AS (
-    SELECT
-        ACCESSION_NUMBER,
-        SUM(PERCENTAGE) AS Level3Percentage
-    FROM
-        FUND_REPORTED_HOLDING
-    WHERE
-        FAIR_VALUE_LEVEL = 'Level 3'
-    GROUP BY
-        ACCESSION_NUMBER
-)
-SELECT
-    F.SERIES_NAME
-FROM
-    Level3Holdings L3
-JOIN
-    FUND_REPORTED_INFO F ON L3.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE
-    L3.Level3Percentage > 20;
-
--- 35. What is the trend of net assets for a specific fund over all quarters?
-SELECT
-    QUARTER,
-    NET_ASSETS
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    SERIES_ID = 'Your_Series_ID'
-ORDER BY
-    QUARTER;
-
--- 36. Are there companies involved in securities lending with non-cash collateral?
-SELECT
-    DISTINCT R.REGISTRANT_NAME
-FROM
-    REGISTRANT R
-JOIN
-    FUND_REPORTED_HOLDING H ON R.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-JOIN
-    SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
-WHERE
-    SL.IS_NON_CASH_COLLATERAL = 'Yes';
-
--- 37. Which funds reported significant unrealized depreciation in the second month?
-SELECT
-    SERIES_NAME
-FROM
-    FUND_REPORTED_INFO
-WHERE
-    NET_UNREALIZE_AP_NONDERIV_MON2 < -500000;
-
--- 38. What is the exposure to interest rate changes across different currencies?
-SELECT
-    CURRENCY_CODE,
-    SUM(INTRST_RATE_CHANGE_10YR_DV01) AS TotalDV01
-FROM
-    INTEREST_RATE_RISK
-GROUP BY
-    CURRENCY_CODE;
-
--- 39. How much did net assets change percentage-wise for all funds between consecutive quarters?
-WITH NetAssetsByQuarter AS (
-    SELECT
-        SERIES_ID,
-        QUARTER,
-        NET_ASSETS,
-        LAG(NET_ASSETS) OVER (PARTITION BY SERIES_ID ORDER BY QUARTER) AS Prev_NET_ASSETS
-    FROM
+-- Flow Analysis --
+25. "Show me funds facing redemption pressure - where outflows exceed inflows consistently."
+WITH FlowAnalysis AS (
+    SELECT 
+        SERIES_NAME,
+        (CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + 
+         CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + 
+         CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) as Total_Redemptions,
+        (CAST(SALES_FLOW_MON1 AS FLOAT) + 
+         CAST(SALES_FLOW_MON2 AS FLOAT) + 
+         CAST(SALES_FLOW_MON3 AS FLOAT)) as Total_Sales
+    FROM 
         FUND_REPORTED_INFO
 )
-SELECT
-    SERIES_ID,
-    ((NET_ASSETS - Prev_NET_ASSETS) / Prev_NET_ASSETS) * 100 AS PercentageChange
-FROM
-    NetAssetsByQuarter
-WHERE
-    Prev_NET_ASSETS IS NOT NULL;
+SELECT 
+    SERIES_NAME,
+    Total_Redemptions,
+    Total_Sales,
+    (Total_Redemptions - Total_Sales) as Net_Outflow
+FROM 
+    FlowAnalysis
+WHERE 
+    Total_Redemptions > Total_Sales
+ORDER BY 
+    Net_Outflow DESC;
+
+-- Portfolio Manager Strategic Analysis --
+26. "How do PIMCO's bond funds compare to their equity funds in terms of growth?"
+WITH PIMCOPerformance AS (
+    SELECT 
+        F.SERIES_NAME,
+        CASE 
+            WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'Bond'
+            WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'Equity'
+            ELSE 'Other'
+        END as Fund_Type,
+        M.MONTHLY_TOTAL_RETURN1,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        R.REGISTRANT_NAME LIKE '%PIMCO%'
+)
+SELECT 
+    Fund_Type,
+    COUNT(*) as Fund_Count,
+    AVG(CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Monthly_Return,
+    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_AUM
+FROM 
+    PIMCOPerformance
+WHERE 
+    Fund_Type IN ('Bond', 'Equity')
+GROUP BY 
+    Fund_Type;
+
+27. "Which asset categories are driving our best returns this quarter?"
+WITH CategoryPerformance AS (
+    SELECT 
+        H.ASSET_CAT,
+        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Value,
+        COUNT(DISTINCT F.SERIES_NAME) as Fund_Count
+    FROM 
+        FUND_REPORTED_HOLDING H
+        JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        H.ASSET_CAT IS NOT NULL
+    GROUP BY 
+        H.ASSET_CAT
+)
+SELECT 
+    ASSET_CAT,
+    Avg_Return,
+    Total_Value,
+    Fund_Count
+FROM 
+    CategoryPerformance
+ORDER BY 
+    Avg_Return DESC;
+
+28. "Where are we seeing the biggest month-over-month changes in fund flows?"
+WITH FlowTrends AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.SALES_FLOW_MON1,
+        F.SALES_FLOW_MON2,
+        ((CAST(F.SALES_FLOW_MON1 AS FLOAT) - CAST(F.SALES_FLOW_MON2 AS FLOAT)) / 
+         NULLIF(CAST(F.SALES_FLOW_MON2 AS FLOAT), 0)) * 100 as Flow_Change_Pct
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SALES_FLOW_MON1 IS NOT NULL 
+        AND F.SALES_FLOW_MON2 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    SALES_FLOW_MON1 as Current_Flow,
+    SALES_FLOW_MON2 as Previous_Flow,
+    Flow_Change_Pct
+FROM 
+    FlowTrends
+WHERE 
+    ABS(Flow_Change_Pct) > 10
+ORDER BY 
+    ABS(Flow_Change_Pct) DESC;
+
+29. "What's PIMCO's current duration positioning across their major bond funds?"
+WITH PIMCODuration AS (
+    SELECT 
+        F.SERIES_NAME,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        IR.INTRST_RATE_CHANGE_30YR_DV01,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+        JOIN INTEREST_RATE_RISK IR ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+    WHERE 
+        R.REGISTRANT_NAME LIKE '%PIMCO%'
+        AND F.SERIES_NAME LIKE '%BOND%'
+)
+SELECT 
+    SERIES_NAME,
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as Ten_Year_Duration,
+    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Thirty_Year_Duration,
+    TOTAL_ASSETS
+FROM 
+    PIMCODuration
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC;
+
+30. "How are our largest funds positioned in terms of credit quality?"
+WITH CreditQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.CREDIT_SPREAD_10YR_INVEST,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        F.TOTAL_ASSETS,
+        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
+        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
+               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as IG_Percentage
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        CAST(F.TOTAL_ASSETS AS FLOAT) > 1000000000
+)
+SELECT 
+    SERIES_NAME,
+    IG_Percentage,
+    TOTAL_ASSETS
+FROM 
+    CreditQuality
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC;
+
+31. "Which sectors are seeing the biggest shifts in allocation this quarter?"
+WITH SectorShifts AS (
+    SELECT 
+        H.ASSET_CAT,
+        S.QUARTER,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Value
+    FROM 
+        FUND_REPORTED_HOLDING H
+        JOIN SUBMISSION S ON H.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+    GROUP BY 
+        H.ASSET_CAT,
+        S.QUARTER
+)
+SELECT 
+    s1.ASSET_CAT,
+    s1.Total_Value as Current_Value,
+    s2.Total_Value as Previous_Value,
+    ((s1.Total_Value - s2.Total_Value) / s2.Total_Value * 100) as Change_Percentage
+FROM 
+    SectorShifts s1
+    JOIN SectorShifts s2 
+        ON s1.ASSET_CAT = s2.ASSET_CAT
+        AND s1.QUARTER > s2.QUARTER
+ORDER BY 
+    ABS(Change_Percentage) DESC;
+
+32. "Give me a list of funds that seem to be changing their risk profile significantly."
+WITH RiskMetrics AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.QUARTER,
+        (CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100 as HY_Exposure,
+        (CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100 as Leverage_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+)
+SELECT 
+    r1.SERIES_NAME,
+    r1.HY_Exposure - r2.HY_Exposure as HY_Exposure_Change,
+    r1.Leverage_Ratio - r2.Leverage_Ratio as Leverage_Change
+FROM 
+    RiskMetrics r1
+    JOIN RiskMetrics r2 
+        ON r1.SERIES_NAME = r2.SERIES_NAME
+        AND r1.QUARTER > r2.QUARTER
+WHERE 
+    ABS(r1.HY_Exposure - r2.HY_Exposure) > 5
+    OR ABS(r1.Leverage_Ratio - r2.Leverage_Ratio) > 5
+ORDER BY 
+    ABS(r1.HY_Exposure - r2.HY_Exposure) + ABS(r1.Leverage_Ratio - r2.Leverage_Ratio) DESC;
+
+33. "What's our current cash position across funds compared to last quarter?"
+WITH CashPositions AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.QUARTER,
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / 
+        NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Cash_Percentage
+    FROM 
+        FUND_REPORTED_INFO F
+)
+SELECT 
+    c1.SERIES_NAME,
+    c1.Cash_Percentage as Current_Cash,
+    c2.Cash_Percentage as Previous_Cash,
+    c1.Cash_Percentage - c2.Cash_Percentage as Cash_Change
+FROM 
+    CashPositions c1
+    JOIN CashPositions c2 
+        ON c1.SERIES_NAME = c2.SERIES_NAME
+        AND c1.QUARTER > c2.QUARTER
+WHERE 
+    ABS(c1.Cash_Percentage - c2.Cash_Percentage) > 2
+ORDER BY 
+    ABS(Cash_Change) DESC;
+
+34. "Show me our best performing strategies in rising rate environments."
+WITH RatePerformance AS (
+    SELECT 
+        F.SERIES_NAME,
+        M.MONTHLY_TOTAL_RETURN1,
+        IR.INTRST_RATE_CHANGE_10YR_DV01
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+        JOIN INTEREST_RATE_RISK IR ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+    WHERE 
+        CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 0
+)
+SELECT 
+    SERIES_NAME,
+    AVG(CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return,
+    AVG(CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT)) as Avg_Rate_Sensitivity
+FROM 
+    RatePerformance
+GROUP BY 
+    SERIES_NAME
+ORDER BY 
+    Avg_Return DESC
+LIMIT 10;
+
+35. "What's the geographic distribution of our international holdings?"
+SELECT 
+    H.INVESTMENT_COUNTRY,
+    COUNT(DISTINCT F.SERIES_NAME) as Fund_Count,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Value,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) / 
+    SUM(SUM(CAST(H.CURRENCY_VALUE AS FLOAT))) OVER () * 100 as Percentage
+FROM 
+    FUND_REPORTED_HOLDING H
+    JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    H.INVESTMENT_COUNTRY IS NOT NULL
+    AND H.INVESTMENT_COUNTRY != 'US'
+GROUP BY 
+    H.INVESTMENT_COUNTRY
+ORDER BY 
+    Total_Value DESC;
+
+36. "Which of our funds have the most consistent monthly returns?"
+WITH ReturnConsistency AS (
+    SELECT 
+        F.SERIES_NAME,
+        STDDEV(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Return_StdDev,
+        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) as Avg_Return
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    GROUP BY 
+        F.SERIES_NAME
+    HAVING 
+        COUNT(*) >= 3
+)
+SELECT 
+    SERIES_NAME,
+    Avg_Return,
+    Return_StdDev,
+    CASE 
+        WHEN Return_StdDev = 0 THEN NULL 
+        ELSE Avg_Return / Return_StdDev 
+    END as Sharpe_Ratio
+FROM 
+    ReturnConsistency
+WHERE 
+    Return_StdDev > 0
+ORDER BY 
+    Return_StdDev ASC
+LIMIT 15;
+
+37. "Let's see which funds are most active in derivatives across different instrument types."
+WITH DerivativeUsage AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT CASE WHEN OD.HOLDING_ID IS NOT NULL THEN 'Other' END) +
+        COUNT(DISTINCT CASE WHEN FFC.HOLDING_ID IS NOT NULL THEN 'FX' END) +
+        COUNT(DISTINCT CASE WHEN NES.HOLDING_ID IS NOT NULL THEN 'Swap' END) as Derivative_Types,
+        COUNT(*) as Total_Positions
+    FROM 
+        FUND_REPORTED_INFO F
+        LEFT JOIN OTHER_DERIV OD ON F.ACCESSION_NUMBER = OD.HOLDING_ID
+        LEFT JOIN FWD_FOREIGNCUR_CONTRACT_SWAP FFC ON F.ACCESSION_NUMBER = FFC.HOLDING_ID
+        LEFT JOIN NONFOREIGN_EXCHANGE_SWAP NES ON F.ACCESSION_NUMBER = NES.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Derivative_Types,
+    Total_Positions
+FROM 
+    DerivativeUsage
+WHERE 
+    Derivative_Types > 0
+ORDER BY 
+    Derivative_Types DESC, Total_Positions DESC;
+
+38. "What's our current exposure to emerging market debt?"
+WITH EMDebt AS (
+    SELECT 
+        F.SERIES_NAME,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as EM_Debt_Value,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.ASSET_CAT LIKE '%DEBT%'
+        AND H.INVESTMENT_COUNTRY NOT IN ('US', 'GB', 'DE', 'FR', 'JP', 'CA', 'IT')
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    EM_Debt_Value,
+    (EM_Debt_Value / Total_Assets * 100) as EM_Debt_Percentage
+FROM 
+    EMDebt
+WHERE 
+    EM_Debt_Value > 0
+ORDER BY 
+    EM_Debt_Percentage DESC;
+
+39. "How diverse are our income sources across the portfolio?"
+WITH IncomeAnalysis AS (
+    SELECT 
+        F.SERIES_NAME,
+        SUM(CASE 
+            WHEN DS.COUPON_TYPE = 'Fixed' THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Fixed_Income,
+        SUM(CASE 
+            WHEN DS.COUPON_TYPE = 'Floating' THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Floating_Income,
+        SUM(CASE 
+            WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Securities_Lending_Income,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        LEFT JOIN DEBT_SECURITY DS 
+            ON H.HOLDING_ID = DS.HOLDING_ID
+        LEFT JOIN SECURITIES_LENDING SL 
+            ON H.HOLDING_ID = SL.HOLDING_ID
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS
+)
+SELECT 
+    SERIES_NAME,
+    (Fixed_Income / Total_Assets * 100) as Fixed_Income_Pct,
+    (Floating_Income / Total_Assets * 100) as Floating_Income_Pct,
+    (Securities_Lending_Income / Total_Assets * 100) as Sec_Lending_Pct,
+    ((Fixed_Income + Floating_Income + Securities_Lending_Income) / Total_Assets * 100) as Total_Income_Pct,
+    Total_Assets
+FROM 
+    IncomeAnalysis
+WHERE 
+    Total_Assets > 0
+ORDER BY 
+    Total_Income_Pct DESC;
+
+40. "Give me a complete risk profile of PIMCO's largest funds - looking at duration, credit, and leverage exposure"
+WITH PIMCORiskProfile AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        -- Duration Risk
+        IR.INTRST_RATE_CHANGE_10YR_DV01 as Duration_Risk,
+        -- Credit Risk
+        (CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100 as High_Yield_Exposure,
+        -- Leverage
+        (CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) + 
+         CAST(F.BORROWING_PAY_AFTER_1YR AS FLOAT)) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Leverage_Ratio,
+        -- Derivatives Exposure
+        COUNT(DISTINCT OD.HOLDING_ID) as Derivative_Positions,
+        -- Liquidity Profile
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / 
+        NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Cash_Position,
+        -- Recent Performance
+        M.MONTHLY_TOTAL_RETURN1
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN REGISTRANT R 
+            ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+        LEFT JOIN INTEREST_RATE_RISK IR 
+            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+        LEFT JOIN OTHER_DERIV OD 
+            ON F.ACCESSION_NUMBER = OD.HOLDING_ID
+        LEFT JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        R.REGISTRANT_NAME LIKE '%PIMCO%'
+        AND F.TOTAL_ASSETS IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        F.BORROWING_PAY_WITHIN_1YR,
+        F.BORROWING_PAY_AFTER_1YR,
+        F.CASH_NOT_RPTD_IN_C_OR_D,
+        M.MONTHLY_TOTAL_RETURN1
+)
+SELECT 
+    SERIES_NAME,
+    CAST(TOTAL_ASSETS AS FLOAT) / 1000000 as Assets_MM,
+    Duration_Risk as Duration_DV01,
+    High_Yield_Exposure as HY_Pct,
+    Leverage_Ratio as Leverage_Pct,
+    Derivative_Positions,
+    Cash_Position as Cash_Pct,
+    CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT) as Latest_Monthly_Return,
+    CASE
+        WHEN Duration_Risk > 1 AND High_Yield_Exposure > 20 THEN 'High Risk'
+        WHEN Duration_Risk > 1 OR High_Yield_Exposure > 20 THEN 'Moderate Risk'
+        ELSE 'Conservative'
+    END as Risk_Category
+FROM 
+    PIMCORiskProfile
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 15;
+
 ```
 """
 
@@ -2500,6 +3766,9 @@ full_prompt = (
     default_query_behavior +
     example_queries +
     reasoning_instruction +
+    gpt_queries_easy +
+    gpt_queries_medium +
+    gpt_queries_hard +
     output_instruction
 )
 # Output the full prompt

@@ -53,16 +53,6 @@ def load_schema_from_json(file_path: str) -> dict:
             status_code=500,
             detail=f"Error decoding JSON schema: {str(e)}"
         )
-    
-# Path to your JSON schema files
-SCHEMA_FILE = 'chatgpt_api/nport_metadata.json'
-print(f"Expected schema path: {SCHEMA_FILE}")  # Add this line to see the path in logs
-
-try:
-    db_schema = load_schema_from_json(SCHEMA_FILE)
-except Exception as e:
-    logger.error(f"Failed to load initial schema: {str(e)}")
-    db_schema = None
 
 
 def format_schema_for_gpt(schema: dict) -> str:
@@ -83,8 +73,20 @@ def format_schema_for_gpt(schema: dict) -> str:
             status_code=500,
             detail=f"Error formatting schema: {str(e)}"
         )
-    
+
+
+# Path to the JSON schema file
+SCHEMA_FILE = 'chatgpt_api/schema.json'
+print(f"Expected schema path: {SCHEMA_FILE}")  # Add this line to see the path in logs
+
+try:
+    db_schema = load_schema_from_json(SCHEMA_FILE)
+except Exception as e:
+    logger.error(f"Failed to load initial schema: {str(e)}")
+    db_schema = None
+
 schema_info = format_schema_for_gpt(db_schema) 
+
 
 def get_prompt() -> str:
     try:
@@ -94,6 +96,7 @@ def get_prompt() -> str:
         logger.warning(f"Failed to load chat prompt: {str(e)}")
         return ""
     
+
 # LLM prompting for SQL generation
 def generate_sql(question: str) -> str:
     logger.debug(f"Generating SQL for question: {question}")
@@ -109,13 +112,7 @@ def generate_sql(question: str) -> str:
     prompt = f"""
     ```
     OVERALL TASK:
-    I will provide a database schema, generate an SQL query that retrieves from the database the answer to this question.
-    
-    DATABASE SCHEMA:
-    Given the following database schema:
-    {schema_info}
-
-    Generate an SQL query that retrieves from the database the answer to this question: {question}
+    I will provide a database schema, generate an SQL query that retrieves from the database the answer to this question: {question}
     ```
     """ + get_prompt()
     try:
@@ -125,25 +122,48 @@ def generate_sql(question: str) -> str:
                 {
                     "role": "system",
                     "content": "You are a financial database assistant that generates SQL queries based on natural language questions about financial data."
-                },#add tools parameter and pass schema for reasoning
+                },# adding tools parameter and pass schema for reasoning
                 {"role": "user", "content": prompt}
-            ]
+            ],
+           tools = [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "sql_query",
+                        "description": "Execute SQL queries against the database schema which includes tables like FUND_REPORTED_INFO (containing SERIES_NAME, TOTAL_ASSETS) and REGISTRANT (containing REGISTRANT_NAME). Use these tables to analyze fund data.",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "query": {
+                                    "type": "string",
+                                    "description": "The SQL query to execute. Example: To find top PIMCO funds, use: SELECT SERIES_NAME, TOTAL_ASSETS FROM FUND_REPORTED_INFO JOIN REGISTRANT ON FUND_REPORTED_INFO.ACCESSION_NUMBER = REGISTRANT.ACCESSION_NUMBER WHERE REGISTRANT_NAME LIKE '%PIMCO%' ORDER BY TOTAL_ASSETS DESC LIMIT 5"
+                                }
+                            },
+                            "required": ["query"]
+                        }
+                    },
+                    "schema": schema_info # this is where the schema is entered
+                }
+            ], 
+        tool_choice={"type": "function", "function": {"name": "sql_query"}}  # force the model to use the SQL function
         )
-        sql_query = response.choices[0].message.content.strip().replace("```sql", "").replace("```", "").strip()
-        logger.info(f"Generated SQL query: {sql_query}")
-        return sql_query
-    except openai.APIStatusError as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"OpenAI API error: {str(e)}"
-        )
+
+        function_call = response.choices[0].message.tool_calls[0].function
+        if function_call.name == "sql_query":
+            # openai returns function arguments as a JSON string, so we need to parse it
+            # The query will be in the "query" field of the parsed JSON
+            sql_query = json.loads(function_call.arguments)["query"]
+            logger.info(f"Generated SQL query: {sql_query}")
+            return sql_query
+        else:
+            raise ValueError(f"Unexpected function call: {function_call.name}")
+
     except Exception as e:
         logger.error(f"Unexpected error generating SQL: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=f"Error generating SQL: {str(e)}"
-        )
+    )
 
 def execute_sql(query: str) -> str:
     logger.debug(f"Executing SQL query: {query}")
