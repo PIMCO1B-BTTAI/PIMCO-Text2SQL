@@ -7,3 +7,4 @@ data/*
 !data/*.py
 !data/*.ipynb
 sqlite/nport.db
+*.drawio

@@ -125,7 +125,7 @@ def generate_sql(question: str) -> str:
                 },# adding tools parameter and pass schema for reasoning
                 {"role": "user", "content": prompt}
             ],
-           tools = [
+            tools = [
                 {
                     "type": "function",
                     "function": {
