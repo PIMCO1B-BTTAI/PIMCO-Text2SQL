@@ -8,3 +8,6 @@ data/*
 !data/*.ipynb
 sqlite/nport.db
 *.drawio
+model_info.json
+
+
