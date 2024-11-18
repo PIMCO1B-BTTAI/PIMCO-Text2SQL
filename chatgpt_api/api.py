@@ -10,6 +10,10 @@ import os
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from typing import Optional
+from din_modules.value_retrieval import ValueRetriever
+from din_modules import din_classification_decomp, din_self_correction, din_sql_generation
+
+
 #from chatgpt_api.chat_prompt import generate_sql_and_reasoning
 
 # Configure logging
@@ -122,7 +126,7 @@ def generate_sql(question: str) -> str:
                 {
                     "role": "system",
                     "content": "You are a financial database assistant that generates SQL queries based on natural language questions about financial data."
-                },# adding tools parameter and pass schema for reasoning
+                },
                 {"role": "user", "content": prompt}
             ],
             tools = [
@@ -243,10 +247,24 @@ def get_column_mapping(db_sql: str, gpt_sql: str) -> dict:
         return {}
 
 
-# Frontend HTTP access point
 @app.get("/")
 async def root():
     return {"message": "API is running!"}
+
+@app.post("/din-query")
+async def process_din_query(query: Query):
+    relevant_schema_links = ValueRetriever().process_query(query.question)
+    predicted_class = din_classification_decomp.process_question(query.question,relevant_schema_links) 
+    crude_sql = din_sql_generation.process_question(query.question, predicted_class, relevant_schema_links)
+    sql_query = din_self_correction.refine_query()
+    csv_results = execute_sql(sql_query)
+    return {
+        "sql_query": sql_query,
+        "csv_results": csv_results  # CSV data embedded as a JSON field
+    }
+
+
+
 
 @app.post("/query")
 async def process_query(query: Query):
@@ -259,11 +277,6 @@ async def process_query(query: Query):
             "sql_query": sql_query,
             "csv_results": csv_results  # CSV data embedded as a JSON field
         }
-        #return StreamingResponse(
-        #    io.StringIO(csv_results),
-        #    media_type="text/csv",
-        #    headers={"Content-Disposition": "attachment; filename=results.csv"}
-        #)
     except HTTPException:
         raise
     except Exception as e:
@@ -275,7 +288,6 @@ async def process_query(query: Query):
 
 @app.get("/schema-raw")
 async def get_raw_schema():
-    # Return the raw schema without any formatting
     return db_schema
 
 @app.get("/schema")
