@@ -1,25 +1,21 @@
 import streamlit as st
 import requests
-import json
 import pandas as pd
 import io
 
-# Page configuration
 st.set_page_config(
     page_title="Financial Data Chatbot",
     page_icon="💬",
     layout="wide",
 )
 
-# Custom CSS
 def local_css(file_name):
-    with open(file_name) as f:
+    with open(file_name, 'r') as f:
         css = f.read()
     st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 local_css("style.css")
 
-# Hide Streamlit's default menu and footer
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -32,7 +28,6 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 st.title("💬 Financial Data Chatbot")
 st.markdown("Ask questions about financial data and get SQL queries with results.")
 
-# Initialize session state
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
@@ -46,7 +41,6 @@ with chat_placeholder:
         else:
             st.markdown(f"<div class='assistant-message'>{msg['content']}</div>", unsafe_allow_html=True)
 
-# Add a spacer to push the input area to the bottom
 st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
 
 # Input area at the bottom
