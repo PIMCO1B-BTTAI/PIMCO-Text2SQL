@@ -204,7 +204,7 @@ class ValueRetriever:
         Return a JSON object with the extracted components following the same format as the examples."""
 
         response = self.client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": few_shot_examples + "\n" + user_prompt}
@@ -274,7 +274,7 @@ def process_question_classification(question,relevant_schema_links):
 	while classification is None:
 			try:
 					classification = client.chat.completions.create(
-						model="gpt-4o",
+						model="gpt-4-turbo",
 						messages=[{"role": "user", "content": classification_prompt_maker(question, relevant_schema_links=relevant_schema_links)}],
 						n = 1,
 						stream = False,
@@ -360,7 +360,7 @@ def easy_prompt_maker(question,database,schema_links):
 
 def GPT4_generation(prompt):
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4-turbo",
         messages=[{"role": "user", "content": prompt}],
         n = 1,
         stream = False,
@@ -439,7 +439,7 @@ def debuger(test_sample_text,sql):
 
 def GPT4_debug(prompt):
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4-turbo",
         messages=[{"role": "user", "content": prompt}],
         n = 1,
         stream = False,
@@ -487,7 +487,7 @@ def generate_sql(question: str) -> str:
     """ + get_prompt()
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4-turbo",
             messages=[
                 {
                     "role": "system",
@@ -596,7 +596,7 @@ def get_column_mapping(db_sql: str, gpt_sql: str) -> dict:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are a SQL expert that creates column mappings between queries."},
                 {"role": "user", "content": prompt}
