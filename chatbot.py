@@ -72,7 +72,7 @@ with st.form(key='input_form', clear_on_submit=True):
             # Send request to backend
             try:
                 response = requests.post(
-                    "http://localhost:8000/query",
+                    "http://localhost:8000/din-query",
                     json={"question": user_input}
                 )
                 response.raise_for_status()

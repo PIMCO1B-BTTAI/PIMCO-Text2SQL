@@ -1162,6 +1162,7 @@ Output only the SQLite's SQL query syntax, without blank padding on the left or 
 
 gpt_queries_easy = """
 ```
+Example queries set (easy difficulty) that should not require any nested queries or join statements.
 1. "Show me the top 5 largest funds by total assets"
 SELECT 
     SERIES_NAME,
@@ -1626,6 +1627,7 @@ ORDER BY
 
 gpt_queries_medium = """
 ```
+Example queries set (medium difficulty) that should require join statements, but does not require any nested queries.
 1. "I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?"
 WITH ESGFunds AS (
     SELECT 
@@ -2707,6 +2709,7 @@ ORDER BY
 
 gpt_queries_hard ="""
 ```
+Example queries set (hard difficulty) that should require nested queries and join statements.  
 1. "Can you flag any funds that have liabilities over half their assets?"
 SELECT 
     F.SERIES_NAME,

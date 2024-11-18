@@ -37,7 +37,7 @@ def classification_prompt_maker(question,relevant_schema_links):
   prompt = instruction + classification_prompt + 'Q: "' + question + '\nrelevant_schema_links: ' + relevant_schema_links + '\nA: Let’s think step by step.'
   return prompt
 
-def process_question(question,relevant_schema_links):
+def process_question_classification(question,relevant_schema_links):
 	classification = None
 	while classification is None:
 			try:

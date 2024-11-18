@@ -5,6 +5,7 @@ import os
 import sys
 from openai import OpenAI
 from dotenv import load_dotenv
+import chat_prompt
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 if not client.api_key:
@@ -59,17 +60,17 @@ def hard_prompt_maker(question,database,schema_links,sub_questions=""):
         stepping = f'''\nA: Let's think step by step. "{question}" can be solved by first solving a sub-question using nested queries".'''
     else:
         stepping = f'''\nA: Let's think step by step. "{question}" can be solved by first solving the answer to the following sub-question "{sub_questions}".'''
-    prompt = instruction + hard_prompt + 'Q: "' + question + '"' + '\nschema_links: ' + schema_links + stepping +'\nThe SQL query for the sub-question"'
+    prompt = instruction + hard_prompt+ chat_prompt.gpt_queries_hard+ 'Q: "' + question + '"' + '\nschema_links: ' + schema_links + stepping +'\nThe SQL query for the sub-question:"'
     return prompt
 
 def medium_prompt_maker(question,database,schema_links):
     instruction = "# Use the the schema links and Intermediate_representation to generate the SQL queries for each of the questions.\n"
-    prompt = instruction + medium_prompt + 'Q: "' + question + '\nSchema_links: ' + schema_links + '\nA: Let’s think step by step.'
+    prompt = instruction + medium_prompt + chat_prompt.gpt_queries_medium+ 'Q: "' + question + '\nSchema_links: ' + schema_links + '\nA: Let’s think step by step.'
     return prompt
 
 def easy_prompt_maker(question,database,schema_links):
     instruction = "# Use the the schema links to generate the SQL queries for each of the questions.\n"
-    prompt = instruction + easy_prompt + 'Q: "' + question + '\nSchema_links: ' + schema_links + '\nSQL:'
+    prompt = instruction + easy_prompt + chat_prompt.gpt_queries_easy + 'Q: "' + question + '\nSchema_links: ' + schema_links + '\nSQL:'
     return prompt
 
 
@@ -93,7 +94,7 @@ def GPT4_generation(prompt):
 
 # Use the following to run after every function is correctly defined
 # Remember to change the certain function names below into the ones that are created in previous steps
-def process_question(question, predicted_class, schema_links):
+def process_question_sql(question, predicted_class, schema_links):
     if '"EASY"' in predicted_class:
         print("EASY")
         SQL = None
