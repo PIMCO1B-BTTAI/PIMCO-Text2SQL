@@ -2,7 +2,8 @@ import openai
 import os
 import os
 import time
-import chat_prompt
+import json
+from din_modules import api
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -113,7 +114,15 @@ if __name__ == "__main__":
         # Set of human-annotated few-shot examples
         ## ADD HERE
     ]
-    db_schema = chat_prompt.schema_info
+
+    # Path to the JSON schema file
+    SCHEMA_FILE = 'chatgpt_api/schema.json'
+    try:
+        db_schema = api.load_schema_from_json(SCHEMA_FILE)
+    except Exception as e:
+        db_schema = None
+
+    db_schema = api.format_schema_for_gpt(db_schema) 
     
     # Initialize the Divide and Conquer Text-to-SQL strategy
     example_nl_to_sql = ChaseDivideAndConquer(few_shot_examples, db_schema)
