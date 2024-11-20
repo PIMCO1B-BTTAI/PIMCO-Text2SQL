@@ -3927,8 +3927,8 @@ full_prompt = (
     example_queries +
     reasoning_instruction +
     gpt_queries_easy +
-    gpt_queries_medium +
-    gpt_queries_hard +
+    #gpt_queries_medium +
+    #gpt_queries_hard +
     output_instruction
 )
 # Output the full prompt
