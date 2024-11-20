@@ -4,6 +4,7 @@ import sqlite3
 import csv
 import io
 import logging
+import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import os
