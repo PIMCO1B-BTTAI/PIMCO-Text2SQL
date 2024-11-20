@@ -1,7 +1,7 @@
 # PIMCO
 
 ### Set up database before running app:
-1. Download all quarters' NPORT dataset (`.zip` files) and drop them into `data/` folder in your local directory)
+1. Download all quarters' NPORT dataset (`.zip` files) and drop them into `data/` folder in your local directory
 2. run `python extract_data_zips.py` in `data/` folder to extract all of them
 3. run PIMCO1B_Database_2.ipynb in main folder, all cells (this should create a nport.db in your sqlite folder)
 Then, proceed to run app below
