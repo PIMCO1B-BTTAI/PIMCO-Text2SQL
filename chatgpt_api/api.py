@@ -98,116 +98,357 @@ def get_prompt() -> str:
         logger.warning(f"Failed to load chat prompt: {str(e)}")
         return ""
 
-from typing import Dict, List, Tuple
-from Levenshtein import distance
-from datasketch import MinHash, MinHashLSH
+from typing import List, Tuple, Dict
+import os
+import json
+from dotenv import load_dotenv
+from openai import OpenAI
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+import nltk
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+from rapidfuzz.distance.Levenshtein import distance
+from rapidfuzz import fuzz
+import re
 ############################################ VALUE RETRIEVAL
 
-class ValueRetriever:
-    def __init__(self, schema_path: str = 'chatgpt_api/schema.json'):
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+
+class PSLsh:
+    def __init__(self, vectors, n_planes=10, n_tables=5, seed: int = 42):
+        self.n_planes = n_planes
+        self.n_tables = n_tables
+        self.hash_tables = [{} for _ in range(n_tables)]
+        self.random_planes = []
+        
+        np.random.seed(seed)
+        
+        for _ in range(n_tables):
+            planes = np.random.randn(vectors.shape[1], n_planes)
+            self.random_planes.append(planes)
+            
+        self.num_vectors = vectors.shape[0]
+        self.vectors = vectors
+        self.build_hash_tables()
+
+    def build_hash_tables(self):
+        for idx in range(self.num_vectors):
+            vector = self.vectors[idx].toarray()[0]
+            hashes = self.hash_vector(vector)
+            for i, h in enumerate(hashes):
+                if h not in self.hash_tables[i]:
+                    self.hash_tables[i][h] = []
+                self.hash_tables[i][h].append(idx)
+
+    def hash_vector(self, vector):
+        hashes = []
+        for planes in self.random_planes:
+            projections = np.dot(vector, planes)
+            hash_code = ''.join(['1' if x > 0 else '0' for x in projections])
+            hashes.append(hash_code)
+        return hashes
+
+    def query(self, vector):
+        hashes = self.hash_vector(vector)
+        candidates = set()
+        for i, h in enumerate(hashes):
+            candidates.update(self.hash_tables[i].get(h, []))
+        return candidates
+
+
+class ValueRetrieval:
+    financial_terms = {
+            'total': ['total', 'sum', 'aggregate', 'combined'],
+            'assets': ['asset', 'holdings', 'investments', 'securities'],
+            'liabilities': ['liability', 'debt', 'obligations'],
+            'net': ['net', 'pure', 'adjusted'],
+            'fund': ['fund', 'portfolio', 'investment vehicle'],
+            'return': ['return', 'yield', 'profit', 'gain'],
+            'monthly': ['monthly', 'month', 'monthly basis'],
+            'rate': ['rate', 'percentage', 'ratio'],
+            'risk': ['risk', 'exposure', 'vulnerability']
+        }
+    def __init__(self, schema_path: str = 'chatgpt_api/schema.json', lsh_seed: int = 42):
         load_dotenv()
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-        
+
         # Load schema
+        print("DEBUG: Loading schema file:", schema_path)
         with open(schema_path, 'r') as f:
             self.schema = json.load(f)
+
+        # Initialize lemmatizer and stop words
+        self.lemmatizer = WordNetLemmatizer()
+        self.stop_words = set(stopwords.words('english'))
         
-        # Initialize LSH - locality sensitive hashing
-        self.lsh = MinHashLSH(threshold=0.5, num_perm=128)
-        self.minhashes = {}
+        # Build column name index
+        self.column_index = self._build_column_index()
         
-        # Build LSH index from schema
-        self._build_lsh_index()
+        # Build common financial terms dictionary
         
-    def _build_lsh_index(self):
-        # Build lsh from the schema columns
-        for table in self.schema.get('tables', []):
-            table_schema = table.get('tableSchema', {})
-            
-            for column in table_schema.get('columns', []):
-                word = column['name'].lower()
-                minhash = MinHash(num_perm=128)
+
+        # Build vectorizer and LSH for backup matching
+        self.build_vectorizer_and_lsh(seed=lsh_seed)
+        
+        # Get schema relationships
+        self.primary_keys, self.foreign_keys = self.discover_schema_relationships()
+
+    def _build_column_index(self) -> Dict:
+        """Build an index of all columns with their metadata."""
+        column_index = {}
+        tables = self.schema.get('schema', {}).get('tables', [])
+        
+        for table in tables:
+            table_name = table.get('name', '').lower()
+            for column in table.get('columns', []):
+                column_name = column.get('name', '').lower()
                 
-                for i in range(len(word) - 2):
-                    minhash.update(word[i:i+3].encode('utf-8'))
+                # Store both the full qualified name and column properties
+                qualified_name = f"{table_name}.{column_name}"
+                column_index[qualified_name] = {
+                    'table': table_name,
+                    'column': column_name,
+                    'type': column.get('type', ''),
+                    'words': self._split_column_name(column_name),
+                    'synonyms': self._get_column_synonyms(column_name)
+                }
                 
-                self.minhashes[word] = minhash
-                self.lsh.insert(word, minhash)
+        return column_index
+
+    def _split_column_name(self, column_name: str) -> List[str]:
+        """Split column name into individual words."""
+        # Handle both underscore and camel case
+        words = re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', column_name)).split()
+        words.extend(column_name.split('_'))
+        return [word.lower() for word in words if word]
+
+    def _get_column_synonyms(self, column_name: str) -> List[str]:
+        """Get synonyms for words in column name."""
+        words = self._split_column_name(column_name)
+        synonyms = []
+        
+        for word in words:
+            if word in self.financial_terms:
+                synonyms.extend(self.financial_terms[word])
+                
+        return list(set(synonyms))
+
+    def build_vectorizer_and_lsh(self, seed: int):
+        self.vectorizer = TfidfVectorizer(analyzer='char', ngram_range=(1, 3), min_df=1, max_df=0.95)
+        self.term_list = self.get_schema_terms()
+        self.term_vectors = self.vectorizer.fit_transform(self.term_list)
+        self.lsh = PSLsh(self.term_vectors, n_planes=10, n_tables=5)
+
+    def get_schema_terms(self) -> List[str]:
+        terms = []
+        tables = self.schema.get('schema', {}).get('tables', [])
+        for table in tables:
+            table_name = table.get('name', '').lower()
+            terms.append(table_name)
+            for column in table.get('columns', []):
+                column_name = column.get('name', '').lower()
+                terms.append(f"{table_name}.{column_name}")
+        return terms
+
+    def discover_schema_relationships(self):
+        # Define our primary keys and foreign keys here
+        primary_keys = {
+            'SUBMISSION': ['ACCESSION_NUMBER'],
+            'REGISTRANT': ['ACCESSION_NUMBER'],
+            'FUND_REPORTED_INFO': ['ACCESSION_NUMBER'],
+            'INTEREST_RATE_RISK': ['ACCESSION_NUMBER', 'INTEREST_RATE_RISK_ID'],
+            'BORROWER': ['ACCESSION_NUMBER', 'BORROWER_ID'],
+            'BORROW_AGGREGATE': ['ACCESSION_NUMBER', 'BORROW_AGGREGATE_ID'],
+            'MONTHLY_TOTAL_RETURN': ['ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN_ID'],
+            'MONTHLY_RETURN_CAT_INSTRUMENT': ['ACCESSION_NUMBER', 'ASSET_CAT', 'INSTRUMENT_KIND'],
+            'FUND_VAR_INFO': ['ACCESSION_NUMBER'],
+            'FUND_REPORTED_HOLDING': ['ACCESSION_NUMBER', 'HOLDING_ID'],
+            'IDENTIFIERS': ['HOLDING_ID', 'IDENTIFIERS_ID'],
+            'DEBT_SECURITY': [],  
+            'DEBT_SECURITY_REF_INSTRUMENT': ['HOLDING_ID', 'DEBT_SECURITY_REF_ID'],
+            'CONVERTIBLE_SECURITY_CURRENCY': ['HOLDING_ID', 'CONVERTIBLE_SECURITY_ID'],
+            'REPURCHASE_AGREEMENT': ['HOLDING_ID'],
+            'REPURCHASE_COUNTERPARTY': ['HOLDING_ID', 'REPURCHASE_COUNTERPARTY_ID'],
+            'REPURCHASE_COLLATERAL': ['HOLDING_ID', 'REPURCHASE_COLLATERAL_ID'],
+            'DERIVATIVE_COUNTERPARTY': ['HOLDING_ID', 'DERIVATIVE_COUNTERPARTY_ID'],
+            'SWAPTION_OPTION_WARNT_DERIV': ['HOLDING_ID'],
+            'DESC_REF_INDEX_BASKET': ['HOLDING_ID'],
+            'DESC_REF_INDEX_COMPONENT': ['HOLDING_ID', 'DESC_REF_INDEX_COMPONENT_ID'],
+            'DESC_REF_OTHER': ['HOLDING_ID', 'DESC_REF_OTHER_ID'],
+            'FUT_FWD_NONFOREIGNCUR_CONTRACT': ['HOLDING_ID'],
+            'FWD_FOREIGNCUR_CONTRACT_SWAP': ['HOLDING_ID'],
+            'NONFOREIGN_EXCHANGE_SWAP': ['HOLDING_ID'],
+            'FLOATING_RATE_RESET_TENOR': ['HOLDING_ID', 'RATE_RESET_TENOR_ID'],
+            'OTHER_DERIV': ['HOLDING_ID'],
+            'OTHER_DERIV_NOTIONAL_AMOUNT': ['HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT_ID'],
+            'SECURITIES_LENDING': ['HOLDING_ID'],
+            'EXPLANATORY_NOTE': ['ACCESSION_NUMBER', 'EXPLANATORY_NOTE_ID']
+        }
+
+        foreign_keys = [
+            # ACCESSION_NUMBER relationships
+            'REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+            'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER',
+
+            # HOLDING_ID relationships
+            'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID',
+            'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'
+        ]
+
+        formatted_pks = []
+        for table, keys in primary_keys.items():
+            for key in keys:
+                formatted_pks.append(f"{table}.{key}")
+
+        return formatted_pks, foreign_keys
 
     def find_similar_words(self, word: str) -> List[Tuple[str, float]]:
-        # This is called after LLM performs keyword extraction
+        """Enhanced matching using multiple techniques."""
+        if not word:
+            return []
+
         word = word.lower()
+        print(f"\nDEBUG: Finding matches for '{word}'")
         
-        query_minhash = MinHash(num_perm=128)
-        for i in range(len(word) - 2):
-            query_minhash.update(word[i:i+3].encode('utf-8'))
+        matches = []
         
-        candidates = self.lsh.query(query_minhash)
+        # 1. Direct matching with column names and their components
+        for qualified_name, metadata in self.column_index.items():
+            score = 0.0
+            
+            # Check exact matches in column words
+            if word in metadata['words']:
+                matches.append((qualified_name, 1.0))
+                continue
+                
+            # Check synonyms
+            if word in self.financial_terms.get(word, []):
+                matches.append((qualified_name, 0.9))
+                continue
+            
+            # Fuzzy match with column words
+            for col_word in metadata['words']:
+                ratio = fuzz.ratio(word, col_word) / 100.0
+                if ratio > score:
+                    score = ratio
+            
+            # Fuzzy match with synonyms
+            for term, synonyms in self.financial_terms.items():
+                if term in metadata['words']:
+                    for synonym in synonyms:
+                        ratio = fuzz.ratio(word, synonym) / 100.0
+                        if ratio > score:
+                            score = ratio * 0.9  # Slightly lower weight for synonym matches
+            
+            if score > 0.6:  # Only include if similarity is above 60%
+                matches.append((qualified_name, score))
+
+        # 2. LSH-based matching as backup
+        if len(matches) < 5:  # If we have fewer than 5 matches, try LSH
+            try:
+                word_vector = self.vectorizer.transform([word]).toarray()[0]
+                candidate_indices = self.lsh.query(word_vector)
+                
+                for idx in candidate_indices:
+                    term = self.term_list[idx]
+                    if not any(term == m[0] for m in matches):  # Avoid duplicates
+                        candidate_vector = self.term_vectors[idx].toarray()[0]
+                        dist = np.linalg.norm(word_vector - candidate_vector)
+                        sim = 1 / (1 + dist)
+                        if sim > 0.5:  # Only include if similarity is above 50%
+                            matches.append((term, sim * 0.8))
+            except Exception as e:
+                print(f"LSH matching failed: {e}")
+
+        # Remove duplicates keeping highest score and sort by score
+        unique_matches = {}
+        for term, score in matches:
+            if term not in unique_matches or score > unique_matches[term]:
+                unique_matches[term] = score
         
-        similarities = []
-        for candidate in candidates:
-            sim = 1 - distance(word, candidate) / max(len(word), len(candidate))
-            if sim > 0.5:  # Similarity threshold here
-                similarities.append((candidate, sim))
+        matches = [(term, score) for term, score in unique_matches.items()]
+        matches.sort(key=lambda x: x[1], reverse=True)
         
-        return sorted(similarities, key=lambda x: x[1], reverse=True) # Ranking of similar words in schema
+        # Print debug info
+        print(f"Found {len(matches)} matches for '{word}':")
+        for match, score in matches[:5]:
+            print(f"  {match}: {score:.4f}")
+        
+        return matches[:5] if matches else [('fund_reported_info.total_assets', 0.6)] if word in ['total', 'asset', 'assets'] else []
 
     def extract_keywords(self, question: str) -> Dict:
-        system_prompt = """You are an expert financial data analyst specializing in natural language understanding.
-        Your task is to analyze questions about financial data and extract key components that will help in database queries.
+        system_prompt = """You are an expert financial data analyst specializing in natural language understanding and database schema analysis.
+Your task is to analyze questions about financial data and extract key components that will help in database queries.
 
-        Objective: Break down the given question into essential components that will help formulate a database query.
+Objective: Break down the given question into essential components that will help formulate a database query.
 
-        Instructions:
-        1. Read the question carefully to identify:
-        - Individual keywords that map to database columns or values
-        - Technical terms related to financial data
-        - Named entities (companies, funds, locations)
-        - Numerical thresholds or values
+Instructions:
+1. Read the question carefully to identify:
+- Individual keywords that map to database columns or values
+- Technical terms related to financial data
+- Named entities (companies, funds, locations)
+- Numerical thresholds or values
 
-        2. For each identified element, categorize it as:
-        - keywords: Individual significant words that might match database columns
-        - keyphrases: Multi-word expressions that represent single concepts
-        - named_entities: Specific names of companies, funds, or locations
-        - numerical_values: Any numbers, amounts, or thresholds
+2. For each identified element, categorize it as:
+- keywords: Individual significant words that might match database columns
+- keyphrases: Multi-word expressions that represent single concepts
+- named_entities: Specific names of companies, funds, or locations
+- numerical_values: Any numbers, amounts, or thresholds
 
-        3. Return only a JSON object with these categories, no explanation needed."""
+3. Return a JSON object with these categories."""
 
         few_shot_examples = """
-        Example Question: "Show me BlackRock funds with total assets over 1 billion managed in New York"
-        {
-            "keywords": ["funds", "assets", "managed"],
-            "keyphrases": ["total assets"],
-            "named_entities": ["BlackRock", "New York"],
-            "numerical_values": ["1 billion"]
-        }
+Example Question: "Which PIMCO funds were registered between 2020 and 2023 with California addresses?"
+{
+    "keywords": ["funds", "registered", "addresses"],
+    "keyphrases": ["PIMCO funds"],
+    "named_entities": ["PIMCO", "California"],
+    "numerical_values": ["2020", "2023"]
+}
 
-        Example Question: "List all registrants with more than 10 mutual funds and net assets above 500M"
-        {
-            "keywords": ["registrants", "funds", "assets"],
-            "keyphrases": ["mutual funds", "net assets"],
-            "named_entities": [],
-            "numerical_values": ["10", "500M"]
-        }
+Example Question: "Show me BlackRock funds with total assets over 1 billion managed in New York"
+{
+    "keywords": ["funds", "assets", "managed"],
+    "keyphrases": ["total assets"],
+    "named_entities": ["BlackRock", "New York"],
+    "numerical_values": ["1 billion"]
+}"""
 
-        Example Question: "Which PIMCO funds were registered between 2020 and 2023 with California addresses?"
-        {
-            "keywords": ["funds", "registered", "addresses"],
-            "keyphrases": ["PIMCO funds"],
-            "named_entities": ["PIMCO", "California"],
-            "numerical_values": ["2020", "2023"]
-        }"""
-
-        user_prompt = f"""Analyze this financial question and extract key components:
-
-        Question: "{question}"
-
-        Return a JSON object with the extracted components following the same format as the examples."""
+        formatted_prompt = system_prompt
+        user_prompt = f"Question: \"{question}\"\n\nExtract the key components and return as JSON."
 
         response = self.client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": system_prompt},
+                {"role": "system", "content": formatted_prompt},
                 {"role": "user", "content": few_shot_examples + "\n" + user_prompt}
             ],
             response_format={"type": "json_object"}
@@ -215,30 +456,46 @@ class ValueRetriever:
 
         return json.loads(response.choices[0].message.content)
 
+    def preprocess_text(self, text: str) -> List[str]:
+        tokens = nltk.word_tokenize(text.lower())
+        filtered_tokens = [word for word in tokens if word not in self.stop_words and word.isalnum()]
+        lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in filtered_tokens]
+        return lemmatized_tokens
+    
     def process_question(self, question: str) -> Dict:
-        # Extract keywords using LLM
+        # Extract keywords using gpt
         extracted_info = self.extract_keywords(question)
-        
-        # Find similar words using LSH we did on database schema
+
+        words = []
+        for key in ['keywords', 'keyphrases', 'named_entities', 'numerical_values']:
+            words.extend(extracted_info.get(key, []))
+
+        # Preprocess the words (lemmatize, remove stop words)
+        processed_words = []
+        for word in words:
+            processed_words.extend(self.preprocess_text(word))
+
+        # Remove duplicates
+        processed_words = list(set(processed_words))
+
+        # Find similar columns for each word
         similar_matches = {}
-        
-        # Process individual keywords
-        for keyword in extracted_info['keywords']:
-            similar_matches[keyword] = self.find_similar_words(keyword)
-        
-        # Process words in keyphrases
-        for keyphrase in extracted_info['keyphrases']:
-            words = keyphrase.split()
-            for word in words:
-                if word not in similar_matches:
-                    similar_matches[word] = self.find_similar_words(word)
-        
-        return {
+        for word in processed_words:
+            similar_matches[word] = self.find_similar_words(word)
+
+        # Combine the results
+        result = {
+            "question": question,
             "extracted_info": extracted_info,
-            "similar_matches": similar_matches
+            "processed_words": processed_words,
+            "similar_matches": similar_matches,
+            "schema_relationships": {
+                "primary_keys": self.primary_keys,
+                "foreign_keys": self.foreign_keys
+            }
         }
-
-
+        return result
+    
 ############################################ CLASSIFICATION
 
 classification_prompt = '''Q: "Find the filing date and submission number of all reports filed for an NPORT-P submission."
