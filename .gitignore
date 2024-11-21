@@ -9,5 +9,5 @@ data/*
 sqlite/nport.db
 *.drawio
 model_info.json
-
+base_env_backup.txt
 
