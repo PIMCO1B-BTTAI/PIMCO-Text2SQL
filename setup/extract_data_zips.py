@@ -1,3 +1,5 @@
+# extract all zip files in directory data/ into subfolders of tsv data
+
 import os
 import zipfile
 
@@ -31,4 +33,5 @@ def extract_all_zip_files():
             print(f"Error: Permission denied while accessing '{zip_file}'.")
 
 if __name__ == "__main__":
+    os.chdir("../data")
     extract_all_zip_files()

@@ -11,14 +11,10 @@ Below are instructions for installing SQLite on your local machine.
 
 ### Usage in VSCode:
 Below are instructions for using SQLite within VSCode.
-
-1. Run import_files.py:
-`python import_files.py`
-2. Open an SQLite shell to interact with the database. In your terminal:
+1. Open an SQLite shell to interact with the database. In your terminal:
 `sqlite3 nport.db`
-3. Test a query: `SELECT * FROM table_name LIMIT 10;`
-4. Enter `.exit` to exit the SQLite shell.
+2. Test a query: `SELECT * FROM table_name LIMIT 10;`
+3. Enter `.exit` to exit the SQLite shell.
 
-Note: This will generate a large .db file that cannot be pushed to Github.
 
 

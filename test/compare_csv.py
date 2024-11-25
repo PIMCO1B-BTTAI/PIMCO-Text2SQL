@@ -3,6 +3,8 @@ import logging
 import io
 import requests
 from fastapi import FastAPI, HTTPException
+import os
+os.chdir("..")
 import chatgpt_api.api as api
 import sys
 import csv
