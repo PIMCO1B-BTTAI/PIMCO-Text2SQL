@@ -6,6 +6,7 @@ __pycache__/
 data/*
 !data/*.py
 !data/*.ipynb
+!data/.gitkeep
 sqlite/nport.db
 *.drawio
 model_info.json
