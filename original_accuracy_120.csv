@@ -84,7 +84,7 @@ SELECT
 FROM 
     AssetTotals
 ORDER BY 
-    Total_Value DESC;",Which asset categories have the highest total investment value?,False
+    Total_Value DESC;",Which asset categories have the highest total investment value?,True
 "SELECT 
     F.SERIES_NAME,
     MAX(S.FILING_DATE) as Latest_Filing
@@ -110,7 +110,7 @@ LIMIT 15;",Show me the largest bond funds,True
 FROM 
     REGISTRANT 
 WHERE 
-    REGISTRANT_NAME LIKE '%VANGUARD%';",Show me the phone numbers of all Vanguard registrants,True
+    REGISTRANT_NAME LIKE '%VANGUARD%';",Show me the phone numbers of all Vanguard registrants,False
 "SELECT 
     SERIES_NAME,
     TOTAL_ASSETS 
@@ -317,7 +317,7 @@ WHERE
     AND TOTAL_ASSETS > 0
 ORDER BY 
     Cash_Percentage DESC
-LIMIT 15;",Show me funds with the highest ratio of cash to total assets,True
+LIMIT 15;",Show me funds with the highest ratio of cash to total assets,False
 "SELECT 
     SERIES_NAME,
     TOTAL_ASSETS 
@@ -336,7 +336,7 @@ GROUP BY
     R.REGISTRANT_NAME
 ORDER BY 
     Latest_Filing DESC
-LIMIT 5;",Show me the registrants with the most recent filings,True
+LIMIT 5;",Show me the registrants with the most recent filings,False
 "SELECT 
     SERIES_NAME,
     TOTAL_ASSETS 
@@ -362,7 +362,7 @@ WHERE
     OR SERIES_NAME LIKE '%STOCK%'
 ORDER BY 
     Assets_Millions DESC
-LIMIT 20;",Show me all equity-focused funds,True
+LIMIT 20;",Show me all equity-focused funds,False
 "SELECT 
     SERIES_NAME,
     TOTAL_ASSETS 
@@ -468,7 +468,7 @@ SELECT
 FROM 
     HoldingConcentration
 ORDER BY 
-    CAST(PERCENTAGE AS FLOAT) DESC;",I need to check which funds may be too concentrated - find ones where a single holding is more than 10% of their portfolio?,Error
+    CAST(PERCENTAGE AS FLOAT) DESC;",I need to check which funds may be too concentrated - find ones where a single holding is more than 10% of their portfolio?,False
 "WITH FundReturns AS (
     SELECT 
         F.SERIES_NAME,
@@ -492,7 +492,7 @@ SELECT
 FROM 
     FundReturns
 GROUP BY 
-    Fund_Type;",Compare how our bond funds performed against equity funds in the last month,False
+    Fund_Type;",Compare how our bond funds performed against equity funds in the last month,Error
 "WITH AssetGrowth AS (
     SELECT 
         R.REGISTRANT_NAME,
@@ -604,7 +604,7 @@ FROM
 WHERE 
     Investment_Style != 'Other'
 ORDER BY 
-    Avg_Monthly_Return DESC;",Find which investment styles are performing best this quarter? Like growth vs value funds?,Error
+    Avg_Monthly_Return DESC;",Find which investment styles are performing best this quarter? Like growth vs value funds?,False
 "WITH InterestRateExposure AS (
     SELECT 
         F.SERIES_NAME,
@@ -661,7 +661,7 @@ WHERE
     AND CAST(MONTHLY_TOTAL_RETURN3 AS FLOAT) > 0
 ORDER BY 
     Avg_Return DESC
-LIMIT 10;",I need to find funds with strong and consistent returns over all three months,False
+LIMIT 10;",I need to find funds with strong and consistent returns over all three months,Error
 "WITH CurrencyExposure AS (
     SELECT 
         F.SERIES_NAME,
@@ -772,7 +772,7 @@ FROM
 WHERE 
     Total_Funds >= 5
 ORDER BY 
-    Fund_Type_Count DESC, Total_Funds DESC;",Which registrants have the most diverse mix of fund types in their lineup?,False
+    Fund_Type_Count DESC, Total_Funds DESC;",Which registrants have the most diverse mix of fund types in their lineup?,Error
 "WITH BondQuality AS (
     SELECT 
         F.SERIES_NAME,
@@ -823,7 +823,7 @@ FROM
 GROUP BY 
     Size_Quartile
 ORDER BY 
-    Size_Quartile;",How have the largest funds performed compared to smaller ones this quarter?,False
+    Size_Quartile;",How have the largest funds performed compared to smaller ones this quarter?,Error
 "WITH LiquidityAnalysis AS (
     SELECT 
         F.SERIES_NAME,
@@ -900,7 +900,7 @@ FROM
 WHERE 
     (Sector_Value / Total_Assets * 100) > 30
 ORDER BY 
-    Sector_Percentage DESC;",Help me find funds that might be too concentrated in specific sectors,False
+    Sector_Percentage DESC;",Help me find funds that might be too concentrated in specific sectors,Error
 "WITH FixedIncomeQuality AS (
     SELECT 
         F.SERIES_NAME,
@@ -925,7 +925,7 @@ WHERE
     Investment_Grade_Exposure + NonInvestment_Grade_Exposure > 0
 ORDER BY 
     Quality_Score DESC
-LIMIT 15;",Find funds with the highest quality fixed-income holdings,False
+LIMIT 15;",Find funds with the highest quality fixed-income holdings,Error
 "WITH InterestRateRisk AS (
     SELECT 
         F.SERIES_NAME,
@@ -1027,7 +1027,7 @@ WHERE
     Total_Assets > 0
 ORDER BY 
     Leverage_Ratio DESC
-LIMIT 10;",Find funds that might be too leveraged through their borrowing activities,False
+LIMIT 10;",Find funds that might be too leveraged through their borrowing activities,Error
 "WITH CounterpartyRisk AS (
     SELECT 
         F.SERIES_NAME,
@@ -1117,7 +1117,7 @@ WHERE
     Total_Debt_Securities >= 5
 ORDER BY 
     Maturity_Types DESC, 
-    Total_Debt_Securities DESC;",Show me which funds have the most diverse debt security holdings by maturity,False
+    Total_Debt_Securities DESC;",Show me which funds have the most diverse debt security holdings by maturity,Error
 "WITH QuarterlySizes AS (
     SELECT 
         QUARTER,
@@ -1195,7 +1195,7 @@ FROM
 GROUP BY 
     QUARTER
 ORDER BY 
-    QUARTER DESC;",How has average fund leverage changed quarter by quarter?,False
+    QUARTER DESC;",How has average fund leverage changed quarter by quarter?,Error
 "WITH LendingActivity AS (
     SELECT 
         sl.QUARTER,
@@ -1265,7 +1265,7 @@ FROM
 GROUP BY 
     QUARTER
 ORDER BY 
-    QUARTER DESC;",Show the evolution of debt security maturity profiles by quarter,Error
+    QUARTER DESC;",Show the evolution of debt security maturity profiles by quarter,False
 "WITH CashPositions AS (
     SELECT 
         QUARTER,
@@ -1409,7 +1409,7 @@ FROM
 WHERE 
     Position_Rank = 1
 ORDER BY 
-    CAST(PERCENTAGE AS FLOAT) DESC;",I need to check for concentration risk - show me any holdings that are the biggest position in their funds.,False
+    CAST(PERCENTAGE AS FLOAT) DESC;",I need to check for concentration risk - show me any holdings that are the biggest position in their funds.,Error
 "SELECT 
     F.SERIES_NAME,
     IR.INTRST_RATE_CHANGE_10YR_DV01 as Ten_Year_Risk,
@@ -1426,7 +1426,7 @@ WHERE
         OR CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 100000
     )
 ORDER BY 
-    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) DESC;",Which USD funds are most exposed to interest rate changes?,False
+    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) DESC;",Which USD funds are most exposed to interest rate changes?,Error
 "SELECT 
     F.SERIES_NAME,
     F.NET_REALIZE_GAIN_NONDERIV_MON1,
@@ -1482,7 +1482,7 @@ GROUP BY
     FAIR_VALUE_LEVEL
 ORDER BY 
     ISSUER_TYPE,
-    FAIR_VALUE_LEVEL;",Give me a breakdown of holdings by fair value level and issuer type looking for valuation risk.,Error
+    FAIR_VALUE_LEVEL;",Give me a breakdown of holdings by fair value level and issuer type looking for valuation risk.,False
 "SELECT 
     R.STATE,
     COUNT(DISTINCT R.REGISTRANT_NAME) as Company_Count,
@@ -1655,7 +1655,7 @@ FROM
 WHERE 
     Fund_Type IN ('Bond', 'Equity')
 GROUP BY 
-    Fund_Type;",How do PIMCO's bond funds compare to their equity funds in terms of growth?,False
+    Fund_Type;",How do PIMCO's bond funds compare to their equity funds in terms of growth?,Error
 "WITH CategoryPerformance AS (
     SELECT 
         H.ASSET_CAT,
@@ -1679,7 +1679,7 @@ SELECT
 FROM 
     CategoryPerformance
 ORDER BY 
-    Avg_Return DESC;",Which asset categories are driving our best returns this quarter?,False
+    Avg_Return DESC;",Which asset categories are driving our best returns this quarter?,Error
 "WITH FlowTrends AS (
     SELECT 
         F.SERIES_NAME,
@@ -1703,7 +1703,7 @@ FROM
 WHERE 
     ABS(Flow_Change_Pct) > 10
 ORDER BY 
-    ABS(Flow_Change_Pct) DESC;",Where are we seeing the biggest month-over-month changes in fund flows?,False
+    ABS(Flow_Change_Pct) DESC;",Where are we seeing the biggest month-over-month changes in fund flows?,Error
 "WITH PIMCODuration AS (
     SELECT 
         F.SERIES_NAME,
@@ -1771,7 +1771,7 @@ GROUP BY
     SERIES_NAME
 ORDER BY 
     Avg_Return DESC
-LIMIT 10;",Show me our best performing strategies in rising rate environments.,Error
+LIMIT 10;",Show me our best performing strategies in rising rate environments.,False
 "SELECT 
     H.INVESTMENT_COUNTRY,
     COUNT(DISTINCT F.SERIES_NAME) as Fund_Count,
@@ -1787,7 +1787,7 @@ WHERE
 GROUP BY 
     H.INVESTMENT_COUNTRY
 ORDER BY 
-    Total_Value DESC;",What's the geographic distribution of our international holdings?,False
+    Total_Value DESC;",What's the geographic distribution of our international holdings?,Error
 "WITH IncomeAnalysis AS (
     SELECT 
         F.SERIES_NAME,
@@ -1828,7 +1828,7 @@ FROM
 WHERE 
     Total_Assets > 0
 ORDER BY 
-    Total_Income_Pct DESC;",How diverse are our income sources across the portfolio?,Error
+    Total_Income_Pct DESC;",How diverse are our income sources across the portfolio?,False
 "WITH PIMCORiskProfile AS (
     SELECT 
         F.SERIES_NAME,
@@ -1983,7 +1983,7 @@ WHERE
     i.INVESTMENT_COUNTRY != 'US'
 ORDER BY 
     i.QUARTER DESC,
-    Total_Value DESC;",Track PIMCO's international exposure trends across quarters,Error
+    Total_Value DESC;",Track PIMCO's international exposure trends across quarters,False
 "WITH DurationMetrics AS (
     SELECT 
         f.QUARTER,
@@ -2197,7 +2197,7 @@ FROM
     MarketShares
 ORDER BY 
     QUARTER DESC,
-    Market_Share DESC;",Track PIMCO's market share by asset category over time,False
+    Market_Share DESC;",Track PIMCO's market share by asset category over time,Error
 "WITH CUSIPFrequency AS (
     SELECT 
         ISSUER_CUSIP,
@@ -2472,7 +2472,7 @@ FROM
 ORDER BY 
     QUARTER DESC,
     (DV01_10Y + DV01_30Y) DESC
-LIMIT 20;",Which funds have the highest interest rate sensitivity?,Error
+LIMIT 20;",Which funds have the highest interest rate sensitivity?,False
 "WITH LeverageMetrics AS (
     SELECT 
         QUARTER,
@@ -2499,4 +2499,4 @@ SELECT
 FROM 
     LeverageMetrics
 ORDER BY 
-    QUARTER DESC;",How has fund leverage changed over time?,False
+    QUARTER DESC;",How has fund leverage changed over time?,Error

@@ -735,7 +735,7 @@ def generate_sql(question: str) -> str:
             detail="Database schema not loaded"
         )
 
-    #schema_info = format_schema_for_gpt(db_schema) #This is currently unused
+    #schema_info = format_schema_for_gpt(db_schema) 
     prompt = f"""
     ```
     OVERALL TASK:
