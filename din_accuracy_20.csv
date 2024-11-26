@@ -1,0 +1,239 @@
+Ground_Truth_Query,LLM_Query,Comparison_Result
+"WITH FundAssets AS (
+       SELECT R.CIK, R.REGISTRANT_NAME, R.COUNTRY, F.NET_ASSETS
+       FROM REGISTRANT R
+       JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+   )
+   SELECT CIK, REGISTRANT_NAME, COUNTRY, NET_ASSETS
+   FROM FundAssets
+   ORDER BY NET_ASSETS DESC
+   LIMIT 5;","List the top 5 registrants by total net assets, including their CIK and country.",Error
+"WITH HoldingsCTE AS (
+       SELECT H.HOLDING_ID, H.ISSUER_NAME, H.FAIR_VALUE_LEVEL, F.SERIES_NAME
+       FROM FUND_REPORTED_HOLDING H
+       JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+       WHERE H.FAIR_VALUE_LEVEL = 'Level 1'
+   )
+   SELECT HOLDING_ID, ISSUER_NAME, SERIES_NAME
+   FROM HoldingsCTE;",Find all holdings with a fair value level of Level 1 and their corresponding fund names.,Error
+"WITH CollateralCTE AS (
+    SELECT RCP.NAME AS Counterparty_Name, SUM(RC.COLLATERAL_AMOUNT) AS Total_Collateral
+    FROM REPURCHASE_COLLATERAL RC
+    JOIN REPURCHASE_COUNTERPARTY RCP ON RC.HOLDING_ID = RCP.HOLDING_ID
+    GROUP BY RCP.NAME
+   )
+   SELECT Counterparty_Name, Total_Collateral
+   FROM CollateralCTE
+   ORDER BY Total_Collateral DESC;",Calculate the total collateral amount for repurchase agreements grouped by counterparty.,Error
+"WITH SecuritiesLending AS (
+       SELECT ACCESSION_NUMBER
+       FROM SECURITIES_LENDING
+       WHERE IS_LOAN_BY_FUND = 'Y'
+   ),
+   RepurchaseAgreements AS (
+       SELECT ACCESSION_NUMBER
+       FROM REPURCHASE_AGREEMENT
+   )
+   SELECT F.SERIES_NAME
+   FROM FUND_REPORTED_INFO F
+   WHERE F.ACCESSION_NUMBER IN (SELECT ACCESSION_NUMBER FROM SecuritiesLending)
+     AND F.ACCESSION_NUMBER IN (SELECT ACCESSION_NUMBER FROM RepurchaseAgreements);",Locate funds that have both securities lending activities and repurchase agreements.,Error
+"WITH BorrowedAmounts AS (
+       SELECT BORROWER_ID, SUM(AGGREGATE_VALUE) AS Total_Borrowed
+       FROM BORROWER
+       GROUP BY BORROWER_ID
+       HAVING SUM(AGGREGATE_VALUE) > 5000000
+   )
+   SELECT B.NAME, B.LEI, BA.Total_Borrowed
+   FROM BORROWER B
+   JOIN BorrowedAmounts BA ON B.BORROWER_ID = BA.BORROWER_ID;","Find borrowers who have borrowed more than $5,000,000, including their names and LEIs.",Error
+"WITH CounterpartyCounts AS (
+       SELECT DC.DERIVATIVE_COUNTERPARTY_NAME, COUNT(*) AS Instrument_Count
+       FROM DERIVATIVE_COUNTERPARTY DC
+       JOIN FUND_REPORTED_HOLDING H ON DC.HOLDING_ID = H.HOLDING_ID
+       JOIN DEBT_SECURITY D ON H.HOLDING_ID = D.HOLDING_ID
+       GROUP BY DC.DERIVATIVE_COUNTERPARTY_NAME
+   )
+   SELECT DERIVATIVE_COUNTERPARTY_NAME, Instrument_Count
+   FROM CounterpartyCounts
+   ORDER BY Instrument_Count DESC;",List all derivative counterparties along with the number of derivative instruments they are involved in.,Error
+"WITH RateAverages AS (
+       SELECT DS.COUPON_TYPE, AVG(DS.ANNUALIZED_RATE) AS Avg_Annualized_Rate
+       FROM DEBT_SECURITY DS
+       WHERE DS.ANNUALIZED_RATE IS NOT NULL
+       GROUP BY DS.COUPON_TYPE
+   )
+   SELECT COUPON_TYPE, Avg_Annualized_Rate
+   FROM RateAverages
+   ORDER BY Avg_Annualized_Rate DESC;",Compute the average annualized rate for debt securities grouped by coupon type.,Error
+"WITH AssetChanges AS (
+       SELECT F.ACCESSION_NUMBER, F.SERIES_NAME, S.REPORT_DATE, F.NET_ASSETS,
+              LAG(F.NET_ASSETS, 1) OVER (PARTITION BY F.SERIES_NAME ORDER BY S.REPORT_DATE) AS Previous_Period_Assets
+       FROM FUND_REPORTED_INFO F
+       JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+   )
+   SELECT DISTINCT AC.SERIES_NAME
+   FROM AssetChanges AC
+   WHERE AC.NET_ASSETS < AC.Previous_Period_Assets
+     AND AC.Previous_Period_Assets IS NOT NULL;",Get funds that have experienced a net decrease in assets over the last three reporting periods.,Error
+"WITH IssuerHoldings AS (
+       SELECT H.ISSUER_NAME, H.ISSUER_CUSIP, COUNT(DISTINCT H.HOLDING_ID) AS Holding_Count
+       FROM FUND_REPORTED_HOLDING H
+       GROUP BY H.ISSUER_NAME, H.ISSUER_CUSIP
+       HAVING COUNT(DISTINCT H.HOLDING_ID) > 3
+   )
+   SELECT ISSUER_NAME, ISSUER_CUSIP, Holding_Count
+   FROM IssuerHoldings
+   ORDER BY Holding_Count DESC;","Identify issuers with more than three different securities holdings, including their names and CUSIPs.",Error
+"WITH NotionalSums AS (
+        SELECT ODNA.CURRENCY_CODE, SUM(ODNA.NOTIONAL_AMOUNT) AS Total_Notional
+        FROM OTHER_DERIV_NOTIONAL_AMOUNT ODNA
+        GROUP BY ODNA.CURRENCY_CODE
+    )
+    SELECT CURRENCY_CODE, Total_Notional
+    FROM NotionalSums
+    ORDER BY Total_Notional DESC
+    LIMIT 3;",Calculate the total notional amount of derivatives per currency and identify the top 3 currencies by notional amount.,Error
+"WITH FundPreferences AS (
+        SELECT F.SERIES_NAME, F.LIQUIDATION_PREFERENCE, F.NET_ASSETS
+        FROM FUND_REPORTED_INFO F
+    )
+    SELECT SERIES_NAME, LIQUIDATION_PREFERENCE, NET_ASSETS
+    FROM FundPreferences
+    WHERE LIQUIDATION_PREFERENCE > NET_ASSETS;",List funds with liquidation preferences exceeding their net assets.,Error
+"WITH ConvertibleCTE AS (
+        SELECT DS.HOLDING_ID, CSC.CONVERSION_RATIO
+        FROM DEBT_SECURITY DS
+        JOIN CONVERTIBLE_SECURITY_CURRENCY CSC ON DS.HOLDING_ID = CSC.HOLDING_ID
+        WHERE DS.IS_CONVTIBLE_CONTINGENT = 'Y' AND CSC.CONVERSION_RATIO > 1.5
+    )
+    SELECT HOLDING_ID, CONVERSION_RATIO
+    FROM ConvertibleCTE;",Find all convertible securities that are contingent and have a conversion ratio above 1.5.,Error
+"WITH TopFunds AS (
+        SELECT SERIES_NAME, ACCESSION_NUMBER
+        FROM FUND_REPORTED_INFO
+        ORDER BY TOTAL_ASSETS DESC
+        LIMIT 10
+    ),
+    AssetDistribution AS (
+        SELECT H.ASSET_CAT, COUNT(*) AS Category_Count
+        FROM FUND_REPORTED_HOLDING H
+        JOIN TopFunds T ON H.ACCESSION_NUMBER = T.ACCESSION_NUMBER
+        GROUP BY H.ASSET_CAT
+    )
+    SELECT ASSET_CAT, Category_Count
+    FROM AssetDistribution
+    ORDER BY Category_Count DESC;",Analyze the distribution of asset categories within the top 10 largest funds by total assets.,Error
+"WITH AvgMonthlyReturn AS (
+       SELECT ACCESSION_NUMBER, 
+              (MONTHLY_TOTAL_RETURN1 + MONTHLY_TOTAL_RETURN2 + MONTHLY_TOTAL_RETURN3) / 3.0 AS Avg_Return
+       FROM MONTHLY_TOTAL_RETURN
+   )
+   SELECT F.SERIES_NAME, A.ACCESSION_NUMBER, A.Avg_Return
+   FROM AvgMonthlyReturn A
+   JOIN FUND_REPORTED_INFO F ON A.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+   ORDER BY A.Avg_Return DESC
+   LIMIT 10;",Find the top 10 funds with the highest average monthly returns in the past quarter.,Error
+"WITH TopPerformingFunds AS (
+        SELECT 
+            ACCESSION_NUMBER, 
+            (MONTHLY_TOTAL_RETURN1 + MONTHLY_TOTAL_RETURN2 + MONTHLY_TOTAL_RETURN3) / 3.0 AS Avg_Return
+        FROM 
+            MONTHLY_TOTAL_RETURN
+        ORDER BY 
+            Avg_Return DESC
+        LIMIT 5
+    )
+    SELECT 
+        FR.SERIES_NAME, 
+        FR.NET_ASSETS, 
+        TP.Avg_Return
+    FROM 
+        TopPerformingFunds TP
+    JOIN 
+        FUND_REPORTED_INFO FR ON TP.ACCESSION_NUMBER = FR.ACCESSION_NUMBER;",Compare the latest net asset values of the top 5 performing funds.,Error
+"WITH LatestReturns AS (
+        SELECT 
+            M.ACCESSION_NUMBER, 
+            M.MONTHLY_TOTAL_RETURN1
+        FROM 
+            MONTHLY_TOTAL_RETURN M
+        JOIN 
+            SUBMISSION S ON M.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+        WHERE 
+            S.REPORT_DATE = (SELECT MAX(REPORT_DATE) FROM SUBMISSION)
+    )
+    SELECT 
+        AVG(MONTHLY_TOTAL_RETURN1) AS Average_Return
+    FROM 
+        LatestReturns;",Calculate the overall average return across all funds for the most recent month.,Error
+"WITH InterestRiskScores AS (
+        SELECT 
+            IR.ACCESSION_NUMBER, 
+            -- Calculating composite risk score by summing absolute values of DV01 and DV100 columns
+            (ABS(CAST(IR.INTRST_RATE_CHANGE_3MON_DV01 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_1YR_DV01 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_5YR_DV01 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_3MON_DV100 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_1YR_DV100 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_5YR_DV100 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_10YR_DV100 AS FLOAT)) +
+            ABS(CAST(IR.INTRST_RATE_CHANGE_30YR_DV100 AS FLOAT))
+            ) AS Composite_Risk_Score
+        FROM 
+            INTEREST_RATE_RISK IR
+    )
+    SELECT 
+        FR.SERIES_NAME, 
+        FR.ACCESSION_NUMBER, 
+        IRS.Composite_Risk_Score
+    FROM 
+        InterestRiskScores IRS
+    JOIN 
+        FUND_REPORTED_INFO FR ON IRS.ACCESSION_NUMBER = FR.ACCESSION_NUMBER
+    ORDER BY 
+        IRS.Composite_Risk_Score DESC
+    LIMIT 5;",Find the interest rate risk for each fund and identify those with the highest risk scores.,Error
+"WITH PortfolioComposition AS (
+    SELECT 
+        ACCESSION_NUMBER, 
+        ASSET_CAT, 
+        SUM(CAST(CURRENCY_VALUE AS FLOAT)) AS Total_Value
+    FROM 
+        FUND_REPORTED_HOLDING
+    GROUP BY 
+        ACCESSION_NUMBER, 
+        ASSET_CAT
+    )
+    SELECT 
+        F.SERIES_NAME, 
+        PC.ASSET_CAT, 
+        PC.Total_Value
+    FROM 
+        PortfolioComposition PC
+    JOIN 
+        FUND_REPORTED_INFO F ON PC.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    ORDER BY 
+        F.SERIES_NAME, 
+        PC.Total_Value DESC;",Analyze the composition of fund portfolios by categorizing assets and their total values.,Error
+"WITH AssetCounts AS (
+        SELECT ASSET_CAT, COUNT(*) AS Count
+        FROM FUND_REPORTED_HOLDING
+        GROUP BY ASSET_CAT
+    )
+    SELECT ASSET_CAT, Count
+    FROM AssetCounts
+    ORDER BY Count DESC
+    LIMIT 5;",Identify the most common asset categories across all fund portfolios.,Error
+"WITH AssetChanges AS (
+       SELECT F.ACCESSION_NUMBER, F.SERIES_NAME, S.REPORT_DATE, F.NET_ASSETS,
+              LAG(F.NET_ASSETS, 1) OVER (PARTITION BY F.SERIES_NAME ORDER BY S.REPORT_DATE) AS Previous_Period_Assets
+       FROM FUND_REPORTED_INFO F
+       JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+   )
+   SELECT DISTINCT AC.SERIES_NAME
+   FROM AssetChanges AC
+   WHERE AC.NET_ASSETS < AC.Previous_Period_Assets
+     AND AC.Previous_Period_Assets IS NOT NULL;",Retrieve funds that have experienced a net decrease in assets over the last three reporting periods.,Error

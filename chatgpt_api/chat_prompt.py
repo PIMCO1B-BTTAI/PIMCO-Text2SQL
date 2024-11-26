@@ -3919,20 +3919,16 @@ ORDER BY
 # Full prompt 
 full_prompt = (
     overall_task_instructions +
-    #table_name_instructions +
     database_overview_instructions +
     nlp_query_handling_instructions +
-    #sql_query_template_instructions +
     default_query_behavior +
-    example_queries +
     reasoning_instruction +
+    example_queries +
     gpt_queries_easy +
     #gpt_queries_medium +
     #gpt_queries_hard +
     output_instruction
 )
-# Output the full prompt
-print(full_prompt)
 
 
 import openai
