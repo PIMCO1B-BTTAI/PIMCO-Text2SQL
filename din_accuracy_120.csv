@@ -1,0 +1,144 @@
+Ground_Truth_Query,LLM_Query,Comparison_Result
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC 
+LIMIT 5;",Show me the top 5 largest funds by total assets,True
+"WITH FundSizes AS (
+    SELECT 
+        SERIES_NAME,
+        CAST(TOTAL_ASSETS AS FLOAT) as Total_Assets,
+        CAST(NET_ASSETS AS FLOAT) as Net_Assets
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        TOTAL_ASSETS IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    ROUND(Total_Assets / 1000000, 2) as Total_Assets_Millions,
+    ROUND(Net_Assets / 1000000, 2) as Net_Assets_Millions
+FROM 
+    FundSizes
+ORDER BY 
+    Total_Assets DESC
+LIMIT 20;",Show me the top 20 largest funds by total assets,False
+"SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,True
+"SELECT 
+    REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME) as Fund_Count
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    REGISTRANT_NAME;",How many funds does each registrant have?,False
+"SELECT 
+    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_BlackRock_Assets
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%BLACKROCK%';",What are the total assets of BlackRock funds?,False
+"SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;",List all funds with their registrant names,False
+"SELECT 
+    SERIES_NAME,
+    TOTAL_LIABILITIES 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(TOTAL_LIABILITIES AS FLOAT) DESC 
+LIMIT 10;",Which funds have the highest total liabilities?,True
+"WITH AssetTotals AS (
+    SELECT 
+        ASSET_CAT,
+        COUNT(*) as Holdings_Count,
+        SUM(CAST(CURRENCY_VALUE AS FLOAT)) as Total_Value
+    FROM 
+        FUND_REPORTED_HOLDING
+    WHERE 
+        ASSET_CAT IS NOT NULL
+    GROUP BY 
+        ASSET_CAT
+)
+SELECT 
+    ASSET_CAT,
+    Holdings_Count,
+    ROUND(Total_Value / 1000000, 2) as Value_Millions
+FROM 
+    AssetTotals
+ORDER BY 
+    Total_Value DESC;",Which asset categories have the highest total investment value?,False
+"SELECT 
+    F.SERIES_NAME,
+    MAX(S.FILING_DATE) as Latest_Filing
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME;",What's the latest filing date for each fund?,False
+"SELECT 
+    SERIES_NAME,
+    ROUND(CAST(TOTAL_ASSETS AS FLOAT) / 1000000, 2) as Assets_Millions
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%BOND%'
+ORDER BY 
+    Assets_Millions DESC
+LIMIT 15;",Show me the largest bond funds,Error
+"SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';",Show me the phone numbers of all Vanguard registrants,False
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;",Which funds have assets between 100M and 500M?,False
+"SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    STATE 
+FROM 
+    REGISTRANT 
+ORDER BY 
+    STATE,
+    CITY;",List all registrants and their cities,False
+"SELECT 
+    R.REGISTRANT_NAME,
+    MIN(S.FILING_DATE) as First_Filing
+FROM 
+    REGISTRANT R
+    JOIN SUBMISSION S 
+        ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;",Show me the earliest filing date for each registrant,False
+"SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS = NET_ASSETS;",Which funds have total assets equal to net assets?,True
