@@ -1,0 +1,43 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================
+Schema Links for Question: Show me the phone numbers of all Vanguard registrants
+{'table_columns': ['registrant.registrant_name', 'registrant.accession_number', 'registrant.phone'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the phone numbers of all Vanguard registrants" needs these tables = [registrant], so we don't need JOIN. We are only interested in the phone numbers of registrants whose name includes "Vanguard," which can be filtered directly from the "registrant" table.
+
+Plus, it doesn't require nested queries with (INTERSECT, UNION, EXCEPT, IN, NOT IN), and we need the answer to the questions = ["registrant.phone"]. 
+
+So, we don't need JOIN and don't need nested queries, then the SQL query can be classified as "EASY".
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+```
+================================================================================
+final_output: 
+SELECT 
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%'
+================================================================================
+Result: False
+================================================================================

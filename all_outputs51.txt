@@ -1,0 +1,128 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH CurrencyExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT H.CURRENCY_CODE) as Currency_Count,
+        SUM(CASE 
+            WHEN H.CURRENCY_CODE NOT IN ('USD', 'EUR', 'GBP', 'JPY', 'CHF') 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Emerging_Market_Exposure
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.CURRENCY_CODE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Currency_Count,
+    Emerging_Market_Exposure
+FROM 
+    CurrencyExposure
+WHERE 
+    Currency_Count > 3
+ORDER BY 
+    Emerging_Market_Exposure DESC
+LIMIT 15;
+================================================================================
+Schema Links for Question: Which funds have the most foreign currency exposure? Interested in emerging markets
+{'table_columns': ['interest_rate_risk.currency_code', 'interest_rate_risk.interest_rate_risk_id', 'fund_reported_holding.investment_country', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: To determine which funds have the most foreign currency exposure, particularly in emerging markets, we need to analyze data from multiple tables. Here's the breakdown:
+
+1. **Tables Involved**:
+   - `FUND_REPORTED_HOLDING`: This table contains information about the holdings of funds, including the `investment_country`, which can help identify exposure to foreign currencies, especially in emerging markets.
+   - `INTEREST_RATE_RISK`: This table includes `currency_code`, which can be used to identify the currency exposure of the funds.
+   - `SECURITIES_LENDING`: This table has a column `is_loan_by_fund` that might indicate additional exposure through securities lending activities.
+
+2. **Joins Required**:
+   - We need to join `FUND_REPORTED_HOLDING` with `INTEREST_RATE_RISK` to correlate holdings with their currency exposure.
+   - We may also need to join with `SECURITIES_LENDING` to assess any additional exposure through lending activities.
+
+3. **Complexity**:
+   - The query requires joining multiple tables to gather all necessary information about foreign currency exposure.
+   - We need to filter or aggregate data to focus on emerging markets, which might involve additional conditions or calculations.
+
+Given the need for multiple joins and potentially complex filtering or aggregation, this query would be classified as **NON-NESTED**. It involves joining tables but does not necessarily require nested queries.
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: **
+
+```sql
+WITH CurrencyExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT H.CURRENCY_CODE) as Currency_Count,
+        SUM(CASE 
+            WHEN H.CURRENCY_CODE NOT IN ('USD', 'EUR', 'GBP', 'JPY', 'CHF') 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Emerging_Market_Exposure
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.CURRENCY_CODE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Currency_Count,
+    Emerging_Market_Exposure
+FROM 
+    CurrencyExposure
+WHERE 
+    Currency_Count > 3
+ORDER BY 
+    Emerging_Market_Exposure DESC
+LIMIT 15;
+```
+
+### Explanation:
+- **WITH Clause (CurrencyExposure):** This subquery calculates the number of distinct currencies and the total exposure to emerging market currencies for each fund.
+- **SELECT Statement:** Retrieves the fund series name, the count of distinct currencies, and the total emerging market exposure.
+- **WHERE Clause:** Filters funds with more than three distinct currencies to focus on those with diverse currency exposure.
+- **ORDER BY Clause:** Orders the results by the total emerging market exposure in descending order to highlight funds with the most exposure.
+- **LIMIT Clause:** Limits the results to the top 15 funds with the highest exposure.
+================================================================================
+final_output: 
+WITH CurrencyExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT H.CURRENCY_CODE) as Currency_Count,
+        SUM(CASE 
+            WHEN H.CURRENCY_CODE NOT IN ('USD', 'EUR', 'GBP', 'JPY', 'CHF') 
+            THEN CAST(H.CURRENCY_VALUE AS FLOAT) 
+            ELSE 0 
+        END) as Emerging_Market_Exposure
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.CURRENCY_CODE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Currency_Count,
+    Emerging_Market_Exposure
+FROM 
+    CurrencyExposure
+WHERE 
+    Currency_Count > 3
+ORDER BY 
+    Emerging_Market_Exposure DESC
+LIMIT 15
+================================================================================
+Result: True
+================================================================================

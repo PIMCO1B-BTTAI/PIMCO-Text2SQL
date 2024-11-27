@@ -1,0 +1,103 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH BondQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        F.CREDIT_SPREAD_10YR_INVEST,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
+        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
+               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+)
+SELECT 
+    SERIES_NAME,
+    Investment_Grade_Ratio,
+    TOTAL_ASSETS
+FROM 
+    BondQuality
+WHERE 
+    Investment_Grade_Ratio > 80
+ORDER BY 
+    Investment_Grade_Ratio DESC
+LIMIT 15;
+================================================================================
+Schema Links for Question: Show me the funds with the highest quality fixed income portfolios
+{'table_columns': ['nonforeign_exchange_swap.fixed_or_floating_receipt', 'securities_lending.is_loan_by_fund', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The question "Show me the funds with the highest quality fixed income portfolios" requires analyzing the quality of fixed income portfolios, which likely involves multiple tables. The relevant schema links suggest the involvement of tables like "nonforeign_exchange_swap" and "securities_lending," which are connected to "fund_reported_holding" through foreign keys.
+
+To determine the highest quality fixed income portfolios, we would need to join these tables to gather relevant data about the funds' holdings and possibly perform calculations or comparisons to assess quality. This process involves using JOIN operations to combine data from multiple tables.
+
+Since the query requires joining multiple tables but does not necessarily involve nested queries (like subqueries with INTERSECT, UNION, EXCEPT, IN, NOT IN), it can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: ```sql
+WITH BondQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        F.CREDIT_SPREAD_10YR_INVEST,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
+        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
+               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+)
+SELECT 
+    SERIES_NAME,
+    Investment_Grade_Ratio,
+    TOTAL_ASSETS
+FROM 
+    BondQuality
+WHERE 
+    Investment_Grade_Ratio > 80
+ORDER BY 
+    Investment_Grade_Ratio DESC
+LIMIT 15;
+```
+
+This query identifies funds with
+================================================================================
+final_output: 
+WITH BondQuality AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        F.CREDIT_SPREAD_10YR_INVEST,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
+        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
+               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.SERIES_NAME LIKE '%BOND%'
+        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+)
+SELECT 
+    SERIES_NAME,
+    Investment_Grade_Ratio,
+    TOTAL_ASSETS
+FROM 
+    BondQuality
+WHERE 
+    Investment_Grade_Ratio > 80
+ORDER BY 
+    Investment_Grade_Ratio DESC
+LIMIT 15
+================================================================================
+Result: True
+================================================================================

@@ -1,0 +1,48 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+================================================================================
+Schema Links for Question: Show me all funds with 'Growth' in their name
+{'table_columns': ['securities_lending.is_loan_by_fund'], 'primary_keys': ['SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The question "Show me all funds with 'Growth' in their name" requires us to find funds with a specific keyword in their name. The relevant table for this query is likely "FUND_REPORTED_INFO," which would contain information about the funds, including their names.
+
+1. **Identify the Table**: The table "FUND_REPORTED_INFO" is the most relevant as it likely contains the "SERIES_NAME" or similar column where fund names are stored.
+
+2. **Determine the Need for JOIN**: Since the query only asks for fund names and does not require information from other tables, there is no need for a JOIN.
+
+3. **Determine the Need for Nested Queries**: The query does not require any complex filtering or subqueries. It simply involves a straightforward search for a keyword within a column.
+
+Given these points, the query does not require JOINs or nested queries. Therefore, it can be classified as "EASY."
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+```
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%Growth%'
+================================================================================
+Result: True
+================================================================================

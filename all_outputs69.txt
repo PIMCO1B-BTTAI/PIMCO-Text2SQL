@@ -1,0 +1,84 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH InternationalExposure AS (
+    SELECT 
+        QUARTER,
+        COUNT(CASE WHEN INVESTMENT_COUNTRY != 'US' THEN 1 END) as International_Holdings,
+        COUNT(*) as Total_Holdings
+    FROM 
+        FUND_REPORTED_HOLDING
+    GROUP BY 
+        QUARTER
+)
+SELECT 
+    QUARTER,
+    International_Holdings,
+    Total_Holdings,
+    (International_Holdings * 100.0 / Total_Holdings) as International_Percentage
+FROM 
+    InternationalExposure
+ORDER BY 
+    QUARTER DESC;
+================================================================================
+Schema Links for Question: What's the quarter-over-quarter change in international exposure?
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'nonforeign_exchange_swap.termination_date', 'interest_rate_risk.intrst_rate_change_3mon_dv01'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The question "What's the quarter-over-quarter change in international exposure?" requires analyzing changes in exposure over different quarters. This involves comparing data across multiple quarters, which typically necessitates a nested query to calculate the change between quarters.
+
+The relevant tables include "interest_rate_risk" and "nonforeign_exchange_swap," which are linked through foreign keys to "fund_reported_info" and "fund_reported_holding," respectively. To calculate the quarter-over-quarter change, we would need to perform operations that compare data from different quarters, likely involving subqueries or self-joins to align data from consecutive quarters.
+
+Given the need to compare data across different quarters and potentially use subqueries to calculate changes, this query would be classified as "NESTED."
+
+Label: "NESTED"
+================================================================================
+classification: "NESTED"
+================================================================================
+process_thesql: To determine the quarter-over-quarter change in international exposure, we need to calculate the total value of international holdings for each quarter and then compute the change between consecutive quarters. Here's how we can approach this:
+
+1. **Calculate Total International Exposure for Each Quarter**: We need to sum up the currency values of holdings that are not in the US for each quarter.
+
+2. **Compute Quarter-over-Quarter Change**: Once we have the total exposure for each quarter, we can calculate the percentage change from one quarter to the next.
+
+Here's the SQL query to achieve this:
+
+```sql
+WITH InternationalExposure AS (
+    SELECT 
+        h.QUARTER,
+        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Total_International_Value
+    FROM 
+        FUND_REPORTED_HOLDING h
+    WHERE 
+        h.INVESTMENT_COUNTRY IS NOT NULL
+        AND h.INVESTMENT_COUNTRY != 'US'
+    GROUP BY 
+        h.QUARTER
+),
+QuarterlyChange AS (
+    SELECT 
+        ie.QUARTER,
+        ie.Total_International_Value,
+        LAG(ie.Total_International_Value) OVER (ORDER BY ie.QUARTER) as Previous_Quarter_Value,
+        ((ie.Total_International_Value - LAG(ie.Total_International_Value) OVER (ORDER BY ie.QUARTER)) / 
+         NULLIF(LAG(ie.Total_International_Value) OVER (ORDER BY ie.QUARTER), 0)) * 100 as QoQ_Change_Percentage
+    FROM 
+        InternationalExposure ie
+)
+SELECT 
+    QUARTER,
+    Total_International_Value,
+    Previous_Quarter_Value,
+    QoQ_Change_Percentage
+FROM 
+    QuarterlyChange
+ORDER BY 
+    QUARTER;
+```
+
+### Explanation:
+- **InternationalExposure CTE**: This common table expression calculates the total value of international holdings for each quarter by summing up the `CURRENCY_VALUE` of holdings where `INVESTMENT_COUNTRY` is not 'US'.
+- **QuarterlyChange CTE**: This CTE calculates the quarter-over-quarter change in international exposure. It uses the `LAG` function to get the value from the previous quarter and computes the percentage change.
+- **Final SELECT**: The final query selects the quarter, total international value, previous quarter value, and the calculated quarter-over-quarter change percentage, ordered by quarter.
+================================================================================
+Error in refine_query of Self-Correction
+================================================================================

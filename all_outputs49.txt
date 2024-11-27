@@ -1,0 +1,73 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH InterestRateExposure AS (
+    SELECT 
+        F.SERIES_NAME,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        IR.INTRST_RATE_CHANGE_30YR_DV01,
+        F.TOTAL_ASSETS
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN INTEREST_RATE_RISK IR 
+            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+    WHERE 
+        IR.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as Ten_Year_Risk,
+    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Thirty_Year_Risk
+FROM 
+    InterestRateExposure
+WHERE 
+    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 1.0
+    OR CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 1.0
+ORDER BY 
+    Ten_Year_Risk DESC;
+================================================================================
+Schema Links for Question: Find me funds that might be too exposed to interest rate changes - check their duration risk
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.intrst_rate_change_3mon_dv01', 'interest_rate_risk.interest_rate_risk_id', 'convertible_security_currency.conversion_ratio', 'interest_rate_risk.interest_rate_risk_id', 'securities_lending.is_loan_by_fund', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "Find me funds that might be too exposed to interest rate changes - check their duration risk" involves analyzing the interest rate risk of funds. The relevant table for this information is "interest_rate_risk," which contains columns like "interest_rate_risk_id" and various interest rate change metrics (e.g., "intrst_rate_change_3mon_dv01"). 
+
+To determine funds with high exposure to interest rate changes, we would primarily use the "interest_rate_risk" table. Since the query does not specify any conditions that require data from other tables, such as filtering based on fund characteristics or linking to other fund details, we do not need to perform any JOIN operations with other tables.
+
+Additionally, the query does not require nested queries, as it does not involve complex conditions that would necessitate subqueries or set operations like INTERSECT, UNION, or EXCEPT.
+
+Therefore, the SQL query can be classified as "EASY" because it involves a straightforward selection from a single table without the need for JOINs or nested queries.
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: To find funds that might be too exposed to interest rate changes, we can look at the duration risk metrics in the `INTEREST_RATE_RISK` table. Specifically, we can examine the DV01 (dollar value of a 1 basis point change in interest rates) for different maturities. Funds with high DV01 values may be more sensitive to interest rate changes.
+
+Here's a query to identify such funds:
+
+```sql
+SELECT 
+    F.SERIES_NAME,
+    I.CURRENCY_CODE,
+    I.INTRST_RATE_CHANGE_3MON_DV01,
+    I.INTRST_RATE_CHANGE_1YR_DV01,
+    I.INTRST_RATE_CHANGE_5YR_DV01,
+    I.INTRST_RATE_CHANGE_10YR_DV01,
+    I.INTRST_RATE_CHANGE_30YR_DV01
+FROM 
+    INTEREST_RATE_RISK I
+    JOIN FUND_REPORTED_INFO F 
+        ON I.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    CAST(I.INTRST_RATE_CHANGE_3MON_DV01 AS FLOAT) > 1000 OR
+    CAST(I.INTRST_RATE_CHANGE_1YR_DV01 AS FLOAT) > 1000 OR
+    CAST(I.INTRST_RATE_CHANGE_5YR_DV01 AS FLOAT) > 1000 OR
+    CAST(I.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 1000 OR
+    CAST(I.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 1000
+ORDER BY 
+    F.SERIES_NAME;
+```
+
+This query selects funds with high DV01 values across different maturities, indicating potential exposure to interest rate changes. Adjust the threshold (e.g., 1000) as needed based on the context or specific risk tolerance levels.
+================================================================================
+Error in refine_query of Self-Correction
+================================================================================

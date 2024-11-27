@@ -1,0 +1,43 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%ETF%';
+================================================================================
+Schema Links for Question: Which funds have 'ETF' in their name?
+{'table_columns': ['registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The SQL query for the question "Which funds have 'ETF' in their name?" needs to check the `registrant_name` column in the `REGISTRANT` table for the presence of 'ETF'. This involves only the `REGISTRANT` table, so we don't need a JOIN.
+
+Additionally, it doesn't require nested queries with operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN. We are simply filtering the `registrant_name` column for a specific substring.
+
+Therefore, we don't need JOINs or nested queries, and the SQL query can be classified as "EASY".
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%ETF%';
+```
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%ETF%'
+================================================================================
+Result: False
+================================================================================

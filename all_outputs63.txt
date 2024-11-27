@@ -1,0 +1,140 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LendingActivity AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT F.SERIES_NAME) as Total_Funds,
+        COUNT(DISTINCT CASE 
+            WHEN SL.IS_LOAN_BY_FUND = 'Y' 
+            THEN F.SERIES_NAME 
+        END) as Lending_Funds
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING SL 
+            ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Lending_Funds,
+    Total_Funds,
+    (Lending_Funds * 100.0 / Total_Funds) as Lending_Percentage
+FROM 
+    LendingActivity
+WHERE 
+    Total_Funds >= 5
+ORDER BY 
+    Lending_Percentage DESC
+LIMIT 15;
+================================================================================
+Schema Links for Question: See which fund families are most active in securities lending
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'submission.report_ending_period', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: To determine which fund families are most active in securities lending, we need to analyze data from multiple tables. Specifically, we need to:
+
+1. Identify the fund families involved in securities lending, which requires data from the `SECURITIES_LENDING` table.
+2. Connect this information to the `FUND_REPORTED_INFO` table to understand the assets attributed to miscellaneous securities.
+3. Use the `SUBMISSION` table to get the report ending period for context.
+
+Given these requirements, we need to perform JOIN operations between the `SECURITIES_LENDING`, `FUND_REPORTED_INFO`, and `SUBMISSION` tables. This involves using foreign keys to link the `HOLDING_ID` from `SECURITIES_LENDING` to `FUND_REPORTED_HOLDING`, and then linking `ACCESSION_NUMBER` from `FUND_REPORTED_INFO` to `SUBMISSION`.
+
+Since the query requires joining multiple tables but does not necessarily require nested queries (like subqueries or set operations such as INTERSECT, UNION, EXCEPT), it can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To determine which fund families are most active in securities lending, we need to analyze the relationship between registrants (investment companies) and their funds' involvement in securities lending activities. Here's how we can approach this:
+
+1. **Identify Relevant Tables and Columns**:
+   - We need to use the `REGISTRANT`, `FUND_REPORTED_INFO`, and `SECURITIES_LENDING` tables.
+   - The `REGISTRANT` table provides the registrant names.
+   - The `FUND_REPORTED_INFO` table links registrants to their funds.
+   - The `SECURITIES_LENDING` table indicates whether a fund is involved in securities lending through the `IS_LOAN_BY_FUND` column.
+
+2. **Establish Relationships**:
+   - Use the foreign key relationship `REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER` to link registrants to their funds.
+   - Use the foreign key `SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID` to connect securities lending activities to specific fund holdings.
+
+3. **Query Construction**:
+   - We need to count the number of funds involved in securities lending for each registrant.
+   - Calculate the percentage of funds involved in securities lending relative to the total number of funds managed by each registrant.
+
+4. **SQL Query**:
+   - Use a common table expression (CTE) to first gather the necessary data and then perform the calculations.
+
+Here's the SQL query:
+
+```sql
+WITH LendingActivity AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT F.SERIES_NAME) as Total_Funds,
+        COUNT(DISTINCT CASE 
+            WHEN SL.IS_LOAN_BY_FUND = 'Y' 
+            THEN F.SERIES_NAME 
+        END) as Lending_Funds
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING SL 
+            ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Lending_Funds,
+    Total_Funds,
+    (Lending_Funds * 100.0 / Total_Funds) as Lending_Percentage
+FROM 
+    LendingActivity
+WHERE 
+    Total_Funds >= 5
+ORDER BY 
+    Lending_Percentage DESC
+LIMIT 15;
+```
+
+**Explanation**:
+- The CTE `LendingActivity` calculates the total number of funds and the number of funds involved in securities lending for each registrant.
+- The main query selects the registrant name, number of lending funds, total funds, and calculates the lending percentage.
+- The results are filtered to include only registrants with at least 5 funds and are ordered by the lending percentage in descending order, showing the top
+================================================================================
+final_output: 
+WITH LendingActivity AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        COUNT(DISTINCT F.SERIES_NAME) as Total_Funds,
+        COUNT(DISTINCT CASE 
+            WHEN SL.IS_LOAN_BY_FUND = 'Y' 
+            THEN F.SERIES_NAME 
+        END) as Lending_Funds
+    FROM 
+        REGISTRANT R
+        JOIN FUND_REPORTED_INFO F 
+            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING SL 
+            ON F.ACCESSION_NUMBER = SL.ACCESSION_NUMBER
+    GROUP BY 
+        R.REGISTRANT_NAME
+)
+SELECT 
+    REGISTRANT_NAME,
+    Lending_Funds,
+    Total_Funds,
+    (Lending_Funds * 100.0 / Total_Funds) as Lending_Percentage
+FROM 
+    LendingActivity
+WHERE 
+    Total_Funds >= 5
+ORDER BY 
+    Lending_Percentage DESC
+LIMIT 15
+================================================================================
+Error Executing LLM-Generated SQL: no such column: SL.ACCESSION_NUMBER
+================================================================================

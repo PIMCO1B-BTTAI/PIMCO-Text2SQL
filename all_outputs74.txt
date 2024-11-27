@@ -1,0 +1,137 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH MaturityProfiles AS (
+    SELECT 
+        QUARTER,
+        MATURITY_DATE,
+        CASE 
+            WHEN MATURITY_DATE <= DATE('now', '+1 year') THEN 'Short_Term'
+            WHEN MATURITY_DATE <= DATE('now', '+5 year') THEN 'Medium_Term'
+            ELSE 'Long_Term'
+        END as Maturity_Type
+    FROM 
+        DEBT_SECURITY
+    WHERE 
+        MATURITY_DATE IS NOT NULL
+)
+SELECT 
+    QUARTER,
+    COUNT(CASE WHEN Maturity_Type = 'Short_Term' THEN 1 END) as Short_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Medium_Term' THEN 1 END) as Medium_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Long_Term' THEN 1 END) as Long_Term
+FROM 
+    MaturityProfiles
+GROUP BY 
+    QUARTER
+ORDER BY 
+    QUARTER DESC;
+================================================================================
+Schema Links for Question: Show the evolution of debt security maturity profiles by quarter
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'debt_security.maturity_date', 'fund_reported_holding.payoff_profile', 'registrant.quarter', 'debt_security_ref_instrument.debt_security_ref_id'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: To answer the question "Show the evolution of debt security maturity profiles by quarter," we need to consider the relevant tables and relationships:
+
+1. **Tables Involved**:
+   - `DEBT_SECURITY`: Contains information about debt securities, including the `MATURITY_DATE`.
+   - `FUND_REPORTED_HOLDING`: This table is related to `DEBT_SECURITY` through the `HOLDING_ID`.
+   - `REGISTRANT`: Contains the `QUARTER` information.
+
+2. **Relationships**:
+   - `DEBT_SECURITY.HOLDING_ID` is linked to `FUND_REPORTED_HOLDING.HOLDING_ID`.
+   - `FUND_REPORTED_HOLDING.ACCESSION_NUMBER` is linked to `REGISTRANT.ACCESSION_NUMBER` to get the `QUARTER`.
+
+3. **Query Requirements**:
+   - We need to join `DEBT_SECURITY` with `FUND_REPORTED_HOLDING` to get the maturity dates.
+   - We also need to join with `REGISTRANT` to get the quarter information.
+
+Since this query involves joining multiple tables to gather the required information, it requires a JOIN operation. However, it does not require any nested queries (such as subqueries or set operations like UNION, INTERSECT, etc.).
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it involves JOIN operations but does not require nested queries.
+
+**Label**: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To address the query "Show the evolution of debt security maturity profiles by quarter," we need to analyze the maturity profiles of debt securities over different quarters. Here's how we can approach this:
+
+1. **Identify Relevant Tables and Columns**:
+   - We need to focus on the `DEBT_SECURITY` table for maturity dates.
+   - The `DEBT_SECURITY` table should be linked to the `FUND_REPORTED_HOLDING` table using the `HOLDING_ID`.
+   - We need to consider the `QUARTER` column to group the data by quarter.
+
+2. **Determine Maturity Profiles**:
+   - We will categorize the maturity dates into different profiles: Short-Term, Medium-Term, and Long-Term.
+   - Short-Term: Maturity within 1 year.
+   - Medium-Term: Maturity within 1 to 5 years.
+   - Long-Term: Maturity beyond 5 years.
+
+3. **SQL Query Construction**:
+   - We will use a `CASE` statement to categorize the maturity dates.
+   - We will count the number of securities in each category for each quarter.
+
+4. **SQL Query**:
+   - We will construct a query that selects the quarter, counts the number of short-term, medium-term, and long-term securities, and groups the results by quarter.
+
+Here is the SQL query:
+
+```sql
+WITH MaturityProfiles AS (
+    SELECT 
+        h.QUARTER,
+        ds.MATURITY_DATE,
+        CASE 
+            WHEN ds.MATURITY_DATE <= DATE('now', '+1 year') THEN 'Short_Term'
+            WHEN ds.MATURITY_DATE <= DATE('now', '+5 year') THEN 'Medium_Term'
+            ELSE 'Long_Term'
+        END as Maturity_Type
+    FROM 
+        FUND_REPORTED_HOLDING h
+        JOIN DEBT_SECURITY ds ON h.HOLDING_ID = ds.HOLDING_ID
+    WHERE 
+        ds.MATURITY_DATE IS NOT NULL
+)
+SELECT 
+    QUARTER,
+    COUNT(CASE WHEN Maturity_Type = 'Short_Term' THEN 1 END) as Short_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Medium_Term' THEN 1 END) as Medium_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Long_Term' THEN 1 END) as Long_Term
+FROM 
+    MaturityProfiles
+GROUP BY 
+    QUARTER
+ORDER BY 
+    QUARTER DESC;
+```
+
+This query will provide the evolution of debt security maturity profiles by quarter, showing the count of short-term, medium-term, and long-term securities for each quarter.
+================================================================================
+final_output: 
+WITH MaturityProfiles AS (
+    SELECT 
+        h.QUARTER,
+        ds.MATURITY_DATE,
+        CASE 
+            WHEN ds.MATURITY_DATE <= DATE('now', '+1 year') THEN 'Short_Term'
+            WHEN ds.MATURITY_DATE <= DATE('now', '+5 year') THEN 'Medium_Term'
+            ELSE 'Long_Term'
+        END as Maturity_Type
+    FROM 
+        FUND_REPORTED_HOLDING h
+        JOIN DEBT_SECURITY ds ON h.HOLDING_ID = ds.HOLDING_ID
+    WHERE 
+        ds.MATURITY_DATE IS NOT NULL
+)
+SELECT 
+    QUARTER,
+    COUNT(CASE WHEN Maturity_Type = 'Short_Term' THEN 1 END) as Short_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Medium_Term' THEN 1 END) as Medium_Term,
+    COUNT(CASE WHEN Maturity_Type = 'Long_Term' THEN 1 END) as Long_Term
+FROM 
+    MaturityProfiles
+GROUP BY 
+    QUARTER
+ORDER BY 
+    QUARTER DESC
+================================================================================
+Result: True
+================================================================================

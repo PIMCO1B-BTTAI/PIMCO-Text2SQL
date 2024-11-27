@@ -1,0 +1,70 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    ISSUER_TYPE,
+    FAIR_VALUE_LEVEL,
+    COUNT(*) as Holding_Count,
+    SUM(CAST(CURRENCY_VALUE AS FLOAT)) as Total_Value,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (PARTITION BY ISSUER_TYPE) as Percentage_of_Type
+FROM 
+    FUND_REPORTED_HOLDING
+WHERE 
+    ISSUER_TYPE IS NOT NULL 
+    AND FAIR_VALUE_LEVEL IS NOT NULL
+GROUP BY 
+    ISSUER_TYPE,
+    FAIR_VALUE_LEVEL
+ORDER BY 
+    ISSUER_TYPE,
+    FAIR_VALUE_LEVEL;
+================================================================================
+Schema Links for Question: Give me a breakdown of holdings by fair value level and issuer type looking for valuation risk.
+{'table_columns': ['borrower.aggregate_value', 'fund_reported_holding.holding_id', 'fund_reported_holding.fair_value_level', 'fund_reported_holding.issuer_type', 'fund_reported_holding.fair_value_level', 'interest_rate_risk.interest_rate_risk_id', 'fund_reported_holding.issuer_name'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'BORROWER.ACCESSION_NUMBER', 'BORROWER.BORROWER_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "Give me a breakdown of holdings by fair value level and issuer type looking for valuation risk" involves analyzing holdings data based on fair value level and issuer type. The relevant table for this information is "FUND_REPORTED_HOLDING," which contains columns for "fair_value_level" and "issuer_type."
+
+Since the query requires a breakdown of holdings, it suggests aggregating or grouping data by these attributes. This can be achieved using a simple query on the "FUND_REPORTED_HOLDING" table without needing to join with other tables or use nested queries.
+
+Therefore, the SQL query for this question does not require JOINs or nested queries. It can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE,
+    COUNT(HOLDING_ID) as Number_of_Holdings
+FROM 
+    FUND_REPORTED_HOLDING
+WHERE 
+    FAIR_VALUE_LEVEL IS NOT NULL
+    AND ISSUER_TYPE IS NOT NULL
+GROUP BY 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE
+ORDER BY 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE;
+```
+================================================================================
+final_output: 
+SELECT 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE,
+    COUNT(HOLDING_ID) as Number_of_Holdings
+FROM 
+    FUND_REPORTED_HOLDING
+WHERE 
+    FAIR_VALUE_LEVEL IS NOT NULL
+    AND ISSUER_TYPE IS NOT NULL
+GROUP BY 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE
+ORDER BY 
+    FAIR_VALUE_LEVEL,
+    ISSUER_TYPE
+================================================================================
+Result: False
+================================================================================

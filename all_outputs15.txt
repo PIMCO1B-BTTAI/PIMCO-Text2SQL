@@ -1,0 +1,43 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';
+================================================================================
+Schema Links for Question: List all funds with 'Income' in their name
+{'table_columns': ['registrant.registrant_name', 'securities_lending.is_loan_by_fund', 'fund_reported_info.series_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "List all funds with 'Income' in their name" involves searching for a specific pattern in the fund names. The relevant table for this query is "FUND_REPORTED_INFO," specifically the "SERIES_NAME" column, where we need to check for the presence of the word "Income."
+
+- The query does not require data from multiple tables, so there is no need for a JOIN.
+- It also does not require any nested queries, as we are simply filtering based on a condition within a single table.
+
+Therefore, the SQL query can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';
+```
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%Income%'
+================================================================================
+Result: True
+================================================================================

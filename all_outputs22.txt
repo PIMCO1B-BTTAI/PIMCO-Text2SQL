@@ -1,0 +1,46 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%FIDELITY%';
+================================================================================
+Schema Links for Question: Show me all Fidelity funds
+{'table_columns': ['securities_lending.is_loan_by_fund'], 'primary_keys': ['SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The question "Show me all Fidelity funds" requires identifying funds associated with Fidelity. This involves checking the "FUND_REPORTED_HOLDING" table for any holdings related to Fidelity. Since the question does not specify any complex conditions or require data from multiple tables, it does not need a JOIN or a nested query. Therefore, the SQL query can be classified as "EASY."
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%FIDELITY%';
+```
+================================================================================
+final_output: 
+SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%FIDELITY%'
+================================================================================
+Result: True
+================================================================================

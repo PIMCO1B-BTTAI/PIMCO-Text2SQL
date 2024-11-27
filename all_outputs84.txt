@@ -1,0 +1,70 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH CommitmentExposure AS (
+    SELECT 
+        SERIES_NAME,
+        DELAYED_DELIVERY,
+        STANDBY_COMMITMENT,
+        TOTAL_ASSETS,
+        (CAST(DELAYED_DELIVERY AS FLOAT) + CAST(STANDBY_COMMITMENT AS FLOAT)) / 
+        NULLIF(CAST(TOTAL_ASSETS AS FLOAT), 0) * 100 as Total_Commitment_Percentage
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        DELAYED_DELIVERY IS NOT NULL 
+        AND STANDBY_COMMITMENT IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    DELAYED_DELIVERY,
+    STANDBY_COMMITMENT,
+    Total_Commitment_Percentage
+FROM 
+    CommitmentExposure
+WHERE 
+    Total_Commitment_Percentage > 5
+ORDER BY 
+    Total_Commitment_Percentage DESC;
+================================================================================
+Schema Links for Question: Check for funds with large outstanding commitments, delayed delivery and standby.
+{'table_columns': ['debt_security.are_any_interest_payment', 'fund_reported_info.delayed_delivery', 'fund_reported_info.standby_commitment', 'fund_reported_info.delayed_delivery', 'securities_lending.is_loan_by_fund', 'fund_reported_info.standby_commitment'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "Check for funds with large outstanding commitments, delayed delivery and standby" involves checking conditions related to commitments, delayed delivery, and standby commitments. The relevant data is found in the "fund_reported_info" table, specifically in the columns "delayed_delivery" and "standby_commitment."
+
+Since the query is focused on conditions within a single table ("fund_reported_info"), it does not require joining with other tables. Additionally, there is no indication of needing nested queries, such as using subqueries or set operations like INTERSECT, UNION, or EXCEPT.
+
+Therefore, the SQL query for this question can be classified as "EASY" because it involves filtering based on conditions within a single table without the need for joins or nested queries.
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: To find funds with large outstanding commitments, delayed delivery, and standby commitments, we can query the `FUND_REPORTED_INFO` table for the relevant columns: `DELAYED_DELIVERY` and `STANDBY_COMMITMENT`. We will assume that "large" means non-zero values for these fields. Here's the SQL query:
+
+```sql
+SELECT 
+    SERIES_NAME,
+    DELAYED_DELIVERY,
+    STANDBY_COMMITMENT
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CAST(DELAYED_DELIVERY AS FLOAT) > 0
+    OR CAST(STANDBY_COMMITMENT AS FLOAT) > 0;
+```
+
+This query selects funds where either the `DELAYED_DELIVERY` or `STANDBY_COMMITMENT` is greater than zero, indicating large outstanding commitments.
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME,
+    DELAYED_DELIVERY,
+    STANDBY_COMMITMENT
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CAST(DELAYED_DELIVERY AS FLOAT) > 0
+    OR CAST(STANDBY_COMMITMENT AS FLOAT) > 0
+================================================================================
+Result: False
+================================================================================

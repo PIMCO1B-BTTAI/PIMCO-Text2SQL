@@ -1,0 +1,77 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    H.ISSUER_NAME,
+    COUNT(*) as Lending_Instances,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) as Total_Value_Lent
+FROM 
+    FUND_REPORTED_HOLDING H
+    JOIN SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
+WHERE 
+    SL.IS_LOAN_BY_FUND = 'Y'
+GROUP BY 
+    H.ISSUER_NAME
+HAVING 
+    COUNT(*) > 1
+ORDER BY 
+    Lending_Instances DESC,
+    Total_Value_Lent DESC;
+================================================================================
+Schema Links for Question: Which securities are most actively lent out?
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+================================================================================
+classification reasoning: To determine which securities are most actively lent out, we need to analyze data related to securities lending. The relevant information is likely found in the "SECURITIES_LENDING" table, which contains details about whether a security is loaned by the fund. However, to identify specific securities, we also need to reference the "FUND_REPORTED_HOLDING" table, which provides details about each holding, including the security's identifier.
+
+The query will involve joining these two tables to match holdings with their lending status. Since this requires a join between "SECURITIES_LENDING" and "FUND_REPORTED_HOLDING" based on the "HOLDING_ID", it is classified as a "NON-NESTED" query. This is because it involves a straightforward join without the need for nested queries.
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To determine which securities are most actively lent out, we need to focus on the `SECURITIES_LENDING` table, which contains information about securities lending activities. Specifically, we are interested in identifying securities that are frequently involved in lending transactions.
+
+Here's how we can approach this:
+
+1. **Identify Relevant Tables and Columns**:
+   - The `SECURITIES_LENDING` table contains information about whether a security is involved in lending (`IS_LOAN_BY_FUND`).
+   - The `FUND_REPORTED_HOLDING` table contains details about each holding, including the `HOLDING_ID`, which can be linked to the `SECURITIES_LENDING` table.
+
+2. **Join Tables**:
+   - We need to join the `SECURITIES_LENDING` table with the `FUND_REPORTED_HOLDING` table using the `HOLDING_ID` to get details about the securities.
+
+3. **Filter and Aggregate Data**:
+   - Filter for securities that are actively lent out (`IS_LOAN_BY_FUND = 'Y'`).
+   - Count the number of times each security is involved in lending transactions to determine which are most actively lent out.
+
+4. **Construct the SQL Query**:
+   - Use a `GROUP BY` clause to aggregate the data by security and count the lending occurrences.
+
+Here is the SQL query that implements this logic:
+
+```sql
+WITH ActiveLending AS (
+    SELECT 
+        H.ISSUER_NAME,
+        COUNT(*) as Lending_Count
+    FROM 
+        SECURITIES_LENDING SL
+        JOIN FUND_REPORTED_HOLDING H ON SL.HOLDING_ID = H.HOLDING_ID
+    WHERE 
+        SL.IS_LOAN_BY_FUND = 'Y'
+    GROUP BY 
+        H.ISSUER_NAME
+)
+SELECT 
+    ISSUER_NAME,
+    Lending_Count
+FROM 
+    ActiveLending
+ORDER BY 
+    Lending_Count DESC
+LIMIT 10;
+```
+
+This query will provide a list of the top 10 securities that are most actively lent out, based on the number of lending transactions they are involved in.
+================================================================================
+Error in refine_query of Self-Correction
+================================================================================

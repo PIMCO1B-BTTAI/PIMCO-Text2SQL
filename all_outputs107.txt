@@ -1,0 +1,122 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LendingActivity AS (
+    SELECT 
+        f.QUARTER,
+        r.REGISTRANT_NAME,
+        f.SERIES_NAME,
+        COUNT(CASE WHEN sl.IS_LOAN_BY_FUND = 'Y' THEN 1 END) as Securities_Lent,
+        COUNT(*) as Total_Securities,
+        CAST(f.TOTAL_ASSETS AS FLOAT) as Fund_Assets
+    FROM 
+        FUND_REPORTED_INFO f
+        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING sl ON f.ACCESSION_NUMBER = sl.HOLDING_ID
+    GROUP BY 
+        f.QUARTER,
+        r.REGISTRANT_NAME,
+        f.SERIES_NAME,
+        f.TOTAL_ASSETS
+),
+CompanyMetrics AS (
+    SELECT 
+        QUARTER,
+        REGISTRANT_NAME,
+        SUM(Securities_Lent) as Total_Securities_Lent,
+        SUM(Total_Securities) as Total_Securities,
+        SUM(Fund_Assets) as Total_Assets,
+        COUNT(DISTINCT SERIES_NAME) as Number_of_Funds
+    FROM 
+        LendingActivity
+    GROUP BY 
+        QUARTER,
+        REGISTRANT_NAME
+)
+SELECT 
+    p.QUARTER,
+    p.Total_Securities_Lent as PIMCO_Securities_Lent,
+    p.Total_Securities as PIMCO_Total_Securities,
+    (p.Total_Securities_Lent * 100.0 / NULLIF(p.Total_Securities, 0)) as PIMCO_Lending_Percentage,
+    (i.Total_Securities_Lent * 100.0 / NULLIF(i.Total_Securities, 0)) as Industry_Lending_Percentage
+FROM 
+    CompanyMetrics p
+    CROSS JOIN (
+        SELECT 
+            QUARTER,
+            SUM(Total_Securities_Lent) as Total_Securities_Lent,
+            SUM(Total_Securities) as Total_Securities
+        FROM 
+            CompanyMetrics
+        WHERE 
+            REGISTRANT_NAME NOT LIKE '%PIMCO%'
+        GROUP BY 
+            QUARTER
+    ) i
+WHERE 
+    p.QUARTER = i.QUARTER
+    AND p.REGISTRANT_NAME LIKE '%PIMCO%'
+ORDER BY 
+    p.QUARTER DESC;
+================================================================================
+Schema Links for Question: Examine PIMCO's securities lending activity and revenue
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'submission.report_ending_period'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+================================================================================
+classification reasoning: To examine PIMCO's securities lending activity and revenue, we need to gather information from multiple tables. Specifically, we need to:
+
+1. Identify PIMCO's records in the `REGISTRANT` table using the `REGISTRANT_NAME`.
+2. Use the `ACCESSION_NUMBER` from the `REGISTRANT` table to join with the `FUND_REPORTED_INFO` table to get details about securities lending activity.
+3. Additionally, we may need to look at the `SECURITIES_LENDING` table to get specific details about securities lending transactions.
+
+Given these steps, the query will involve joining multiple tables based on the `ACCESSION_NUMBER`. This requires a JOIN operation but does not necessarily require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To examine PIMCO's securities lending activity and revenue, we need to follow these steps:
+
+1. **Identify PIMCO's Funds**: First, we need to identify the funds managed by PIMCO. This can be done by filtering the `REGISTRANT` table for entries where the `REGISTRANT_NAME` contains "PIMCO".
+
+2. **Link to Securities Lending Data**: Once we have identified PIMCO's funds, we need to link these funds to their securities lending activities. This involves joining the `FUND_REPORTED_INFO` table with the `SECURITIES_LENDING` table using the `ACCESSION_NUMBER` as the key.
+
+3. **Calculate Securities Lending Revenue**: If there is a specific column that tracks revenue from securities lending, we would sum this column for PIMCO's funds. However, since the schema provided does not explicitly mention a revenue column in the `SECURITIES_LENDING` table, we will assume that the revenue is tracked in another related table or needs to be calculated based on other available data.
+
+4. **Filter and Aggregate Data**: Finally, we will filter the data to include only PIMCO's funds and aggregate the relevant metrics to get an overview of their securities lending activity and revenue.
+
+Here is the SQL query that implements these steps:
+
+```sql
+WITH PIMCOFunds AS (
+    SELECT 
+        R.ACCESSION_NUMBER
+    FROM 
+        REGISTRANT R
+    WHERE 
+        R.REGISTRANT_NAME LIKE '%PIMCO%'
+),
+SecuritiesLendingActivity AS (
+    SELECT 
+        F.ACCESSION_NUMBER,
+        SL.IS_LOAN_BY_FUND
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN SECURITIES_LENDING SL ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+    WHERE 
+        F.ACCESSION_NUMBER IN (SELECT ACCESSION_NUMBER FROM PIMCOFunds)
+)
+SELECT 
+    COUNT(DISTINCT SL.ACCESSION_NUMBER) as Number_of_Lending_Funds,
+    COUNT(CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN 1 END) as Active_Lending_Funds
+FROM 
+    SecuritiesLendingActivity SL;
+```
+
+### Explanation:
+- **PIMCOFunds CTE**: This common table expression (CTE) selects all `ACCESSION_NUMBER`s from the `REGISTRANT` table where the `REGISTRANT_NAME` contains "PIMCO".
+- **SecuritiesLendingActivity CTE**: This CTE joins the `FUND_REPORTED_INFO` table with the `SECURITIES_LENDING` table to filter for PIMCO's funds and their securities lending activities.
+- **Final SELECT**: The final query counts the number of distinct funds involved in securities lending and the number of funds actively lending securities (where `IS_LOAN_BY_FUND` is 'Y').
+
+This query provides an overview of PIMCO's involvement
+================================================================================
+Error in refine_query of Self-Correction
+================================================================================

@@ -1,0 +1,86 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH BondRates AS (
+    SELECT 
+        d.QUARTER,
+        h.FAIR_VALUE_LEVEL,
+        AVG(CAST(d.ANNUALIZED_RATE AS FLOAT)) as Avg_Coupon_Rate,
+        COUNT(DISTINCT h.HOLDING_ID) as Number_of_Bonds,
+        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Total_Value
+    FROM 
+        DEBT_SECURITY d
+        JOIN FUND_REPORTED_HOLDING h ON d.HOLDING_ID = h.HOLDING_ID
+    WHERE 
+        d.ANNUALIZED_RATE IS NOT NULL
+    GROUP BY 
+        d.QUARTER,
+        h.FAIR_VALUE_LEVEL
+)
+SELECT 
+    QUARTER,
+    FAIR_VALUE_LEVEL,
+    ROUND(Avg_Coupon_Rate, 2) as Average_Coupon,
+    Number_of_Bonds,
+    ROUND(Total_Value / 1000000, 2) as Value_Millions
+FROM 
+    BondRates
+ORDER BY 
+    QUARTER DESC,
+    FAIR_VALUE_LEVEL;
+================================================================================
+Schema Links for Question: What's the average coupon rate for investment-grade vs high-yield bonds?
+{'table_columns': ['debt_security.coupon_type', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: To determine the classification of the query "What's the average coupon rate for investment-grade vs high-yield bonds?", we need to consider the tables and relationships involved:
+
+1. **Tables Involved**: 
+   - The `debt_security` table is needed for the `coupon_type`.
+   - The `interest_rate_risk` table might be relevant if it provides information on the bond's risk category (investment-grade vs high-yield).
+
+2. **Joins**:
+   - We need to join `debt_security` with `fund_reported_holding` using the `HOLDING_ID` to access the relevant bond information.
+   - If `interest_rate_risk` is used to determine the bond category, it would require joining with `fund_reported_info` using `ACCESSION_NUMBER`.
+
+3. **Nested Queries**:
+   - If the bond category (investment-grade vs high-yield) is determined by a specific condition or requires aggregation, a nested query might be necessary. However, if the category is directly available in one of the tables, a nested query might not be needed.
+
+Given these considerations, the query likely requires joining multiple tables to gather all necessary information. However, without explicit conditions that necessitate a nested query (like filtering based on aggregated results), it seems that the query can be executed with joins alone.
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it involves joins but does not necessarily require nested queries. 
+
+
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: **
+
+```sql
+WITH BondCategories AS (
+    SELECT 
+        DS.ANNUALIZED_RATE,
+        CASE 
+            WHEN CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) < CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) 
+            THEN 'Investment-Grade'
+            ELSE 'High-Yield'
+        END AS Bond_Category
+    FROM 
+        DEBT_SECURITY DS
+    JOIN FUND_REPORTED_HOLDING FRH ON DS.HOLDING_ID = FRH.HOLDING_ID
+    JOIN FUND_REPORTED_INFO F ON FRH.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE 
+        DS.ANNUALIZED_RATE IS NOT NULL
+        AND (F.CREDIT_SPREAD_10YR_INVEST IS NOT NULL OR F.CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL)
+)
+SELECT 
+    Bond_Category,
+    AVG(CAST(ANNUALIZED_RATE AS FLOAT)) AS Avg_Coupon_Rate
+FROM 
+    BondCategories
+GROUP BY 
+    Bond_Category;
+```
+
+This query categorizes bonds into investment-grade and high-yield based on their credit spreads and calculates the average coupon rate for each category.
+================================================================================
+Error in refine_query of Self-Correction
+================================================================================

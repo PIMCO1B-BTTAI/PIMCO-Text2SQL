@@ -1,0 +1,95 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LiquidityAnalysis AS (
+    SELECT 
+        F.SERIES_NAME,
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
+        CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) as Short_Term_Obligations,
+        CAST(F.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO F
+    WHERE 
+        F.CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio,
+    Cash / Total_Assets * 100 as Cash_Percentage
+FROM 
+    LiquidityAnalysis
+WHERE 
+    Short_Term_Obligations > 0
+ORDER BY 
+    Cash_Coverage_Ratio ASC
+LIMIT 15;
+================================================================================
+Schema Links for Question: Looking for funds that might have liquidity issues - check their cash versus short-term obligations
+{'table_columns': ['fund_reported_info.cash_not_rptd_in_c_or_d', 'fund_reported_info.total_liabilities', 'debt_security_ref_instrument.issue_title', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "Looking for funds that might have liquidity issues - check their cash versus short-term obligations" involves analyzing data related to cash and short-term obligations. The relevant tables and columns are:
+
+- `fund_reported_info.cash_not_rptd_in_c_or_d` for cash information.
+- `fund_reported_info.total_liabilities` for liabilities.
+- `debt_security_ref_instrument.issue_title` and `securities_lending.is_loan_by_fund` for additional context on obligations.
+
+To assess liquidity issues, we need to compare cash against short-term obligations, which might involve joining or aggregating data from multiple tables. The foreign keys indicate relationships between `FUND_REPORTED_INFO` and other tables like `DEBT_SECURITY_REF_INSTRUMENT` and `SECURITIES_LENDING`.
+
+Given the need to potentially join multiple tables to gather all necessary data for the analysis, this query would require a JOIN. However, it doesn't necessarily require nested queries unless specific conditions or subqueries are needed for more complex filtering.
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it involves JOINs but not nested queries. 
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: ```sql
+WITH LiquidityAnalysis AS (
+    SELECT 
+        SERIES_NAME,
+        CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
+        CAST(TOTAL_LIABILITIES AS FLOAT) as Short_Term_Obligations
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+        AND TOTAL_LIABILITIES IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio
+FROM 
+    LiquidityAnalysis
+WHERE 
+    Short_Term_Obligations > 0
+ORDER BY 
+    Cash_Coverage_Ratio ASC
+LIMIT 15;
+```
+
+This query identifies funds with potential liquidity issues by calculating the cash coverage ratio and ordering the results to highlight those with the lowest ratios.
+================================================================================
+final_output: 
+WITH LiquidityAnalysis AS (
+    SELECT 
+        SERIES_NAME,
+        CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
+        CAST(TOTAL_LIABILITIES AS FLOAT) as Short_Term_Obligations
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+        AND TOTAL_LIABILITIES IS NOT NULL
+)
+SELECT 
+    SERIES_NAME,
+    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio
+FROM 
+    LiquidityAnalysis
+WHERE 
+    Short_Term_Obligations > 0
+ORDER BY 
+    Cash_Coverage_Ratio ASC
+LIMIT 15
+================================================================================
+Result: False
+================================================================================

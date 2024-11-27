@@ -1,0 +1,41 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    COUNTRY,
+    STATE 
+FROM 
+    REGISTRANT 
+ORDER BY 
+    COUNTRY,
+    STATE;
+================================================================================
+Schema Links for Question: List all registrants with their country
+{'table_columns': ['registrant.registrant_name', 'registrant.country'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+================================================================================
+classification reasoning: The SQL query for the question "List all registrants with their country" needs these tables = [registrant], so we don't need JOIN. Plus, it doesn't require nested queries with (INTERSECT, UNION, EXCEPT, IN, NOT IN), and we need the answer to the questions = [""]. So, we don't need JOIN and don't need nested queries, then the SQL query can be classified as "EASY".  
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    REGISTRANT_NAME,
+    COUNTRY
+FROM 
+    REGISTRANT
+ORDER BY 
+    COUNTRY;
+```
+================================================================================
+final_output: 
+SELECT 
+    REGISTRANT_NAME,
+    COUNTRY
+FROM 
+    REGISTRANT
+ORDER BY 
+    COUNTRY
+================================================================================
+Result: False
+================================================================================

@@ -1,0 +1,161 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH MaturityDiversity AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN DS.MATURITY_DATE <= DATE('now', '+1 year') THEN 'SHORT_TERM'
+                WHEN DS.MATURITY_DATE <= DATE('now', '+5 year') THEN 'MEDIUM_TERM'
+                ELSE 'LONG_TERM'
+            END
+        ) as Maturity_Types,
+        COUNT(*) as Total_Debt_Securities
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DEBT_SECURITY DS 
+            ON H.HOLDING_ID = DS.HOLDING_ID
+    WHERE 
+        DS.MATURITY_DATE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Maturity_Types,
+    Total_Debt_Securities,
+    (Maturity_Types * 100.0 / 3) as Diversity_Score
+FROM 
+    MaturityDiversity
+WHERE 
+    Total_Debt_Securities >= 5
+ORDER BY 
+    Maturity_Types DESC, 
+    Total_Debt_Securities DESC;
+================================================================================
+Schema Links for Question: Show me which funds have the most diverse debt security holdings by maturity
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'fund_reported_holding.holding_id', 'debt_security.maturity_date', 'debt_security_ref_instrument.debt_security_ref_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: To determine the classification of the query "Show me which funds have the most diverse debt security holdings by maturity," we need to consider the tables and relationships involved:
+
+1. **Tables Involved**: 
+   - `FUND_REPORTED_INFO`: This table might be used to identify the funds.
+   - `FUND_REPORTED_HOLDING`: This table is necessary to link holdings to funds.
+   - `DEBT_SECURITY`: This table provides information about the maturity of debt securities.
+
+2. **Joins Required**:
+   - We need to join `FUND_REPORTED_HOLDING` with `DEBT_SECURITY` to get the maturity information for each holding.
+   - We also need to join `FUND_REPORTED_HOLDING` with `FUND_REPORTED_INFO` to associate holdings with their respective funds.
+
+3. **Complexity**:
+   - The query requires aggregating data to determine the diversity of debt security holdings by maturity. This involves counting or otherwise analyzing the variety of maturity dates for each fund.
+   - The query involves multiple joins to connect the necessary tables.
+
+Given these considerations, the query requires joining multiple tables and performing aggregation to determine diversity. However, it does not necessarily require nested queries (such as subqueries or set operations like INTERSECT, UNION, etc.). Therefore, the query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To address the query "Show me which funds have the most diverse debt security holdings by maturity," we need to follow these steps:
+
+1. **Identify Relevant Tables and Columns**:
+   - We need to focus on the `FUND_REPORTED_INFO`, `FUND_REPORTED_HOLDING`, and `DEBT_SECURITY` tables.
+   - The `FUND_REPORTED_INFO` table will provide the fund series names.
+   - The `FUND_REPORTED_HOLDING` table will link the fund series to specific holdings.
+   - The `DEBT_SECURITY` table will provide the maturity dates of the debt securities.
+
+2. **Join Tables**:
+   - Join `FUND_REPORTED_INFO` with `FUND_REPORTED_HOLDING` using the `ACCESSION_NUMBER`.
+   - Join `FUND_REPORTED_HOLDING` with `DEBT_SECURITY` using the `HOLDING_ID`.
+
+3. **Classify Maturity Dates**:
+   - Classify the maturity dates into categories: 'Short_Term', 'Medium_Term', and 'Long_Term'.
+   - 'Short_Term' could be defined as maturities within 1 year, 'Medium_Term' within 5 years, and 'Long_Term' beyond 5 years.
+
+4. **Count Maturity Types**:
+   - Count the distinct maturity types for each fund to determine diversity.
+
+5. **Filter and Order Results**:
+   - Filter funds with a significant number of debt securities and order by the number of distinct maturity types.
+
+6. **Construct SQL Query**:
+   - Use a Common Table Expression (CTE) to organize the query and make it more readable.
+
+Here is the SQL query that implements these steps:
+
+```sql
+WITH MaturityDiversity AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN DS.MATURITY_DATE <= DATE('now', '+1 year') THEN 'SHORT_TERM'
+                WHEN DS.MATURITY_DATE <= DATE('now', '+5 year') THEN 'MEDIUM_TERM'
+                ELSE 'LONG_TERM'
+            END
+        ) as Maturity_Types,
+        COUNT(*) as Total_Debt_Securities
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DEBT_SECURITY DS 
+            ON H.HOLDING_ID = DS.HOLDING_ID
+    WHERE 
+        DS.MATURITY_DATE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Maturity_Types,
+    Total_Debt_Securities,
+    (Maturity_Types * 100.0 / 3) as Diversity_Score
+FROM 
+    MaturityDiversity
+WHERE 
+    Total_Debt_Securities >= 5
+ORDER BY 
+    Maturity_T
+================================================================================
+final_output: 
+WITH MaturityDiversity AS (
+    SELECT 
+        F.SERIES_NAME,
+        COUNT(DISTINCT 
+            CASE 
+                WHEN DS.MATURITY_DATE <= DATE('now', '+1 year') THEN 'SHORT_TERM'
+                WHEN DS.MATURITY_DATE <= DATE('now', '+5 year') THEN 'MEDIUM_TERM'
+                ELSE 'LONG_TERM'
+            END
+        ) as Maturity_Types,
+        COUNT(*) as Total_Debt_Securities
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN FUND_REPORTED_HOLDING H 
+            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+        JOIN DEBT_SECURITY DS 
+            ON H.HOLDING_ID = DS.HOLDING_ID
+    WHERE 
+        DS.MATURITY_DATE IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME
+)
+SELECT 
+    SERIES_NAME,
+    Maturity_Types,
+    Total_Debt_Securities,
+    (Maturity_Types * 100.0 / 3) as Diversity_Score
+FROM 
+    MaturityDiversity
+WHERE 
+    Total_Debt_Securities >= 5
+ORDER BY 
+    Maturity_Types DESC
+```
+================================================================================
+Result: False
+================================================================================

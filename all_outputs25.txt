@@ -1,0 +1,43 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INTERNATIONAL%';
+================================================================================
+Schema Links for Question: Show me all funds with 'International' in their name
+{'table_columns': ['registrant.registrant_name', 'nonforeign_exchange_swap.termination_date', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+================================================================================
+classification reasoning: The query "Show me all funds with 'International' in their name" involves searching for a specific keyword in the fund names. The relevant table for this query is "registrant," specifically the "registrant_name" column, where we would look for names containing the word "International."
+
+- The query only involves a single table, "registrant," and does not require any joins with other tables.
+- It also does not require any nested queries, as we are simply filtering based on a condition applied to a single column.
+
+Therefore, the SQL query for this question can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+process_thesql: ```sql
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INTERNATIONAL%';
+```
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%International%'
+================================================================================
+Result: True
+================================================================================
