@@ -26,54 +26,40 @@ ORDER BY
 Schema Links for Question: What's the average yield on our defaulted bonds? Need to see recovery potential.
 {'table_columns': ['debt_security.is_default', 'monthly_total_return.monthly_total_return_id'], 'primary_keys': ['MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.MONTHLY_TOTAL_RETURN_ID'], 'foreign_keys': ['MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine the classification of the query "What's the average yield on our defaulted bonds? Need to see recovery potential," we need to analyze the schema links and the relationships between the tables involved.
+classification reasoning: To answer the question "What's the average yield on our defaulted bonds? Need to see recovery potential," we need to consider the following:
 
-1. **Identify the Tables and Columns Involved:**
-   - The query involves checking for defaulted bonds, which relates to the `debt_security.is_default` column.
-   - The query also mentions "average yield" and "recovery potential," which might relate to financial performance metrics, potentially involving the `monthly_total_return` table.
+1. **Identify Defaulted Bonds**: We need to find bonds that are in default. This information is available in the `DEBT_SECURITY` table, specifically in the `IS_DEFAULT` column.
 
-2. **Determine the Relationships:**
-   - The `debt_security` table is linked to the `fund_reported_holding` table through the `HOLDING_ID`.
-   - The `monthly_total_return` table is linked to the `fund_reported_info` table through the `ACCESSION_NUMBER`.
+2. **Calculate Average Yield**: To calculate the average yield, we need to access the `ANNUALIZED_RATE` column in the `DEBT_SECURITY` table, which provides the interest rate of the debt securities.
 
-3. **Assess the Need for Joins or Nested Queries:**
-   - To calculate the average yield on defaulted bonds, we need to filter bonds that are marked as defaulted (`debt_security.is_default = TRUE`).
-   - We may need to join the `debt_security` table with the `fund_reported_holding` table to access relevant financial data.
-   - If recovery potential involves additional calculations or conditions, it might require further joins or nested queries.
+3. **Recovery Potential**: The question mentions "recovery potential," which might imply looking at additional metrics or data to assess potential recovery. However, based on the schema provided, there is no direct column that indicates recovery potential. This might require additional context or data not present in the schema.
 
-4. **Classification:**
-   - Since the query involves multiple tables and potentially requires joining `debt_security` with `fund_reported_holding
+4. **Table Relationships**: The `DEBT_SECURITY` table is linked to the `FUND_REPORTED_HOLDING` table through the `HOLDING_ID` foreign key. However, for this specific query, we are primarily interested in the `DEBT_SECURITY` table.
+
+Since the query involves only the `DEBT_SECURITY` table and does not require joining with other tables or using nested queries, it can be classified as "EASY."
+
+Label: "EASY"
 ================================================================================
-classification: "NESTED"
+classification: "EASY"
 ================================================================================
-process_thesql: To find the average yield on defaulted bonds, we need to focus on the `DEBT_SECURITY` table to identify bonds that are marked as defaulted. We will then calculate the average of the `ANNUALIZED_RATE` for these defaulted bonds. Here's how we can construct the SQL query:
-
-1. **Identify Defaulted Bonds**: We need to filter the `DEBT_SECURITY` table to find bonds where `IS_DEFAULT` is 'Y'.
-2. **Calculate Average Yield**: We will calculate the average of the `ANNUALIZED_RATE` for these defaulted bonds.
-
-Here's the SQL query to achieve this:
+process_thesql: To find the average yield on defaulted bonds and assess recovery potential, we need to join the `DEBT_SECURITY` table with the `FUND_REPORTED_HOLDING` table to filter for defaulted bonds, and then calculate the average yield using the `MONTHLY_TOTAL_RETURN` table. Here's the SQL query:
 
 ```sql
-WITH DefaultedBonds AS (
-    SELECT 
-        DS.ANNUALIZED_RATE
-    FROM 
-        DEBT_SECURITY DS
-    WHERE 
-        DS.IS_DEFAULT = 'Y'
-        AND DS.ANNUALIZED_RATE IS NOT NULL
-)
-SELECT 
-    AVG(CAST(ANNUALIZED_RATE AS FLOAT)) AS Average_Yield
-FROM 
-    DefaultedBonds;
+SELECT AVG(mtr.monthly_total_return1 + mtr.monthly_total_return2 + mtr.monthly_total_return3) / 3 AS average_yield
+FROM debt_security ds
+JOIN fund_reported_holding frh ON ds.holding_id = frh.holding_id
+JOIN monthly_total_return mtr ON frh.accession_number = mtr.accession_number
+WHERE ds.is_default = 'Y';
 ```
 
-### Explanation:
-- **CTE (Common Table Expression)**: We use a CTE named `DefaultedBonds` to select the `ANNUALIZED_RATE` of bonds that are defaulted (`IS_DEFAULT = 'Y'`).
-- **Average Calculation**: We then calculate the average of these annualized rates using the `AVG` function, casting the `ANNUALIZED_RATE` to a float to ensure numerical operations are performed correctly.
-
-This query will provide the average yield on defaulted bonds, which can help in assessing the recovery potential.
+This query calculates the average yield of defaulted bonds by averaging the monthly total returns over the three months for each defaulted bond.
 ================================================================================
-Error in refine_query of Self-Correction
+final_output: 
+SELECT AVG((mtr.monthly_total_return1 + mtr.monthly_total_return2 + mtr.monthly_total_return3) / 3.0) AS average_yield
+FROM debt_security ds
+JOIN fund_reported_holding frh ON ds.holding_id = frh.holding_id
+JOIN monthly_total_return mtr ON frh.accession_number = mtr.accession_number
+WHERE ds.is_default = 'Y'
+================================================================================
+Result: False
 ================================================================================

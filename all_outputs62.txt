@@ -31,91 +31,40 @@ LIMIT 15;
 Schema Links for Question: Identify funds with high portfolio turnover based on their trading activity?
 {'table_columns': ['securities_lending.is_loan_by_fund', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Identify funds with high portfolio turnover based on their trading activity" involves analyzing trading activity, which is likely related to the "securities_lending" table. To identify funds, we would also need information from the "fund_reported_holding" table, as indicated by the foreign key relationship: `SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID`.
+classification reasoning: To identify funds with high portfolio turnover based on their trading activity, we need to analyze trading-related data. This involves examining the sales, reinvestment, and redemption flows over the reporting period, which are found in the `FUND_REPORTED_INFO` table. Additionally, we might need to consider the `FUND_REPORTED_HOLDING` table to link holdings to specific funds.
 
-Since the query requires data from multiple tables, a JOIN operation is necessary to combine information from "securities_lending" and "fund_reported_holding". However, the query does not specify any conditions that would require a nested query structure, such as using subqueries with INTERSECT, UNION, EXCEPT, IN, or NOT IN.
+1. **Tables Involved**: 
+   - `FUND_REPORTED_INFO`: Contains data on sales, reinvestment, and redemption flows.
+   - `FUND_REPORTED_HOLDING`: May be used to link holdings to funds.
 
-Therefore, the SQL query for this question would involve a JOIN but not a nested query. Thus, it can be classified as "NON-NESTED". 
+2. **Joins Required**: 
+   - We need to join `FUND_REPORTED_INFO` with `FUND_REPORTED_HOLDING` to associate trading activity with specific funds.
 
-Label: "NON-NESTED"
+3. **Nested Queries**: 
+   - We might need nested queries to calculate turnover ratios or to filter funds based on specific turnover thresholds.
+
+Given the need to join multiple tables and potentially use nested queries to calculate and filter based on turnover, the SQL query can be classified as "NESTED."
+
+Label: "NESTED"
 ================================================================================
-classification: "NON-NESTED"
+classification: "NESTED"
 ================================================================================
-process_thesql: To identify funds with high portfolio turnover based on their trading activity, we need to focus on the trading activity data available in the `FUND_REPORTED_INFO` table. Specifically, we will look at the sales flow data for each month (`SALES_FLOW_MON1`, `SALES_FLOW_MON2`, `SALES_FLOW_MON3`) and compare it to the total assets of the fund to calculate the turnover rate.
-
-Here is the step-by-step approach to construct the SQL query:
-
-1. **Select Relevant Columns**: We need the series name, sales flow for each month, and total assets from the `FUND_REPORTED_INFO` table.
-
-2. **Calculate Total Sales**: Sum the sales flow for the three months to get the total sales for the quarter.
-
-3. **Calculate Turnover Rate**: Divide the total sales by the total assets to get the turnover rate, expressed as a percentage.
-
-4. **Filter and Order**: We will filter out funds with zero assets to avoid division by zero and order the results by the turnover rate in descending order to identify funds with the highest turnover.
-
-5. **Limit the Results**: Optionally, limit the results to a certain number of top funds with the highest turnover rates.
-
-Here is the SQL query based on the above steps:
-
-```sql
-WITH TradingActivity AS (
-    SELECT 
-        F.SERIES_NAME,
-        SUM(CAST(F.SALES_FLOW_MON1 AS FLOAT) + 
-            CAST(F.SALES_FLOW_MON2 AS FLOAT) + 
-            CAST(F.SALES_FLOW_MON3 AS FLOAT)) as Total_Sales,
-        CAST(F.TOTAL_ASSETS AS FLOAT) as Assets
-    FROM 
-        FUND_REPORTED_INFO F
-    WHERE 
-        F.SALES_FLOW_MON1 IS NOT NULL 
-        AND F.SALES_FLOW_MON2 IS NOT NULL 
-        AND F.SALES_FLOW_MON3 IS NOT NULL
-    GROUP BY 
-        F.SERIES_NAME,
-        F.TOTAL_ASSETS
-)
-SELECT 
-    SERIES_NAME,
-    (Total_Sales / NULLIF(Assets, 0)) * 100 as Turnover_Rate
-FROM 
-    TradingActivity
-WHERE 
-    Assets > 0
-ORDER BY 
-    Turnover_Rate DESC
-LIMIT 15;
+process_thesql: ```sql
+SELECT fund_reported_holding.accession_number, fund_reported_holding.holding_id
+FROM securities_lending
+JOIN fund_reported_holding
+ON securities_lending.holding_id = fund_reported_holding.holding_id
+WHERE securities_lending.is_loan_by_fund = 'Y';
 ```
 
-This query calculates the turnover rate for each fund by summing the sales flows for the three months and dividing by the total assets. It then orders the funds by turnover rate in descending order, showing the top funds with the highest portfolio turnover.
+This query identifies funds that are actively involved in securities lending, which can be an indicator of high portfolio turnover. However, for a more comprehensive analysis, additional data on trading volumes and changes in holdings over time would be needed.
 ================================================================================
 final_output: 
-WITH TradingActivity AS (
-    SELECT 
-        F.SERIES_NAME,
-        SUM(CAST(F.SALES_FLOW_MON1 AS FLOAT) + 
-            CAST(F.SALES_FLOW_MON2 AS FLOAT) + 
-            CAST(F.SALES_FLOW_MON3 AS FLOAT)) as Total_Sales,
-        CAST(F.TOTAL_ASSETS AS FLOAT) as Assets
-    FROM 
-        FUND_REPORTED_INFO F
-    WHERE 
-        F.SALES_FLOW_MON1 IS NOT NULL 
-        AND F.SALES_FLOW_MON2 IS NOT NULL 
-        AND F.SALES_FLOW_MON3 IS NOT NULL
-    GROUP BY 
-        F.SERIES_NAME
-)
-SELECT 
-    SERIES_NAME,
-    (Total_Sales / NULLIF(Assets, 0)) * 100 as Turnover_Rate
-FROM 
-    TradingActivity
-WHERE 
-    Assets > 0
-ORDER BY 
-    Turnover_Rate DESC
-LIMIT 15
+SELECT fund_reported_holding.accession_number, fund_reported_holding.holding_id
+FROM securities_lending
+JOIN fund_reported_holding
+ON securities_lending.holding_id = fund_reported_holding.holding_id
+WHERE securities_lending.is_loan_by_fund = 'Y'
 ================================================================================
 Result: False
 ================================================================================

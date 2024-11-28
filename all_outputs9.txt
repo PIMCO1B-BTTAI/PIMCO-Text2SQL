@@ -12,63 +12,58 @@ ORDER BY
 LIMIT 15;
 ================================================================================
 Schema Links for Question: Show me the largest bond funds
-{'table_columns': ['securities_lending.is_loan_by_fund', 'submission.is_last_filing'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['submission.is_last_filing', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine the classification of the query "Show me the largest bond funds," we need to consider the following:
+classification reasoning: To determine the largest bond funds, we need to identify bond funds and then find those with the largest total assets. This involves:
 
-1. **Identify Relevant Tables and Columns**: 
-   - The query is asking for the largest bond funds. This implies we need to look at the size of the funds, which is likely related to the `FUND_REPORTED_INFO` table, specifically the `TOTAL_ASSETS` column.
-   - To identify bond funds, we might need to look at the `FUND_REPORTED_HOLDING` table, specifically the `ASSET_CAT` column, to filter for bonds.
+1. Identifying bond funds, which can be done by checking the asset category in the `FUND_REPORTED_HOLDING` table where `ASSET_CAT` is related to bonds.
+2. Finding the largest funds by comparing their total assets, which is available in the `FUND_REPORTED_INFO` table.
 
-2. **Determine if JOINs are Needed**:
-   - We need to join `FUND_REPORTED_INFO` with `FUND_REPORTED_HOLDING` to filter for bond funds and then determine the largest based on `TOTAL_ASSETS`.
-   - This requires a JOIN between `FUND_REPORTED_INFO` and `FUND_REPORTED_HOLDING` using the `ACCESSION_NUMBER` as the linking key.
+The query will require a join between `FUND_REPORTED_HOLDING` and `FUND_REPORTED_INFO` to filter for bond funds and then sort or filter by total assets. This requires a join but not a nested query.
 
-3. **Determine if Nested Queries are Needed**:
-   - The query does not explicitly require nested queries like subqueries or set operations (INTERSECT, UNION, etc.). It can be achieved with a straightforward JOIN and an ORDER BY clause to find the largest funds.
-
-Based on this analysis, the query requires a JOIN but does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
-
-Label: "NON-N
+Therefore, the SQL query can be classified as "NON-NESTED."
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To find the largest bond funds, we need to focus on the `FUND_REPORTED_INFO` table, which contains information about the funds, including their total assets. We are interested in funds that are categorized as bond funds, which can be identified by checking if the `SERIES_NAME` contains the word "BOND". We will then sort these funds by their `TOTAL_ASSETS` in descending order to find the largest ones.
+process_thesql: To determine the largest bond funds, we need to identify funds with significant holdings in bonds. The schema does not directly specify a "bond fund" category, so we need to infer this from the data available. Here's how we can approach this:
 
-Here is the step-by-step approach:
+1. **Identify Bond Holdings**: We need to look at the `FUND_REPORTED_HOLDING` table to identify holdings categorized as bonds. This can be done by filtering the `ASSET_CAT` column for entries that represent bonds.
 
-1. **Identify Bond Funds**: We need to filter the funds where the `SERIES_NAME` contains "BOND".
-2. **Sort by Total Assets**: Once we have the bond funds, we will sort them by `TOTAL_ASSETS` in descending order to find the largest ones.
-3. **Select Relevant Columns**: We will select the `SERIES_NAME` and `TOTAL_ASSETS` to display the largest bond funds.
+2. **Calculate Fund Size**: For each fund, we need to calculate the total value of its bond holdings. This involves summing the `CURRENCY_VALUE` of holdings identified as bonds.
 
-Now, let's construct the SQL query:
+3. **Rank Funds by Size**: Once we have the total bond holdings for each fund, we can rank them to find the largest bond funds.
 
+4. **Consider Active Funds**: We should ensure that we only consider funds that are still active, which can be checked using the `IS_LAST_FILING` column in the `SUBMISSION` table. Funds with `IS_LAST_FILING = 'N'` are still active.
+
+5. **Join Tables**: We need to join the `FUND_REPORTED_HOLDING` table with the `SUBMISSION` table to filter out inactive funds.
+
+Let's create an intermediate representation and then construct the SQL query.
+
+**Intermediate Representation**:
+- Select the `ACCESSION_NUMBER` and sum of `CURRENCY_VALUE` for holdings categorized as bonds.
+- Filter for active funds (`IS_LAST_FILING = 'N'`).
+- Group by `ACCESSION_NUMBER`.
+- Order by the total bond holdings in descending order to find the largest bond funds.
+
+**SQL Query**:
 ```sql
-SELECT 
-    SERIES_NAME, 
-    CAST(TOTAL_ASSETS AS FLOAT) AS Total_Assets
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    SERIES_NAME LIKE '%BOND%'
-ORDER BY 
-    Total_Assets DESC
-LIMIT 10;
+SELECT frh.ACCESSION_NUMBER, SUM(frh.CURRENCY_VALUE) AS total_bond_value
+FROM FUND_REPORTED_HOLDING frh
+JOIN SUBMISSION s ON frh.ACCESSION_NUMBER = s.ACCESSION_NUMBER
+WHERE frh.ASSET_CAT = 'Bond' AND s.IS_LAST_FILING = 'N'
+GROUP BY frh.ACCESSION_NUMBER
+ORDER BY total_bond_value DESC;
 ```
 
-This query will return the top 10 largest bond funds based on their total assets. The `CAST` function is used to ensure that the `TOTAL_ASSETS` are treated as a numeric value for sorting purposes.
+This query will provide a list of the largest bond funds by summing the value of their bond holdings, considering only active funds.
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME, 
-    CAST(TOTAL_ASSETS AS FLOAT) AS Total_Assets
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    SERIES_NAME LIKE '%BOND%'
-ORDER BY 
-    Total_Assets DESC
-LIMIT 10
+SELECT frh.ACCESSION_NUMBER, SUM(frh.CURRENCY_VALUE) AS total_bond_value
+FROM FUND_REPORTED_HOLDING frh
+JOIN SUBMISSION s ON frh.ACCESSION_NUMBER = s.ACCESSION_NUMBER
+WHERE frh.ASSET_CAT = 'Bond' AND s.IS_LAST_FILING = 'N'
+GROUP BY frh.ACCESSION_NUMBER
+ORDER BY total_bond_value DESC
 ================================================================================
 Result: False
 ================================================================================

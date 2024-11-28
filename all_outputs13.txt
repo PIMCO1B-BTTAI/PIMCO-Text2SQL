@@ -11,58 +11,36 @@ GROUP BY
     R.REGISTRANT_NAME;
 ================================================================================
 Schema Links for Question: Show me the earliest filing date for each registrant
-{'table_columns': ['fund_reported_info.series_name', 'submission.filing_date', 'registrant.registrant_name', 'submission.filing_date'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+{'table_columns': ['registrant.registrant_name', 'submission.filing_date', 'submission.filing_date', 'fund_reported_info.series_name'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
 ================================================================================
-classification reasoning: The query "Show me the earliest filing date for each registrant" involves finding the minimum filing date for each registrant. This requires grouping the data by registrant and then finding the minimum filing date within each group. 
+classification reasoning: To answer the question "Show me the earliest filing date for each registrant," we need to consider the following:
 
-To achieve this, we need to join the "registrant" and "submission" tables because the filing date is in the "submission" table, and we need to associate it with each registrant. This requires a JOIN operation between these tables based on the accession number.
+1. **Tables Involved**: We need information from the `REGISTRANT` table to get the registrant details and the `SUBMISSION` table to get the filing dates.
 
-Since the query involves a JOIN but does not require any nested queries (like subqueries or set operations such as INTERSECT, UNION, EXCEPT), it can be classified as "NON-NESTED."
+2. **Join Requirement**: We need to join the `REGISTRANT` and `SUBMISSION` tables on the `ACCESSION_NUMBER` to link each registrant with their respective filings.
+
+3. **Aggregation**: We need to find the earliest filing date for each registrant, which requires using an aggregation function (MIN) and grouping by the registrant.
+
+Given these requirements, the query involves a JOIN between the `REGISTRANT` and `SUBMISSION` tables and an aggregation to find the minimum filing date for each registrant. This makes the query a "NON-NESTED" query because it requires a JOIN but does not require nested queries.
 
 Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To find the earliest filing date for each registrant, we need to join the `REGISTRANT` and `SUBMISSION` tables using the `ACCESSION_NUMBER` as the key. Then, we will group the results by `REGISTRANT_NAME` and select the minimum `FILING_DATE` for each group. Here's the step-by-step breakdown:
-
-1. **Identify the Tables and Columns**: We need the `REGISTRANT_NAME` from the `REGISTRANT` table and the `FILING_DATE` from the `SUBMISSION` table.
-
-2. **Join the Tables**: Use the `ACCESSION_NUMBER` to join the `REGISTRANT` and `SUBMISSION` tables. This is possible because both tables have a foreign key relationship through `ACCESSION_NUMBER`.
-
-3. **Group and Aggregate**: Group the results by `REGISTRANT_NAME` and use the `MIN` function to find the earliest `FILING_DATE` for each registrant.
-
-4. **Select the Required Columns**: Select `REGISTRANT_NAME` and the earliest `FILING_DATE`.
-
-Here is the SQL query that implements these steps:
-
-```sql
-SELECT 
-    R.REGISTRANT_NAME,
-    MIN(S.FILING_DATE) AS Earliest_Filing_Date
-FROM 
-    REGISTRANT R
-JOIN 
-    SUBMISSION S ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-GROUP BY 
-    R.REGISTRANT_NAME
-ORDER BY 
-    Earliest_Filing_Date;
+process_thesql: ```sql
+SELECT registrant_name, MIN(filing_date) AS earliest_filing_date
+FROM registrant
+JOIN submission ON registrant.accession_number = submission.accession_number
+GROUP BY registrant_name;
 ```
 
-This query will give you the earliest filing date for each registrant, ordered by the filing date.
+This query will return the earliest filing date for each registrant by joining the necessary tables and applying the appropriate aggregation.
 ================================================================================
 final_output: 
-SELECT 
-    R.REGISTRANT_NAME,
-    MIN(S.FILING_DATE) AS Earliest_Filing_Date
-FROM 
-    REGISTRANT R
-JOIN 
-    SUBMISSION S ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-GROUP BY 
-    R.REGISTRANT_NAME
-ORDER BY 
-    Earliest_Filing_Date
+SELECT registrant.registrant_name, MIN(submission.filing_date) AS earliest_filing_date
+FROM registrant
+JOIN submission ON registrant.registrant_id = submission.registrant_id
+GROUP BY registrant.registrant_name
 ================================================================================
-Result: False
+Error Executing LLM-Generated SQL: no such column: registrant.registrant_id
 ================================================================================

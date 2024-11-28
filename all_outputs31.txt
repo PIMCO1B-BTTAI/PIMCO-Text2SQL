@@ -12,35 +12,22 @@ WHERE
 Schema Links for Question: Show me all registrants from Florida
 {'table_columns': ['registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
 ================================================================================
-classification reasoning: The SQL query for the question "Show me all registrants from Florida" needs data from the "registrant" table, specifically the registrant names. The condition involves filtering registrants based on their location in Florida. This can be achieved by checking the "state" column in the "registrant" table for the value "FL" (or "US-FL" depending on the data format).
+classification reasoning: The SQL query for the question "Show me all registrants from Florida" needs data from the "registrant" table, specifically filtering by the state of Florida. This involves checking the "state" column in the "registrant" table for entries that match "Florida" or its abbreviation. Since this query only involves a single table and does not require any joins or nested queries, it can be classified as "EASY." 
 
-- The query only involves the "registrant" table, so no JOIN is needed.
-- It doesn't require nested queries with operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN.
-
-Therefore, the SQL query can be classified as "EASY".
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    REGISTRANT_NAME,
-    CITY,
-    ADDRESS1 
-FROM 
-    REGISTRANT 
-WHERE 
-    STATE = 'FL';
+SELECT DISTINCT registrant_name 
+FROM registrant 
+WHERE state = 'FL';
 ```
 ================================================================================
 final_output: 
-SELECT 
-    REGISTRANT_NAME,
-    CITY,
-    ADDRESS1 
-FROM 
-    REGISTRANT 
-WHERE 
-    STATE = 'FL'
+SELECT DISTINCT registrant_name 
+FROM registrant 
+WHERE state = 'Florida'
 ================================================================================
-Result: True
+Result: False
 ================================================================================

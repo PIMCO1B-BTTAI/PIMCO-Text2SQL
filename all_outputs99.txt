@@ -25,109 +25,48 @@ ORDER BY
 LIMIT 10;
 ================================================================================
 Schema Links for Question: Show me our best performing strategies in rising rate environments.
-{'table_columns': ['identifiers.identifier_isin', 'registrant.state', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'IDENTIFIERS.HOLDING_ID', 'IDENTIFIERS.IDENTIFIERS_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['identifiers.identifier_isin', 'interest_rate_risk.interest_rate_risk_id', 'registrant.state'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'IDENTIFIERS.HOLDING_ID', 'IDENTIFIERS.IDENTIFIERS_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The question "Show me our best performing strategies in rising rate environments" requires analyzing performance data in the context of interest rate changes. To address this, we need to consider the following:
+classification reasoning: To address the question "Show me our best performing strategies in rising rate environments," we need to consider the following:
 
-1. **Interest Rate Data**: The `INTEREST_RATE_RISK` table contains information about interest rate changes, which is crucial for identifying rising rate environments.
+1. **Understanding the Context**: The question is about identifying strategies that perform well when interest rates are rising. This implies analyzing performance metrics in relation to interest rate changes.
 
-2. **Performance Data**: To determine the best performing strategies, we need to look at performance metrics, which might be found in tables like `MONTHLY_TOTAL_RETURN` or `FUND_REPORTED_INFO`.
+2. **Relevant Tables**: 
+   - **INTEREST_RATE_RISK**: This table contains information about interest rate changes and their impact on portfolios. It is crucial for understanding how different strategies perform under varying interest rate conditions.
+   - **MONTHLY_TOTAL_RETURN** or **MONTHLY_RETURN_CAT_INSTRUMENT**: These tables provide performance metrics (total returns) that can be used to evaluate the effectiveness of strategies.
 
-3. **Linking Data**: We need to join tables to link performance data with interest rate data. This involves using foreign keys such as `INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER`.
+3. **Required Operations**:
+   - **JOIN**: We need to join the INTEREST_RATE_RISK table with performance tables like MONTHLY_TOTAL_RETURN or MONTHLY_RETURN_CAT_INSTRUMENT to correlate interest rate changes with performance metrics.
+   - **Filtering and Aggregation**: We may need to filter for periods of rising interest rates and aggregate performance data to identify the best-performing strategies.
 
-Given these considerations, the query will require joining multiple tables to correlate interest rate changes with performance metrics. However, it does not necessarily require nested queries unless we need to perform additional filtering or aggregation that cannot be achieved with simple joins.
+4. **Complexity**:
+   - The query involves joining multiple tables to correlate interest rate changes with performance metrics.
+   - It may also require filtering and aggregating data to determine the best-performing strategies.
 
-Therefore, the SQL query for this question would involve JOIN operations but not necessarily nested queries. Thus, it can be classified as "NON-NESTED."
+Given these considerations, the query will likely involve JOIN operations to combine data from different tables and possibly some filtering or aggregation to identify the best strategies. However, it does not necessarily require nested queries unless specific subqueries are needed for complex filtering or aggregation.
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it requires JOIN operations but not necessarily nested queries. 
 
 Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To address the query "Show me our best performing strategies in rising rate environments," we need to identify strategies that perform well when interest rates are increasing. This involves analyzing the interest rate risk data and linking it to fund performance metrics. Here's how we can approach this:
+process_thesql: ```sql
+SELECT ir.interest_rate_risk_id, SUM(ir.intrst_rate_change_3mon_dv01 + ir.intrst_rate_change_1yr_dv01 + ir.intrst_rate_change_5yr_dv01 + ir.intrst_rate_change_10yr_dv01 + ir.intrst_rate_change_30yr_dv01) AS total_positive_impact
+FROM interest_rate_risk ir
+WHERE ir.intrst_rate_change_3mon_dv01 > 0 OR ir.intrst_rate_change_1yr_dv01 > 0 OR ir.intrst_rate_change_5yr_dv01 > 0 OR ir.intrst_rate_change_10yr_dv01 > 0 OR ir.intrst_rate_change_30yr_dv01 > 0
+GROUP BY ir.interest_rate_risk_id
+ORDER BY total_positive_impact DESC;
+```
 
-1. **Identify Rising Rate Environments**: We need to determine periods where interest rates are rising. This can be inferred from the `INTEREST_RATE_RISK` table, specifically looking at the changes in interest rates over different durations (e.g., 3-month, 1-year, etc.).
-
-2. **Link to Fund Performance**: We need to connect the interest rate data to fund performance. This involves joining the `INTEREST_RATE_RISK` table with the `FUND_REPORTED_INFO` and `MONTHLY_TOTAL_RETURN` tables to get performance metrics.
-
-3. **Evaluate Performance**: Calculate performance metrics (e.g., average monthly returns) during rising rate periods to identify which strategies (funds) perform best.
-
-4. **Filter and Rank**: Filter the results to show only the top-performing strategies during these periods.
-
-Here's an intermediate representation and the corresponding SQL query:
-
-### Intermediate Representation
-- Identify periods of rising interest rates using `INTEREST_RATE_RISK`.
-- Join with `FUND_REPORTED_INFO` and `MONTHLY_TOTAL_RETURN` to get performance data.
-- Calculate average returns during rising rate periods.
-- Rank strategies based on performance.
-
-### SQL Query
-```sql
-WITH RisingRatePeriods AS (
-    SELECT 
-        ACCESSION_NUMBER,
-        QUARTER,
-        INTRST_RATE_CHANGE_3MON_DV01,
-        INTRST_RATE_CHANGE_1YR_DV01,
-        INTRST_RATE_CHANGE_5YR_DV01,
-        INTRST_RATE_CHANGE_10YR_DV01,
-        INTRST_RATE_CHANGE_30YR_DV01
-    FROM 
-        INTEREST_RATE_RISK
-    WHERE 
-        INTRST_RATE_CHANGE_3MON_DV01 > 0
-        OR INTRST_RATE_CHANGE_1YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_5YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_10YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_30YR_DV01 > 0
-),
-PerformanceDuringRisingRates AS (
-    SELECT 
-        F.SERIES_NAME,
-        M.QUARTER,
-        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) + 
-            CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
-            CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 3 AS Avg_Return
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
-        JOIN RisingRatePeriods R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-    GROUP BY
+This query identifies strategies (or entries) that have a positive impact in rising rate environments by summing the changes in portfolio value across different maturities and ordering them by the total positive impact.
 ================================================================================
 final_output: 
-WITH RisingRatePeriods AS (
-    SELECT 
-        ACCESSION_NUMBER,
-        QUARTER
-    FROM 
-        INTEREST_RATE_RISK
-    WHERE 
-        INTRST_RATE_CHANGE_3MON_DV01 > 0
-        OR INTRST_RATE_CHANGE_1YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_5YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_10YR_DV01 > 0
-        OR INTRST_RATE_CHANGE_30YR_DV01 > 0
-),
-PerformanceDuringRisingRates AS (
-    SELECT 
-        F.SERIES_NAME,
-        AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) + 
-            CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
-            CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 3 AS Avg_Return
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
-        JOIN RisingRatePeriods R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER AND M.QUARTER = R.QUARTER
-    GROUP BY
-        F.SERIES_NAME
-)
-SELECT 
-    SERIES_NAME,
-    Avg_Return
-FROM 
-    PerformanceDuringRisingRates
-ORDER BY 
-    Avg_Return DESC
+SELECT ir.interest_rate_risk_id, SUM(ir.intrst_rate_change_3mon_dv01 + ir.intrst_rate_change_1yr_dv01 + ir.intrst_rate_change_5yr_dv01 + ir.intrst_rate_change_10yr_dv01 + ir.intrst_rate_change_30yr_dv01) AS total_positive_impact
+FROM interest_rate_risk ir
+WHERE ir.intrst_rate_change_3mon_dv01 > 0 OR ir.intrst_rate_change_1yr_dv01 > 0 OR ir.intrst_rate_change_5yr_dv01 > 0 OR ir.intrst_rate_change_10yr_dv01 > 0 OR ir.intrst_rate_change_30yr_dv01 > 0
+GROUP BY ir.interest_rate_risk_id
+ORDER BY total_positive_impact DESC
 ================================================================================
 Result: False
 ================================================================================

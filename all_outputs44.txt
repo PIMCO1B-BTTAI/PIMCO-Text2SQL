@@ -26,66 +26,59 @@ GROUP BY
     Fund_Type;
 ================================================================================
 Schema Links for Question: Compare how our bond funds performed against equity funds in the last month
-{'table_columns': ['monthly_total_return.monthly_total_return_id', 'submission.is_last_filing', 'securities_lending.is_loan_by_fund', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.MONTHLY_TOTAL_RETURN_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['fund_reported_info.ctrld_companies_pay_within_1yr', 'monthly_total_return.monthly_total_return_id', 'fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund', 'submission.is_last_filing'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.MONTHLY_TOTAL_RETURN_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
 classification reasoning: To address the question "Compare how our bond funds performed against equity funds in the last month," we need to consider the following:
 
-1. **Tables Involved**: 
-   - We need to access performance data, which is likely stored in the `MONTHLY_TOTAL_RETURN` table.
-   - To differentiate between bond funds and equity funds, we might need to look at the `FUND_REPORTED_INFO` table or another table that categorizes funds.
+1. **Identify Relevant Tables**: 
+   - We need information about the performance of funds, which is likely stored in the `MONTHLY_TOTAL_RETURN` table, as it contains monthly total return data.
+   - We also need to distinguish between bond funds and equity funds. This categorization might be found in the `FUND_REPORTED_INFO` table, which could contain information about the type of fund or series.
 
-2. **Joins Required**:
-   - We will need to join `MONTHLY_TOTAL_RETURN` with a table that provides information about the type of fund (bond or equity). This could be `FUND_REPORTED_INFO` or another related table.
-   - The join will likely be on the `ACCESSION_NUMBER` since it is a common key across these tables.
+2. **Join Requirements**:
+   - To compare bond funds and equity funds, we need to join the `MONTHLY_TOTAL_RETURN` table with the `FUND_REPORTED_INFO` table. This join will allow us to filter and categorize the funds based on their type (bond or equity).
 
-3. **Nested Queries**:
-   - We might need nested queries if we have to perform separate calculations or aggregations for bond funds and equity funds before comparing them. For example, calculating the average return for each type of fund separately and then comparing these averages.
+3. **Data Filtering**:
+   - We need to focus on the last month's performance. This requires filtering the `MONTHLY_TOTAL_RETURN` table to get the data for the most recent month.
 
-Given these considerations, the query will likely involve both joins and potentially nested queries to perform the necessary comparisons and calculations.
+4. **Comparison Logic**:
+   - Once we have the data for bond and equity funds, we can perform a comparison. This might involve calculating average returns, differences, or other statistical measures to compare the performance of the two categories.
 
-Therefore, the SQL query can be classified as "NESTED."
+Given these steps, the query will involve joining tables and filtering data based on specific conditions. However, it does not necessarily require nested queries, as the comparison can be done using straightforward SQL operations after the join.
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it requires a join but does not need nested queries. 
+
+**Label**: "NON-NESTED"
 ================================================================================
-classification: "NESTED"
+classification: "NON-NESTED"
 ================================================================================
-process_thesql: To compare the performance of bond funds against equity funds in the last month, we need to identify the funds categorized as bond or equity and then compare their monthly returns. Here's how we can approach this:
-
-1. Identify bond and equity funds based on their series names.
-2. Retrieve the monthly total return for the last month for these funds.
-3. Compare the average returns of bond funds against equity funds.
-
-Here's the SQL query to achieve this:
-
-```sql
-WITH FundPerformance AS (
-    SELECT 
-        F.SERIES_NAME,
-        CASE 
-            WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'Bond'
-            WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'Equity'
-            ELSE 'Other'
-        END as Fund_Type,
-        M.MONTHLY_TOTAL_RETURN3 as Last_Month_Return
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN MONTHLY_TOTAL_RETURN M ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
-    WHERE 
-        F.SERIES_NAME LIKE '%BOND%' OR F.SERIES_NAME LIKE '%EQUITY%'
-)
+process_thesql: ```sql
 SELECT 
-    Fund_Type,
-    AVG(CAST(Last_Month_Return AS FLOAT)) as Avg_Last_Month_Return,
-    COUNT(*) as Fund_Count
+    asset_cat, 
+    AVG(monthly_total_return3) AS average_return_last_month
 FROM 
-    FundPerformance
+    monthly_total_return
+JOIN 
+    fund_reported_holding ON monthly_total_return.accession_number = fund_reported_holding.accession_number
+WHERE 
+    asset_cat IN ('Bond', 'Equity')
 GROUP BY 
-    Fund_Type
-ORDER BY 
-    Avg_Last_Month_Return DESC;
+    asset_cat;
 ```
 
-### Explanation:
-- **FundPerformance CTE**: This common table expression (CTE) filters funds into 'Bond' and 'Equity' categories based on their series names and retrieves their last month's return.
-- **Main Query**: It calculates the average last month's return for each fund type and counts the number of funds in each category. The results are ordered by the average return in descending order to see which type performed better.
+This query will provide the average return for bond and equity funds in the last month, allowing for a performance comparison.
 ================================================================================
-Error in refine_query of Self-Correction
+final_output: 
+SELECT 
+    fund_reported_holding.asset_cat, 
+    AVG(monthly_total_return.monthly_total_return3) AS average_return_last_month
+FROM 
+    monthly_total_return
+JOIN 
+    fund_reported_holding ON monthly_total_return.accession_number = fund_reported_holding.accession_number
+WHERE 
+    fund_reported_holding.asset_cat IN ('Bond', 'Equity')
+GROUP BY 
+    fund_reported_holding.asset_cat
+================================================================================
+Result: False
 ================================================================================

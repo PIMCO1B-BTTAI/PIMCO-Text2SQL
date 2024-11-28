@@ -20,64 +20,36 @@ ORDER BY
 Schema Links for Question: What's the geographic distribution of our international holdings?
 {'table_columns': ['fund_reported_holding.holding_id', 'nonforeign_exchange_swap.termination_date'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The question "What's the geographic distribution of our international holdings?" requires us to analyze the geographic distribution of holdings, which involves examining the "FUND_REPORTED_HOLDING" table for information about holdings and potentially other related tables to determine geographic distribution.
+classification reasoning: To determine the geographic distribution of international holdings, we need to analyze the data related to the holdings and their geographic attributes. The relevant table for this query is `FUND_REPORTED_HOLDING`, which contains information about the holdings, including the `INVESTMENT_COUNTRY` column that specifies the country where the issuer is organized.
 
-1. **Tables Involved**: The primary table involved is "FUND_REPORTED_HOLDING," which contains information about holdings, including the "INVESTMENT_COUNTRY" column that can be used to determine geographic distribution.
+1. **Identify the Table**: The primary table needed is `FUND_REPORTED_HOLDING` because it contains the `INVESTMENT_COUNTRY` column, which is crucial for determining the geographic distribution.
 
-2. **Joins Needed**: To get a comprehensive view of the geographic distribution, we might need to join with other tables that provide additional context or details about the holdings. However, the primary focus is on the "INVESTMENT_COUNTRY" column in the "FUND_REPORTED_HOLDING" table.
+2. **Data Extraction**: We need to extract the `INVESTMENT_COUNTRY` and possibly aggregate the data to show the distribution, such as counting the number of holdings per country or summing up the values of holdings per country.
 
-3. **Nested Queries**: The question does not inherently require nested queries, as it is primarily about aggregating or grouping data based on the "INVESTMENT_COUNTRY" column.
+3. **No Joins Required**: Since all necessary information is contained within the `FUND_REPORTED_HOLDING` table, there is no need to join with other tables.
 
-Given that the task involves analyzing data from a single table and potentially joining with others for additional context, but does not require nested queries, the query can be classified as "NON-NESTED." 
+4. **No Nested Queries Required**: The query does not require any nested operations like subqueries or set operations (INTERSECT, UNION, EXCEPT).
 
-Label: "NON-NESTED"
+Based on the above analysis, the SQL query can be classified as "EASY" because it involves a straightforward selection and aggregation from a single table without the need for joins or nested queries.
+
+Label: "EASY"
 ================================================================================
-classification: "NON-NESTED"
+classification: "EASY"
 ================================================================================
-process_thesql: To determine the geographic distribution of international holdings, we need to focus on the `FUND_REPORTED_HOLDING` table, which contains information about each holding, including the `INVESTMENT_COUNTRY` column. This column will help us identify the geographic distribution of the holdings.
-
-Here's how we can approach this:
-
-1. **Identify Relevant Columns**: We need the `INVESTMENT_COUNTRY` and `HOLDING_ID` from the `FUND_REPORTED_HOLDING` table. The `INVESTMENT_COUNTRY` column will give us the geographic location of each holding.
-
-2. **Filter for International Holdings**: We should filter out holdings that are not based in the US to focus on international holdings. This can be done by excluding 'US' from the `INVESTMENT_COUNTRY` column.
-
-3. **Aggregate Data**: We will count the number of holdings for each country to understand the distribution.
-
-4. **SQL Query Construction**: We will construct a SQL query that selects the `INVESTMENT_COUNTRY` and counts the number of holdings for each country, excluding the US.
-
-Here is the SQL query that accomplishes this:
-
-```sql
-SELECT 
-    INVESTMENT_COUNTRY,
-    COUNT(HOLDING_ID) AS Number_of_Holdings
-FROM 
-    FUND_REPORTED_HOLDING
-WHERE 
-    INVESTMENT_COUNTRY IS NOT NULL
-    AND INVESTMENT_COUNTRY != 'US'
-GROUP BY 
-    INVESTMENT_COUNTRY
-ORDER BY 
-    Number_of_Holdings DESC;
+process_thesql: ```sql
+SELECT investment_country, COUNT(*) AS num_holdings
+FROM fund_reported_holding
+WHERE investment_country IS NOT NULL
+GROUP BY investment_country
+ORDER BY num_holdings DESC;
 ```
-
-This query will provide a list of countries with the number of holdings in each, excluding the US, thus giving us the geographic distribution of international holdings.
 ================================================================================
 final_output: 
-SELECT 
-    INVESTMENT_COUNTRY,
-    COUNT(HOLDING_ID) AS Number_of_Holdings
-FROM 
-    FUND_REPORTED_HOLDING
-WHERE 
-    INVESTMENT_COUNTRY IS NOT NULL
-    AND INVESTMENT_COUNTRY != 'US'
-GROUP BY 
-    INVESTMENT_COUNTRY
-ORDER BY 
-    Number_of_Holdings DESC
+SELECT investment_country, COUNT(*) AS num_holdings
+FROM fund_reported_holding
+WHERE investment_country IS NOT NULL
+GROUP BY investment_country
+ORDER BY num_holdings DESC
 ================================================================================
 Result: False
 ================================================================================

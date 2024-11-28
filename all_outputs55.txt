@@ -30,74 +30,47 @@ LIMIT 15;
 Schema Links for Question: Show me the funds with the highest quality fixed income portfolios
 {'table_columns': ['nonforeign_exchange_swap.fixed_or_floating_receipt', 'securities_lending.is_loan_by_fund', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The question "Show me the funds with the highest quality fixed income portfolios" requires analyzing the quality of fixed income portfolios, which likely involves multiple tables. The relevant schema links suggest the involvement of tables like "nonforeign_exchange_swap" and "securities_lending," which are connected to "fund_reported_holding" through foreign keys.
+classification reasoning: To determine the classification of the query "Show me the funds with the highest quality fixed income portfolios," we need to consider the following:
 
-To determine the highest quality fixed income portfolios, we would need to join these tables to gather relevant data about the funds' holdings and possibly perform calculations or comparisons to assess quality. This process involves using JOIN operations to combine data from multiple tables.
+1. **Understanding the Query**: The query is asking for funds with the highest quality fixed income portfolios. This implies we need to evaluate the quality of fixed income holdings within the funds.
 
-Since the query requires joining multiple tables but does not necessarily involve nested queries (like subqueries with INTERSECT, UNION, EXCEPT, IN, NOT IN), it can be classified as "NON-NESTED."
+2. **Relevant Tables and Columns**:
+   - We need to identify which tables contain information about fixed income portfolios. Typically, this would involve tables like `FUND_REPORTED_HOLDING` and possibly `DEBT_SECURITY` for details on debt securities.
+   - We might need to look at columns that indicate the quality of the fixed income securities, such as credit ratings or other indicators of quality.
 
-Label: "NON-NESTED"
+3. **Joins and Relationships**:
+   - To get information about the funds and their holdings, we will likely need to join `FUND_REPORTED_HOLDING` with `FUND_REPORTED_INFO` to get fund-level details.
+   - If we need specific details about the debt securities, we might also need to join with `DEBT_SECURITY`.
+
+4. **Complexity**:
+   - If the query requires aggregating or ranking funds based on the quality of their fixed income portfolios, it might involve more complex operations.
+   - However, if it simply involves joining tables to get the necessary information, it would be classified as NON-NESTED.
+
+5. **Conclusion**:
+   - Since the query likely involves joining multiple tables to assess the quality of fixed income portfolios, but does not necessarily require nested queries (like subqueries or set operations), it would be classified as NON-NESTED.
+
+Therefore, the SQL query can be classified as "NON-NESTED."
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
 process_thesql: ```sql
-WITH BondQuality AS (
-    SELECT 
-        F.SERIES_NAME,
-        F.TOTAL_ASSETS,
-        F.CREDIT_SPREAD_10YR_INVEST,
-        F.CREDIT_SPREAD_10YR_NONINVEST,
-        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
-        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
-               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
-    FROM 
-        FUND_REPORTED_INFO F
-    WHERE 
-        F.SERIES_NAME LIKE '%BOND%'
-        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
-)
-SELECT 
-    SERIES_NAME,
-    Investment_Grade_Ratio,
-    TOTAL_ASSETS
-FROM 
-    BondQuality
-WHERE 
-    Investment_Grade_Ratio > 80
-ORDER BY 
-    Investment_Grade_Ratio DESC
-LIMIT 15;
+SELECT frh.ACCESSION_NUMBER, COUNT(ds.HOLDING_ID) AS high_quality_count
+FROM FUND_REPORTED_HOLDING frh
+JOIN DEBT_SECURITY ds ON frh.HOLDING_ID = ds.HOLDING_ID
+WHERE ds.IS_DEFAULT = 'N' AND ds.COUPON_TYPE = 'fixed'
+GROUP BY frh.ACCESSION_NUMBER
+ORDER BY high_quality_count DESC;
 ```
 
-This query identifies funds with
+This query identifies funds with the highest number of high-quality fixed income securities by counting non-defaulted, fixed coupon debt securities within each fund's portfolio.
 ================================================================================
 final_output: 
-WITH BondQuality AS (
-    SELECT 
-        F.SERIES_NAME,
-        F.TOTAL_ASSETS,
-        F.CREDIT_SPREAD_10YR_INVEST,
-        F.CREDIT_SPREAD_10YR_NONINVEST,
-        CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) / 
-        NULLIF(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT) + 
-               CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT), 0) * 100 as Investment_Grade_Ratio
-    FROM 
-        FUND_REPORTED_INFO F
-    WHERE 
-        F.SERIES_NAME LIKE '%BOND%'
-        OR F.SERIES_NAME LIKE '%FIXED INCOME%'
-)
-SELECT 
-    SERIES_NAME,
-    Investment_Grade_Ratio,
-    TOTAL_ASSETS
-FROM 
-    BondQuality
-WHERE 
-    Investment_Grade_Ratio > 80
-ORDER BY 
-    Investment_Grade_Ratio DESC
-LIMIT 15
+SELECT frh.ACCESSION_NUMBER, COUNT(ds.HOLDING_ID) AS high_quality_count
+FROM FUND_REPORTED_HOLDING frh
+JOIN DEBT_SECURITY ds ON frh.HOLDING_ID = ds.HOLDING_ID
+WHERE ds.IS_DEFAULT = 'N' AND ds.COUPON_TYPE = 'fixed'
+GROUP BY frh.ACCESSION_NUMBER
+ORDER BY high_quality_count DESC
 ================================================================================
-Result: True
+Result: False
 ================================================================================

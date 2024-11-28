@@ -26,86 +26,56 @@ ORDER BY
     QUARTER DESC;
 ================================================================================
 Schema Links for Question: What's the quarterly trend in average monthly returns?
-{'table_columns': ['monthly_total_return.monthly_total_return_id', 'registrant.quarter', 'monthly_total_return.monthly_total_return_id'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.MONTHLY_TOTAL_RETURN_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+{'table_columns': ['registrant.quarter', 'monthly_total_return.monthly_total_return_id', 'monthly_total_return.monthly_total_return_id'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.MONTHLY_TOTAL_RETURN_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
 ================================================================================
-classification reasoning: The query "What's the quarterly trend in average monthly returns?" involves analyzing data over time to identify trends. This requires calculating averages of monthly returns and grouping them by quarter. The relevant tables are "monthly_total_return" for the return data and "registrant" for the quarter information. 
+classification reasoning: To determine the quarterly trend in average monthly returns, we need to analyze data from the "monthly_total_return" table, which contains monthly return information. The query requires calculating the average monthly returns and then aggregating them by quarter. 
 
-To achieve this, we need to join the "monthly_total_return" table with the "registrant" table using the "ACCESSION_NUMBER" as the foreign key. This allows us to group the data by quarter and calculate the average monthly returns for each quarter.
+1. **Tables Involved**: The primary table involved is "monthly_total_return" for the monthly return data. The "registrant" table might be involved if we need to link the returns to specific quarters, but the schema provided does not explicitly mention a "quarter" column in the "registrant" table. 
 
-Since the query requires a JOIN to combine data from multiple tables but does not require any nested queries, it can be classified as "NON-NESTED."
+2. **Operations Needed**: 
+   - Calculate the average of monthly returns (MONTHLY_TOTAL_RETURN1, MONTHLY_TOTAL_RETURN2, MONTHLY_TOTAL_RETURN3).
+   - Group the results by quarter, which might require joining with another table if the quarter information is not directly available in "monthly_total_return".
+
+3. **Joins and Nested Queries**: 
+   - If the quarter information is directly available in the "monthly_total_return" table, a simple aggregation without joins or nested queries would suffice.
+   - If the quarter information is not directly available, a join with another table (possibly "registrant" if it contains quarter information) would be necessary.
+
+Given the schema links provided, it seems like there might be a need to join with another table to get the quarter information, but the exact details are not clear from the schema. However, since the task primarily involves aggregation and possibly a join, it does not inherently require nested queries.
+
+Therefore, the SQL query can be classified as "NON-NESTED" because it likely involves a join but does not require nested queries. 
 
 Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To determine the quarterly trend in average monthly returns, we need to focus on the `MONTHLY_TOTAL_RETURN` table, which contains the monthly return data for each fund. We will calculate the average returns for each month across all funds for each quarter.
-
-Here’s how we can approach this:
-
-1. **Identify the Relevant Columns**: We need the `QUARTER` and the monthly return columns (`MONTHLY_TOTAL_RETURN1`, `MONTHLY_TOTAL_RETURN2`, `MONTHLY_TOTAL_RETURN3`) from the `MONTHLY_TOTAL_RETURN` table.
-
-2. **Calculate Averages**: For each quarter, calculate the average of `MONTHLY_TOTAL_RETURN1`, `MONTHLY_TOTAL_RETURN2`, and `MONTHLY_TOTAL_RETURN3`.
-
-3. **Group by Quarter**: Group the results by `QUARTER` to get the average returns for each month in each quarter.
-
-4. **Order the Results**: Order the results by `QUARTER` to see the trend over time.
-
-Now, let's construct the SQL query based on this plan:
-
-```sql
-WITH MonthlyReturns AS (
-    SELECT 
-        QUARTER,
-        CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT) as Return1,
-        CAST(MONTHLY_TOTAL_RETURN2 AS FLOAT) as Return2,
-        CAST(MONTHLY_TOTAL_RETURN3 AS FLOAT) as Return3
-    FROM 
-        MONTHLY_TOTAL_RETURN
-    WHERE 
-        MONTHLY_TOTAL_RETURN1 IS NOT NULL
-        AND MONTHLY_TOTAL_RETURN2 IS NOT NULL
-        AND MONTHLY_TOTAL_RETURN3 IS NOT NULL
-)
+process_thesql: ```sql
 SELECT 
-    QUARTER,
-    AVG(Return1) as Avg_Month1_Return,
-    AVG(Return2) as Avg_Month2_Return,
-    AVG(Return3) as Avg_Month3_Return
+    EXTRACT(QUARTER FROM s.filing_date) AS quarter,
+    AVG((mtr.monthly_total_return1 + mtr.monthly_total_return2 + mtr.monthly_total_return3) / 3) AS average_monthly_return
 FROM 
-    MonthlyReturns
+    submission s
+JOIN 
+    monthly_total_return mtr ON s.accession_number = mtr.accession_number
 GROUP BY 
-    QUARTER
+    EXTRACT(QUARTER FROM s.filing_date)
 ORDER BY 
-    QUARTER DESC;
+    quarter;
 ```
 
-This query calculates the average monthly returns for each quarter and orders the results by quarter in descending order, allowing us to observe the trend over time.
+This query calculates the average monthly return for each quarter by joining the `SUBMISSION` and `MONTHLY_TOTAL_RETURN` tables, grouping by the quarter extracted from the filing date, and averaging the monthly returns.
 ================================================================================
 final_output: 
-WITH MonthlyReturns AS (
-    SELECT 
-        QUARTER,
-        CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT) as Return1,
-        CAST(MONTHLY_TOTAL_RETURN2 AS FLOAT) as Return2,
-        CAST(MONTHLY_TOTAL_RETURN3 AS FLOAT) as Return3
-    FROM 
-        MONTHLY_TOTAL_RETURN
-    WHERE 
-        MONTHLY_TOTAL_RETURN1 IS NOT NULL
-        AND MONTHLY_TOTAL_RETURN2 IS NOT NULL
-        AND MONTHLY_TOTAL_RETURN3 IS NOT NULL
-)
 SELECT 
-    QUARTER,
-    AVG(Return1) as Avg_Month1_Return,
-    AVG(Return2) as Avg_Month2_Return,
-    AVG(Return3) as Avg_Month3_Return
+    strftime('%m', s.filing_date) / 4 + 1 AS quarter,
+    AVG((mtr.monthly_total_return1 + mtr.monthly_total_return2 + mtr.monthly_total_return3) / 3.0) AS average_monthly_return
 FROM 
-    MonthlyReturns
+    submission s
+JOIN 
+    monthly_total_return mtr ON s.accession_number = mtr.accession_number
 GROUP BY 
-    QUARTER
+    quarter
 ORDER BY 
-    QUARTER DESC
+    quarter
 ================================================================================
-Result: True
+Error Executing LLM-Generated SQL: ambiguous column name: quarter
 ================================================================================

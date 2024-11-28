@@ -23,68 +23,60 @@ ORDER BY
     QUARTER DESC;
 ================================================================================
 Schema Links for Question: Show me quarterly changes in securities lending activity
-{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'interest_rate_risk.intrst_rate_change_3mon_dv01', 'submission.report_ending_period', 'registrant.quarter'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
+{'table_columns': ['interest_rate_risk.intrst_rate_change_3mon_dv01', 'registrant.quarter', 'submission.report_ending_period', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
 ================================================================================
-classification reasoning: To determine the complexity of the SQL query needed to answer the question "Show me quarterly changes in securities lending activity," we need to consider the tables and relationships involved:
+classification reasoning: To address the query "Show me quarterly changes in securities lending activity," we need to consider the following:
 
-1. **Tables Involved**: The question is about securities lending activity, which is likely related to the `SECURITIES_LENDING` table. To track changes quarterly, we might also need to reference the `SUBMISSION` table for the report dates or quarters.
+1. **Relevant Tables**: The query involves securities lending activity, which is likely captured in the `SECURITIES_LENDING` table. However, to determine quarterly changes, we need to associate this data with time periods, which might involve the `SUBMISSION` table for filing dates or reporting periods.
 
-2. **Joins Required**: Since the `SECURITIES_LENDING` table is linked to the `FUND_REPORTED_HOLDING` table via the `HOLDING_ID`, and `FUND_REPORTED_HOLDING` is linked to `FUND_REPORTED_INFO` via `ACCESSION_NUMBER`, we will need to join these tables to get the relevant data. Additionally, to get the quarterly information, we might need to join with the `SUBMISSION` table.
+2. **Data Relationships**: The `SECURITIES_LENDING` table is linked to the `FUND_REPORTED_HOLDING` table via the `HOLDING_ID`. The `FUND_REPORTED_HOLDING` table is linked to the `FUND_REPORTED_INFO` table through the `ACCESSION_NUMBER`, which can then be linked to the `SUBMISSION` table to get the reporting periods.
 
-3. **Nested Queries**: The question does not inherently require nested queries. We are primarily interested in joining tables to get the data and then possibly aggregating or ordering it by quarter.
+3. **Quarterly Changes**: To calculate quarterly changes, we need to group the data by quarters. This requires joining the `SECURITIES_LENDING` data with the `SUBMISSION` table to access the `REPORT_ENDING_PERIOD` or `FILING_DATE` and then aggregating the data by quarter.
 
-Given these considerations, the query will involve multiple table joins but does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
+4. **SQL Complexity**: The query will require joining multiple tables to gather all necessary information and then performing aggregation to calculate changes over quarters. This involves using JOIN operations but does not necessarily require nested queries.
+
+Given these considerations, the SQL query will involve JOIN operations across multiple tables to gather the necessary data for quarterly analysis. However, it does not require nested queries. Therefore, the query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
 process_thesql: ```sql
-WITH LendingActivity AS (
-    SELECT 
-        sl.QUARTER,
-        f.SERIES_NAME,
-        sl.IS_LOAN_BY_FUND
-    FROM 
-        FUND_REPORTED_INFO f
-        LEFT JOIN SECURITIES_LENDING sl ON f.ACCESSION_NUMBER = sl.HOLDING_ID
-)
 SELECT 
-    QUARTER,
-    COUNT(DISTINCT CASE WHEN IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END) as Lending_Funds,
-    COUNT(DISTINCT SERIES_NAME) as Total_Funds,
-    (COUNT(DISTINCT CASE WHEN IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END) * 100.0 / 
-     COUNT(DISTINCT SERIES_NAME)) as Lending_Percentage
+    DATE_TRUNC('quarter', s.REPORT_ENDING_PERIOD) AS quarter,
+    COUNT(sl.HOLDING_ID) AS total_lending_activities,
+    SUM(CASE WHEN sl.IS_CASH_COLLATERAL = 'Y' THEN 1 ELSE 0 END) AS cash_collateral_count,
+    SUM(CASE WHEN sl.IS_NON_CASH_COLLATERAL = 'Y' THEN 1 ELSE 0 END) AS non_cash_collateral_count
 FROM 
-    LendingActivity
+    SECURITIES_LENDING sl
+JOIN 
+    FUND_REPORTED_HOLDING frh ON sl.HOLDING_ID = frh.HOLDING_ID
+JOIN 
+    SUBMISSION s ON frh.ACCESSION_NUMBER = s.ACCESSION_NUMBER
 GROUP BY 
-    QUARTER
+    quarter
 ORDER BY 
-    QUARTER DESC;
+    quarter;
 ```
 
-This query will provide a quarterly breakdown of securities lending activity, showing the number of funds involved in lending, the total number of funds,
+This query calculates the total number of securities lending activities per quarter, along with counts of activities involving cash and non-cash collateral. It uses the `DATE_TRUNC` function to group the data by quarter based on the `REPORT_ENDING_PERIOD` from the `SUBMISSION` table.
 ================================================================================
 final_output: 
-WITH LendingActivity AS (
-    SELECT 
-        sl.QUARTER,
-        f.SERIES_NAME,
-        sl.IS_LOAN_BY_FUND
-    FROM 
-        FUND_REPORTED_INFO f
-        LEFT JOIN SECURITIES_LENDING sl ON f.ACCESSION_NUMBER = sl.HOLDING_ID
-)
 SELECT 
-    QUARTER,
-    COUNT(DISTINCT CASE WHEN IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END) as Lending_Funds,
-    COUNT(DISTINCT SERIES_NAME) as Total_Funds,
-    (COUNT(DISTINCT CASE WHEN IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END) * 100.0 / 
-     COUNT(DISTINCT SERIES_NAME)) as Lending_Percentage
+    strftime('%Y-Q%q', s.REPORT_ENDING_PERIOD) AS quarter,
+    COUNT(sl.HOLDING_ID) AS total_lending_activities,
+    SUM(CASE WHEN sl.IS_CASH_COLLATERAL = 'Y' THEN 1 ELSE 0 END) AS cash_collateral_count,
+    SUM(CASE WHEN sl.IS_NON_CASH_COLLATERAL = 'Y' THEN 1 ELSE 0 END) AS non_cash_collateral_count
 FROM 
-    LendingActivity
+    SECURITIES_LENDING sl
+JOIN 
+    FUND_REPORTED_HOLDING frh ON sl.HOLDING_ID = frh.HOLDING_ID
+JOIN 
+    SUBMISSION s ON frh.ACCESSION_NUMBER = s.ACCESSION_NUMBER
 GROUP BY 
-    QUARTER
+    quarter
 ORDER BY 
-    QUARTER DESC
+    quarter
 ================================================================================
-Result: True
+Error Executing LLM-Generated SQL: ambiguous column name: quarter
 ================================================================================

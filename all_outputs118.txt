@@ -31,96 +31,46 @@ ORDER BY
 LIMIT 20;
 ================================================================================
 Schema Links for Question: Which funds have the highest interest rate sensitivity?
-{'table_columns': ['securities_lending.is_loan_by_fund', 'interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine which funds have the highest interest rate sensitivity, we need to analyze data from the "interest_rate_risk" table, which contains information about interest rate changes and their impact. The query involves identifying the funds with the highest sensitivity, which likely requires comparing values within the "interest_rate_risk" table.
+classification reasoning: To determine which funds have the highest interest rate sensitivity, we need to analyze data from the "INTEREST_RATE_RISK" table, which contains information about interest rate changes and their impact on the portfolio. We would likely need to look at columns such as "INTRST_RATE_CHANGE_3MON_DV01", "INTRST_RATE_CHANGE_1YR_DV01", etc., to assess sensitivity.
 
-1. **Tables Involved**: The primary table involved is "interest_rate_risk" since it contains the necessary data on interest rate sensitivity.
+However, to identify the specific funds, we need to link this information to the "FUND_REPORTED_INFO" table, which contains details about the funds. This requires a JOIN operation between "INTEREST_RATE_RISK" and "FUND_REPORTED_INFO" using the "ACCESSION_NUMBER" as the foreign key.
 
-2. **Joins**: There is a foreign key relationship between "interest_rate_risk" and "fund_reported_info" through the "ACCESSION_NUMBER". However, since the question focuses on interest rate sensitivity, we might not need to join with "fund_reported_info" unless additional fund details are required.
+Since the query involves joining two tables to get the required information, it is classified as "NON-NESTED". This is because it requires a JOIN but does not need nested queries.
 
-3. **Nested Queries**: To find the highest sensitivity, we might need to use aggregation functions like `MAX()` to determine the maximum sensitivity value. This could involve a subquery to first calculate the sensitivity for each fund and then find the maximum value.
-
-Given these considerations, the query will likely involve a nested query to identify the maximum sensitivity value. Therefore, the SQL query can be classified as "NESTED."
-
-Label: "NESTED"
+Label: "NON-NESTED"
 ================================================================================
-classification: "NESTED"
+classification: "NON-NESTED"
 ================================================================================
-process_thesql: To determine which funds have the highest interest rate sensitivity, we need to focus on the interest rate risk metrics, specifically the DV01 values, which measure the sensitivity of a fund's value to changes in interest rates. We will look at the 10-year and 30-year DV01 values to assess sensitivity.
-
-Here's how we can construct the SQL query:
-
-1. **Identify the relevant tables and columns**: We need data from the `INTEREST_RATE_RISK` table for the DV01 values and the `FUND_REPORTED_INFO` table for the fund details.
-
-2. **Join the tables**: Use the `ACCESSION_NUMBER` to join `INTEREST_RATE_RISK` with `FUND_REPORTED_INFO`.
-
-3. **Select and order the data**: Select the series name, DV01 values, and total assets, and order the results by the sum of the DV01 values to find the funds with the highest sensitivity.
-
-Here's the SQL query:
-
-```sql
-WITH InterestRateSensitivity AS (
-    SELECT 
-        f.QUARTER,
-        r.REGISTRANT_NAME,
-        f.SERIES_NAME,
-        CAST(ir.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as DV01_10Y,
-        CAST(ir.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as DV01_30Y,
-        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
-    FROM 
-        FUND_REPORTED_INFO f
-    JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
-    JOIN INTEREST_RATE_RISK ir ON f.ACCESSION_NUMBER = ir.ACCESSION_NUMBER
-    WHERE 
-        ir.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
-        OR ir.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
-)
-SELECT 
-    QUARTER,
-    REGISTRANT_NAME,
-    SERIES_NAME,
-    ROUND(DV01_10Y, 4) as DV01_10Y,
-    ROUND(DV01_30Y, 4) as DV01_30Y,
-    ROUND(Total_Assets / 1000000, 2) as Assets_Millions
-FROM 
-    InterestRateSensitivity
-ORDER BY 
-    (DV01_10Y + DV01_30Y) DESC
-LIMIT 20;
+process_thesql: ```sql
+SELECT fund_reported_info.accession_number, 
+       SUM(ABS(intrst_rate_change_3mon_dv01) + 
+           ABS(intrst_rate_change_1yr_dv01) + 
+           ABS(intrst_rate_change_5yr_dv01) + 
+           ABS(intrst_rate_change_10yr_dv01) + 
+           ABS(intrst_rate_change_30yr_dv01)) AS total_sensitivity
+FROM interest_rate_risk
+JOIN fund_reported_info ON interest_rate_risk.accession_number = fund_reported_info.accession_number
+GROUP BY fund_reported_info.accession_number
+ORDER BY total_sensitivity DESC
+LIMIT 10;
 ```
 
-This query calculates the interest rate sensitivity for each fund by summing the 10-year and 30-year DV01 values and orders the funds by this sum to identify those with the highest sensitivity. The results are limited to the top 20 funds for brevity.
+This query calculates the total interest rate sensitivity for each fund by summing the absolute values of the interest rate changes across different maturities, then orders the funds by this sensitivity to identify those with the highest sensitivity.
 ================================================================================
 final_output: 
-WITH InterestRateSensitivity AS (
-    SELECT 
-        f.QUARTER,
-        r.REGISTRANT_NAME,
-        f.SERIES_NAME,
-        CAST(ir.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as DV01_10Y,
-        CAST(ir.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as DV01_30Y,
-        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
-    FROM 
-        FUND_REPORTED_INFO f
-    JOIN INTEREST_RATE_RISK ir ON f.ACCESSION_NUMBER = ir.ACCESSION_NUMBER
-    JOIN REGISTRANT r ON f.REGISTRANT_ID = r.REGISTRANT_ID
-    WHERE 
-        ir.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
-        OR ir.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
-)
-SELECT 
-    QUARTER,
-    REGISTRANT_NAME,
-    SERIES_NAME,
-    ROUND(DV01_10Y, 4) as DV01_10Y,
-    ROUND(DV01_30Y, 4) as DV01_30Y,
-    ROUND(Total_Assets / 1000000, 2) as Assets_Millions
-FROM 
-    InterestRateSensitivity
-ORDER BY 
-    (DV01_10Y + DV01_30Y) DESC
-LIMIT 20
+SELECT fund_reported_info.accession_number, 
+       SUM(ABS(intrst_rate_change_3mon_dv01) + 
+           ABS(intrst_rate_change_1yr_dv01) + 
+           ABS(intrst_rate_change_5yr_dv01) + 
+           ABS(intrst_rate_change_10yr_dv01) + 
+           ABS(intrst_rate_change_30yr_dv01)) AS total_sensitivity
+FROM interest_rate_risk
+JOIN fund_reported_info ON interest_rate_risk.accession_number = fund_reported_info.accession_number
+GROUP BY fund_reported_info.accession_number
+ORDER BY total_sensitivity DESC
+LIMIT 10
 ================================================================================
-Error Executing LLM-Generated SQL: no such column: f.REGISTRANT_ID
+Result: False
 ================================================================================

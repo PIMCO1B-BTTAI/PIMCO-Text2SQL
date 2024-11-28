@@ -19,45 +19,34 @@ FROM
 Schema Links for Question: I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?
 {'table_columns': ['fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?" involves finding funds based on specific keywords in their names and calculating their total assets under management (AUM). 
+classification reasoning: To answer the question "I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?", we need to consider the following:
 
-1. **Tables Involved**: 
-   - We need to look at the `FUND_REPORTED_INFO` table to find the `SERIES_NAME` that contains 'sustainable' or 'ESG'.
-   - We also need to access the `TOTAL_ASSETS` column from the same table to calculate the total AUM.
+1. **Tables Involved**: We need information about the fund names and their total assets under management (AUM). This information is likely contained in the `FUND_REPORTED_INFO` table, which includes columns like `SERIES_NAME` (for the fund name) and `TOTAL_ASSETS` (for the AUM).
 
-2. **Conditions**:
-   - The condition involves filtering the `SERIES_NAME` for the presence of 'sustainable' or 'ESG'.
+2. **Conditions**: We need to filter the funds based on their names containing the keywords 'sustainable' or 'ESG'. This can be done using a `LIKE` clause in SQL.
 
-3. **Joins**:
-   - There is no explicit need for a join with another table since all required information is within the `FUND_REPORTED_INFO` table.
+3. **No Joins Required**: Since all the necessary information (fund name and total assets) is available in the `FUND_REPORTED_INFO` table, we do not need to join with any other tables.
 
-4. **Nested Queries**:
-   - There is no need for nested queries as the filtering and aggregation can be done directly on the `FUND_REPORTED_INFO` table.
+4. **No Nested Queries Required**: The query does not require any nested operations like subqueries or set operations (INTERSECT, UNION, etc.).
 
-Given these points, the query does not require any joins or nested queries. Therefore, the SQL query can be classified as "EASY". 
+Given these points, the SQL query can be constructed using a simple `SELECT` statement with a `WHERE` clause to filter the fund names. Therefore, the query does not require any joins or nested queries, and it can be classified as "EASY".
 
 Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_AUM
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    SERIES_NAME LIKE '%SUSTAINABLE%' 
-    OR SERIES_NAME LIKE '%ESG%';
+SELECT SUM(fri.total_assets) AS total_aum
+FROM fund_reported_info fri
+JOIN submission s ON fri.accession_number = s.accession_number
+WHERE fri.series_name ILIKE '%sustainable%' OR fri.series_name ILIKE '%ESG%';
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SUM(CAST(TOTAL_ASSETS AS FLOAT)) as Total_AUM
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    SERIES_NAME LIKE '%SUSTAINABLE%' 
-    OR SERIES_NAME LIKE '%ESG%'
+SELECT SUM(fri.total_assets) AS total_aum
+FROM fund_reported_info fri
+JOIN submission s ON fri.accession_number = s.accession_number
+WHERE fri.series_name LIKE '%sustainable%' OR fri.series_name LIKE '%ESG%'
 ================================================================================
 Result: False
 ================================================================================

@@ -11,36 +11,23 @@ WHERE
 Schema Links for Question: List all funds with 'Bond' in their name
 {'table_columns': ['registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "List all funds with 'Bond' in their name" involves searching for funds with 'Bond' in their name. Based on the relevant schema links provided, the table "registrant" contains the column "registrant_name," which likely holds the fund names. 
+classification reasoning: The SQL query for the question "List all funds with 'Bond' in their name" needs to access the "fund_reported_info" table, specifically the "series_name" column, to find funds with 'Bond' in their name. This query does not require data from multiple tables, so no JOIN is needed. Additionally, it does not require nested queries with operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN. Therefore, the SQL query can be classified as "EASY." 
 
-1. **Tables Involved**: The query primarily involves the "registrant" table to access the "registrant_name" column.
-
-2. **JOIN Requirement**: There is no indication that a JOIN is necessary for this query, as the information needed (fund names) is contained within a single table ("registrant").
-
-3. **Nested Query Requirement**: The query does not require any nested operations such as INTERSECT, UNION, EXCEPT, IN, or NOT IN. It is a straightforward search for a substring within a column.
-
-Given these points, the query does not require JOINs or nested queries. Therefore, the SQL query can be classified as "EASY."
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%BOND%';
+SELECT DISTINCT r.registrant_name
+FROM registrant r
+JOIN fund_reported_info fri ON r.accession_number = fri.accession_number
+WHERE fri.series_name LIKE '%Bond%';
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%Bond%'
+SELECT DISTINCT fri.series_name
+FROM fund_reported_info fri
+WHERE fri.series_name LIKE '%Bond%'
 ================================================================================
-Result: True
+Result: False
 ================================================================================

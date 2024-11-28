@@ -9,38 +9,31 @@ WHERE
     SERIES_NAME LIKE '%INDEX%';
 ================================================================================
 Schema Links for Question: List all funds with 'Index' in their name
-{'table_columns': ['desc_ref_index_component.desc_ref_index_component_id', 'registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.DESC_REF_INDEX_COMPONENT_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['registrant.registrant_name', 'desc_ref_index_component.desc_ref_index_component_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.DESC_REF_INDEX_COMPONENT_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The SQL query for the question "List all funds with 'Index' in their name" needs to identify funds based on their names. The relevant table for this task is likely the "registrant" table, which contains the "registrant_name" column. We need to filter the names to find those containing the word "Index."
+classification reasoning: The SQL query for the question "List all funds with 'Index' in their name" needs to identify funds based on their names. The relevant table for this information is likely the "FUND_REPORTED_INFO" table, which contains the "SERIES_NAME" column. We need to filter the "SERIES_NAME" to find those containing the word "Index."
 
-- The query involves only one table, "registrant," to check for the presence of "Index" in the "registrant_name" column.
-- There is no need for a JOIN since all necessary information is contained within a single table.
-- There is no need for nested queries, as the task is a straightforward filtering operation.
+- The query involves only one table: "FUND_REPORTED_INFO."
+- We don't need to join with any other tables since all necessary information is contained within this table.
+- The query does not require nested queries, as we are simply filtering based on a condition within a single table.
 
-Therefore, the SQL query can be classified as "EASY." 
+Therefore, we don't need JOIN and don't need nested queries. The SQL query can be classified as "EASY." 
 
 Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%INDEX%';
+SELECT DISTINCT registrant_name 
+FROM registrant 
+JOIN fund_reported_info ON registrant.accession_number = fund_reported_info.accession_number
+WHERE registrant_name LIKE '%Index%';
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%Index%'
+SELECT DISTINCT fund_name 
+FROM fund 
+WHERE fund_name LIKE '%Index%'
 ================================================================================
-Result: True
+Error Executing LLM-Generated SQL: no such table: fund
 ================================================================================

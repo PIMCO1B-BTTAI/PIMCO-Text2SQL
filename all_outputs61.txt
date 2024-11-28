@@ -26,98 +26,55 @@ ORDER BY
 LIMIT 10;
 ================================================================================
 Schema Links for Question: Which funds are taking on the most interest rate risk?
-{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'securities_lending.is_loan_by_fund', 'interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine which funds are taking on the most interest rate risk, we need to analyze data from the "INTEREST_RATE_RISK" table. This table contains information about interest rate risk metrics for different funds. However, to identify the specific funds, we need to join this table with the "FUND_REPORTED_INFO" table, which contains details about the funds, including their names and other identifiers.
-
-Here's the breakdown:
+classification reasoning: To determine which funds are taking on the most interest rate risk, we need to analyze data from the "INTEREST_RATE_RISK" table, which contains information about interest rate risk metrics. We also need to identify the funds associated with these risks, which involves linking the "INTEREST_RATE_RISK" table to the "FUND_REPORTED_INFO" table using the "ACCESSION_NUMBER" as a foreign key.
 
 1. **Tables Involved**: 
    - "INTEREST_RATE_RISK" for interest rate risk metrics.
-   - "FUND_REPORTED_INFO" to get the fund details.
+   - "FUND_REPORTED_INFO" to identify the funds.
 
 2. **Join Requirement**: 
-   - We need to join "INTEREST_RATE_RISK" with "FUND_REPORTED_INFO" using the foreign key relationship: `INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER`.
+   - We need to join "INTEREST_RATE_RISK" with "FUND_REPORTED_INFO" using the "ACCESSION_NUMBER" to associate the risk metrics with specific funds.
 
 3. **Query Type**:
    - Since we need to join two tables to get the required information, this query involves a JOIN operation.
 
 4. **Nested Query Requirement**:
-   - The query does not require nested queries (such as using INTERSECT, UNION, EXCEPT, IN, NOT IN) to filter or combine results from multiple subqueries.
+   - The query does not require nested queries (such as using INTERSECT, UNION, EXCEPT, IN, NOT IN) because we can directly join the tables and filter or sort the results based on interest rate risk metrics.
 
-Based on the above analysis, the SQL query to answer the question "Which funds are taking on the most interest rate risk?" would require a JOIN but not a nested query. Therefore, the query can be classified as "NON-NESTED."
+Based on the above analysis, the SQL query requires a JOIN but does not require nested queries. Therefore, the query can be classified as "NON-NESTED."
 
-
+Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To determine which funds are taking on the most interest rate risk, we need to focus on the `INTEREST_RATE_RISK` table, which contains data about interest rate changes and their impact on the funds. Specifically, we are interested in the columns that measure the sensitivity of the fund's value to changes in interest rates, such as `INTRST_RATE_CHANGE_10YR_DV01` and `INTRST_RATE_CHANGE_30YR_DV01`.
-
-Here's how we can approach this:
-
-1. **Identify Relevant Columns**: We need to look at the columns that indicate interest rate risk, such as `INTRST_RATE_CHANGE_10YR_DV01` and `INTRST_RATE_CHANGE_30YR_DV01`.
-
-2. **Join with FUND_REPORTED_INFO**: To get the fund names or series names, we need to join the `INTEREST_RATE_RISK` table with the `FUND_REPORTED_INFO` table using the `ACCESSION_NUMBER` as the foreign key.
-
-3. **Calculate Total Risk**: We can calculate a total risk score by summing up the values of `INTRST_RATE_CHANGE_10YR_DV01` and `INTRST_RATE_CHANGE_30YR_DV01` for each fund.
-
-4. **Order by Total Risk**: Finally, we order the results by the total risk score in descending order to find the funds with the highest interest rate risk.
-
-Now, let's construct the SQL query based on this plan:
-
-```sql
-WITH InterestRateRisk AS (
-    SELECT 
-        F.SERIES_NAME,
-        IR.INTRST_RATE_CHANGE_10YR_DV01,
-        IR.INTRST_RATE_CHANGE_30YR_DV01,
-        F.TOTAL_ASSETS
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN INTEREST_RATE_RISK IR 
-            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
-    WHERE 
-        IR.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
-        OR IR.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
-)
-SELECT 
-    SERIES_NAME,
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as Ten_Year_Risk,
-    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Thirty_Year_Risk,
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) + CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) as Total_Risk
-FROM 
-    InterestRateRisk
-ORDER BY 
-    Total_Risk DESC
-LIMIT 10;
+process_thesql: ```sql
+SELECT fri.ACCESSION_NUMBER, 
+       SUM(ABS(irr.INTRST_RATE_CHANGE_3MON_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_1YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_5YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_10YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_30YR_DV01)) AS total_interest_rate_risk
+FROM interest_rate_risk irr
+JOIN fund_reported_info fri ON irr.ACCESSION_NUMBER = fri.ACCESSION_NUMBER
+GROUP BY fri.ACCESSION_NUMBER
+ORDER BY total_interest_rate_risk DESC;
 ```
 
-This query will provide a list of funds with the highest interest rate risk, based on their sensitivity to 10-year and 30-year interest rate changes.
+This query calculates the total interest rate risk for each fund by summing the absolute values of the interest rate change metrics and orders the funds by their total risk exposure.
 ================================================================================
 final_output: 
-WITH InterestRateRisk AS (
-    SELECT 
-        F.SERIES_NAME,
-        IR.INTRST_RATE_CHANGE_10YR_DV01,
-        IR.INTRST_RATE_CHANGE_30YR_DV01
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN INTEREST_RATE_RISK IR 
-            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
-    WHERE 
-        IR.INTRST_RATE_CHANGE_10YR_DV01 IS NOT NULL
-        OR IR.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
-)
-SELECT 
-    SERIES_NAME,
-    COALESCE(CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT), 0) as Ten_Year_Risk,
-    COALESCE(CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT), 0) as Thirty_Year_Risk,
-    COALESCE(CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT), 0) + COALESCE(CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT), 0) as Total_Risk
-FROM 
-    InterestRateRisk
-ORDER BY 
-    Total_Risk DESC
-LIMIT 10
+SELECT fri.ACCESSION_NUMBER, 
+       SUM(ABS(irr.INTRST_RATE_CHANGE_3MON_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_1YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_5YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_10YR_DV01) + 
+           ABS(irr.INTRST_RATE_CHANGE_30YR_DV01)) AS total_interest_rate_risk
+FROM interest_rate_risk irr
+JOIN fund_reported_info fri ON irr.ACCESSION_NUMBER = fri.ACCESSION_NUMBER
+GROUP BY fri.ACCESSION_NUMBER
+ORDER BY total_interest_rate_risk DESC
 ================================================================================
-Result: True
+Result: False
 ================================================================================

@@ -29,81 +29,44 @@ ORDER BY
 LIMIT 10;
 ================================================================================
 Schema Links for Question: Which investment companies are most exposed to international markets?
-{'table_columns': ['fund_reported_info.ctrld_companies_pay_within_1yr', 'nonforeign_exchange_swap.termination_date', 'interest_rate_risk.interest_rate_risk_id', 'fund_reported_holding.investment_country', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['fund_reported_info.ctrld_companies_pay_within_1yr', 'fund_reported_holding.investment_country', 'nonforeign_exchange_swap.termination_date', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine which investment companies are most exposed to international markets, we need to analyze data from multiple tables. Specifically, we need to look at the "fund_reported_holding" table to identify holdings with an "investment_country" that is not domestic. Additionally, we may need to join this information with the "registrant" table to get the names of the investment companies.
+classification reasoning: To determine which investment companies are most exposed to international markets, we need to analyze the data related to the investment country of the holdings. This information is available in the `FUND_REPORTED_HOLDING` table, specifically in the `investment_country` column. Additionally, we need to identify the investment companies, which can be linked through the `ACCESSION_NUMBER` to the `REGISTRANT` table to get the registrant names.
 
-Given the schema, the relevant tables and columns are:
-- "fund_reported_holding.investment_country" to identify international investments.
-- "registrant.registrant_name" to get the names of the investment companies.
+Here's the breakdown of the steps:
 
-Since we need to join the "fund_reported_holding" table with the "registrant" table to get the company names, this requires a JOIN operation. However, the query does not require any nested queries, as we are not performing any operations that would necessitate subqueries like INTERSECT, UNION, EXCEPT, IN, or NOT IN.
+1. **Identify Relevant Tables**: We need data from the `FUND_REPORTED_HOLDING` table to get the `investment_country` and from the `REGISTRANT` table to get the `registrant_name`.
 
-Therefore, the SQL query for this question would involve a JOIN but not a nested query. Thus, the query can be classified as "NON-NESTED." 
+2. **Join Tables**: We need to join the `FUND_REPORTED_HOLDING` table with the `REGISTRANT` table using the `ACCESSION_NUMBER` as the foreign key to link the holdings to the registrant.
+
+3. **Filter and Aggregate Data**: We need to filter the holdings to focus on those with international exposure (i.e., `investment_country` not equal to the domestic country, which might be inferred or specified). Then, we can aggregate the data to determine the extent of exposure for each investment company.
+
+4. **Determine the Most Exposed Companies**: We can rank or sort the companies based on their level of international exposure.
+
+Since this process involves joining multiple tables and potentially aggregating data, it requires a more complex query structure. Therefore, the SQL query can be classified as "NON-NESTED" because it involves JOIN operations but does not necessarily require nested queries.
 
 Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To determine which investment companies are most exposed to international markets, we need to analyze the geographic distribution of their holdings. Specifically, we want to identify holdings that are not based in the United States. Here's how we can approach this:
-
-1. **Identify Relevant Tables and Columns**:
-   - We need information about the investment companies, which can be found in the `REGISTRANT` table.
-   - The `FUND_REPORTED_HOLDING` table contains details about each holding, including the `INVESTMENT_COUNTRY`.
-   - We will join these tables using the `ACCESSION_NUMBER` as the foreign key.
-
-2. **Filter for International Holdings**:
-   - We are interested in holdings where the `INVESTMENT_COUNTRY` is not 'US'.
-
-3. **Aggregate Data**:
-   - Count the number of international holdings for each investment company.
-   - Calculate the total value of these international holdings.
-
-4. **Calculate Exposure**:
-   - Determine the percentage of international holdings relative to the total holdings for each company.
-
-5. **Construct the SQL Query**:
-   - Use a `WITH` clause to create a common table expression (CTE) for clarity.
-   - Join the `REGISTRANT` and `FUND_REPORTED_HOLDING` tables.
-   - Filter for non-US holdings.
-   - Group by the investment company to calculate the desired metrics.
-
-Here's the SQL query that implements this logic:
-
-```sql
-WITH InternationalExposure AS (
-    SELECT 
-        R.REGISTRANT_NAME,
-        COUNT(CASE WHEN H.INVESTMENT_COUNTRY != 'US' THEN 1 END) as International_Holdings,
-        COUNT(*) as Total_Holdings,
-        SUM(CASE WHEN H.INVESTMENT_COUNTRY != 'US' 
-            THEN CAST(H.CURRENCY_VALUE AS FLOAT) ELSE 0 END) as International_Value
-    FROM 
-        REGISTRANT R
-        JOIN FUND_REPORTED_INFO F 
-            ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-        JOIN FUND_REPORTED_HOLDING H 
-            ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-    GROUP BY 
-        R.REGISTRANT_NAME
-)
-SELECT 
-    REGISTRANT_NAME,
-    International_Holdings * 100.0 / NULLIF(Total_Holdings, 0) as International_Percentage,
-    International_Value
-FROM 
-    InternationalExposure
-WHERE 
-    Total_Holdings > 10
-ORDER BY 
-    International_Percentage DESC
-LIMIT 10;
+process_thesql: ```sql
+SELECT registrant_name, COUNT(holding_id) AS international_exposure
+FROM fund_reported_holding
+JOIN registrant ON fund_reported_holding.accession_number = registrant.accession_number
+WHERE investment_country != 'US'
+GROUP BY registrant_name
+ORDER BY international_exposure DESC;
 ```
 
-### Explanation:
-- **CTE (Common Table Expression)**: `InternationalExposure` calculates the number of international holdings and their total value for each registrant.
-- **Join Operations**: The `REGISTRANT`, `FUND_REPORTED_INFO`, and `FUND_REPORTED_HOLDING` tables are joined to link registrants with their holdings.
-- **Filtering**: We filter for holdings where `INV
+This query will provide a list of investment companies ordered by their exposure to international markets, based on the number of holdings in non-domestic countries.
 ================================================================================
-Error in refine_query of Self-Correction
+final_output: 
+SELECT registrant_name, COUNT(holding_id) AS international_exposure
+FROM fund_reported_holding
+JOIN registrant ON fund_reported_holding.accession_number = registrant.accession_number
+WHERE investment_country != 'US'
+GROUP BY registrant_name
+ORDER BY international_exposure DESC
+================================================================================
+Result: False
 ================================================================================

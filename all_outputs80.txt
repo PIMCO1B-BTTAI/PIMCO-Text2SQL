@@ -15,57 +15,30 @@ ORDER BY
 Schema Links for Question: Can you flag any funds that have liabilities over half their assets?
 {'table_columns': ['fund_reported_holding.asset_cat', 'fund_reported_info.total_liabilities', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To address the question "Can you flag any funds that have liabilities over half their assets?", we need to analyze the relevant tables and columns:
+classification reasoning: To address the question "Can you flag any funds that have liabilities over half their assets?", we need to evaluate the financial data of funds to determine if their total liabilities exceed half of their total assets. This involves comparing two columns within the same table, `FUND_REPORTED_INFO`: `TOTAL_LIABILITIES` and `TOTAL_ASSETS`.
 
-1. **Tables Involved**:
-   - `FUND_REPORTED_INFO`: This table contains information about total assets and total liabilities for each fund.
+1. **Tables Involved**: The query only requires data from the `FUND_REPORTED_INFO` table, as both `TOTAL_LIABILITIES` and `TOTAL_ASSETS` are attributes of this table.
 
-2. **Columns Needed**:
-   - `FUND_REPORTED_INFO.TOTAL_ASSETS`: To get the total assets of the fund.
-   - `FUND_REPORTED_INFO.TOTAL_LIABILITIES`: To get the total liabilities of the fund.
+2. **Conditions**: We need to apply a condition to check if `TOTAL_LIABILITIES` is greater than half of `TOTAL_ASSETS`. This can be done using a simple comparison within the same table.
 
-3. **Logic**:
-   - We need to identify funds where the total liabilities are greater than half of the total assets. This can be expressed as a condition: `TOTAL_LIABILITIES > 0.5 * TOTAL_ASSETS`.
+3. **Query Type**: Since the query involves a straightforward comparison within a single table and does not require data from multiple tables or any nested queries, it does not require a JOIN or a nested query.
 
-4. **Query Type**:
-   - This query involves a simple comparison within a single table (`FUND_REPORTED_INFO`). There is no need to join with other tables or use nested queries.
+Based on the above analysis, the SQL query can be classified as "EASY" because it involves a simple condition check within a single table without the need for JOINs or nested queries. 
 
-Based on the above analysis, the query does not require any JOIN operations or nested queries. It can be executed with a straightforward SELECT statement with a WHERE clause to filter the funds based on the specified condition.
-
-Therefore, the SQL query can be classified as "EASY".
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS,
-    TOTAL_LIABILITIES,
-    CASE 
-        WHEN CAST(TOTAL_LIABILITIES AS FLOAT) > 0.5 * CAST(TOTAL_ASSETS AS FLOAT) THEN 'Flagged'
-        ELSE 'Not Flagged'
-    END as Liability_Flag
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    TOTAL_ASSETS IS NOT NULL 
-    AND TOTAL_LIABILITIES IS NOT NULL;
+SELECT DISTINCT f.series_name
+FROM fund_reported_info f
+WHERE f.total_liabilities > 0.5 * f.total_assets;
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS,
-    TOTAL_LIABILITIES,
-    CASE 
-        WHEN CAST(TOTAL_LIABILITIES AS FLOAT) > 0.5 * CAST(TOTAL_ASSETS AS FLOAT) THEN 'Flagged'
-        ELSE 'Not Flagged'
-    END as Liability_Flag
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    TOTAL_ASSETS IS NOT NULL 
-    AND TOTAL_LIABILITIES IS NOT NULL
+SELECT DISTINCT f.series_name
+FROM fund_reported_info f
+WHERE f.total_liabilities > 0.5 * f.total_assets
 ================================================================================
 Result: False
 ================================================================================
