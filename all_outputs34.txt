@@ -16,54 +16,35 @@ LIMIT 5;
 Schema Links for Question: Show me the registrants with the most recent filings
 {'table_columns': ['registrant.registrant_name', 'nonforeign_exchange_swap.upfront_receipt', 'submission.filing_date'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Show me the registrants with the most recent filings" involves identifying the most recent filings and associating them with registrants. This requires data from two tables: "registrant" for registrant details and "submission" for filing dates. To find the most recent filings, we need to compare filing dates, which typically involves sorting or using a subquery to identify the maximum date. This suggests the need for a nested query to determine the most recent filing date for each registrant. Therefore, the SQL query can be classified as "NESTED."
+classification reasoning: To answer the question "Show me the registrants with the most recent filings," we need to consider the following:
+
+1. **Tables Involved**: We need information from the `REGISTRANT` table to get the registrant details and the `SUBMISSION` table to determine the filing dates.
+
+2. **Join Requirement**: Since the `REGISTRANT` and `SUBMISSION` tables are linked by the `ACCESSION_NUMBER`, we need to perform a join between these two tables to associate each registrant with their filing date.
+
+3. **Most Recent Filings**: To find the most recent filings, we need to sort the results by the `FILING_DATE` in descending order and possibly limit the results to the top entries, depending on the specific requirement for "most recent."
+
+4. **Classification**: The query requires a join between the `REGISTRANT` and `SUBMISSION` tables but does not require nested queries. Therefore, this query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
 ================================================================================
-classification: "NESTED"
+classification: "NON-NESTED"
 ================================================================================
-process_thesql: To find the registrants with the most recent filings, we need to identify the most recent filing date for each registrant and then list the registrants associated with those dates. Here's how we can approach this:
-
-1. We need to join the `REGISTRANT` and `SUBMISSION` tables using the `ACCESSION_NUMBER` as the linking key.
-2. We will then find the maximum `FILING_DATE` for each `REGISTRANT_NAME`.
-3. Finally, we will select the registrant names and their most recent filing dates.
-
-Here's the SQL query to achieve this:
-
-```sql
-SELECT 
-    R.REGISTRANT_NAME, 
-    S.FILING_DATE
-FROM 
-    REGISTRANT R
-JOIN 
-    SUBMISSION S ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-WHERE 
-    S.FILING_DATE = (
-        SELECT MAX(SUB.FILING_DATE)
-        FROM SUBMISSION SUB
-        WHERE SUB.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-    )
-ORDER BY 
-    S.FILING_DATE DESC;
+process_thesql: ```sql
+SELECT registrant_name, filing_date
+FROM registrant
+JOIN submission ON registrant.accession_number = submission.accession_number
+ORDER BY filing_date DESC;
 ```
 
-This query will give us the registrants with their most recent filing dates, ordered by the filing date in descending order to show the most recent ones first.
+This query will provide a list of registrants with their most recent filing dates, ordered from the most recent to the oldest.
 ================================================================================
 final_output: 
-SELECT 
-    R.REGISTRANT_NAME, 
-    S.FILING_DATE
-FROM 
-    REGISTRANT R
-JOIN 
-    SUBMISSION S ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-WHERE 
-    S.FILING_DATE = (
-        SELECT MAX(SUB.FILING_DATE)
-        FROM SUBMISSION SUB
-        WHERE SUB.ACCESSION_NUMBER = S.ACCESSION_NUMBER
-    )
-ORDER BY 
-    S.FILING_DATE DESC
+SELECT registrant_name, MAX(filing_date) AS most_recent_filing_date
+FROM registrant
+JOIN submission ON registrant.accession_number = submission.accession_number
+GROUP BY registrant_name
+ORDER BY most_recent_filing_date DESC
 ================================================================================
 Result: False
 ================================================================================

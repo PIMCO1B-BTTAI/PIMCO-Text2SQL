@@ -25,50 +25,26 @@ ORDER BY
 LIMIT 20;
 ================================================================================
 Schema Links for Question: Show me the most commonly used CUSIP numbers across all holdings
-{'table_columns': ['registrant.accession_number', 'fund_reported_holding.holding_id', 'fund_reported_holding.issuer_cusip'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['fund_reported_holding.issuer_cusip', 'fund_reported_holding.holding_id'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Show me the most commonly used CUSIP numbers across all holdings" involves analyzing the frequency of CUSIP numbers in the "fund_reported_holding" table. Here's the breakdown:
+classification reasoning: The SQL query for the question "Show me the most commonly used CUSIP numbers across all holdings" needs these tables = [fund_reported_holding], so we don't need JOIN. The query involves counting occurrences of CUSIP numbers and identifying the most common ones. This can be achieved using a simple aggregation function (COUNT) and an ORDER BY clause to sort the results by frequency. It doesn't require nested queries with (INTERSECT, UNION, EXCEPT, IN, NOT IN). Therefore, we don't need JOIN and don't need nested queries, so the SQL query can be classified as "EASY". 
 
-1. **Tables Involved**: The query primarily involves the "fund_reported_holding" table, specifically the "issuer_cusip" column.
-
-2. **Operations Needed**: To find the most commonly used CUSIP numbers, we need to count the occurrences of each CUSIP number and then determine which one(s) appear most frequently. This requires aggregation (using `COUNT`) and sorting (using `ORDER BY`).
-
-3. **Joins**: There is no need to join with other tables since all necessary information is contained within the "fund_reported_holding" table.
-
-4. **Nested Queries**: The query does not require nested queries. We can achieve the desired result using a single query with aggregation and sorting.
-
-Given these points, the query does not require joins or nested queries. Therefore, it can be classified as "EASY".
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    ISSUER_CUSIP, 
-    COUNT(*) as Usage_Count
-FROM 
-    FUND_REPORTED_HOLDING
-WHERE 
-    ISSUER_CUSIP IS NOT NULL
-GROUP BY 
-    ISSUER_CUSIP
-ORDER BY 
-    Usage_Count DESC
-LIMIT 10;
+SELECT issuer_cusip, COUNT(*) AS usage_count
+FROM fund_reported_holding
+GROUP BY issuer_cusip
+ORDER BY usage_count DESC;
 ```
 ================================================================================
 final_output: 
-SELECT 
-    ISSUER_CUSIP, 
-    COUNT(*) as Usage_Count
-FROM 
-    FUND_REPORTED_HOLDING
-WHERE 
-    ISSUER_CUSIP IS NOT NULL
-GROUP BY 
-    ISSUER_CUSIP
-ORDER BY 
-    Usage_Count DESC
-LIMIT 10
+SELECT issuer_cusip, COUNT(*) AS usage_count
+FROM fund_reported_holding
+GROUP BY issuer_cusip
+ORDER BY usage_count DESC
 ================================================================================
 Result: False
 ================================================================================

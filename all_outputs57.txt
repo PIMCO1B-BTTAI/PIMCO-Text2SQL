@@ -24,72 +24,42 @@ ORDER BY
 LIMIT 15;
 ================================================================================
 Schema Links for Question: Looking for funds that might have liquidity issues - check their cash versus short-term obligations
-{'table_columns': ['fund_reported_info.cash_not_rptd_in_c_or_d', 'fund_reported_info.total_liabilities', 'debt_security_ref_instrument.issue_title', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['debt_security_ref_instrument.issue_title', 'fund_reported_info.cash_not_rptd_in_c_or_d', 'securities_lending.is_loan_by_fund', 'fund_reported_info.total_liabilities'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Looking for funds that might have liquidity issues - check their cash versus short-term obligations" involves analyzing data related to cash and short-term obligations. The relevant tables and columns are:
+classification reasoning: To address the query "Looking for funds that might have liquidity issues - check their cash versus short-term obligations," we need to analyze the cash holdings and short-term obligations of funds. The relevant information can be found in the `FUND_REPORTED_INFO` table, which includes columns like `CASH_NOT_RPTD_IN_C_OR_D` for cash holdings and various columns for short-term obligations, such as `BORROWING_PAY_WITHIN_1YR`, `CTRLD_COMPANIES_PAY_WITHIN_1YR`, `OTHER_AFFILIA_PAY_WITHIN_1YR`, and `OTHER_PAY_WITHIN_1YR`.
 
-- `fund_reported_info.cash_not_rptd_in_c_or_d` for cash information.
-- `fund_reported_info.total_liabilities` for liabilities.
-- `debt_security_ref_instrument.issue_title` and `securities_lending.is_loan_by_fund` for additional context on obligations.
+Since all the required data is contained within the `FUND_REPORTED_INFO` table, we do not need to perform any JOIN operations with other tables. Additionally, the query does not require any nested queries, as we are simply comparing values within the same table.
 
-To assess liquidity issues, we need to compare cash against short-term obligations, which might involve joining or aggregating data from multiple tables. The foreign keys indicate relationships between `FUND_REPORTED_INFO` and other tables like `DEBT_SECURITY_REF_INSTRUMENT` and `SECURITIES_LENDING`.
-
-Given the need to potentially join multiple tables to gather all necessary data for the analysis, this query would require a JOIN. However, it doesn't necessarily require nested queries unless specific conditions or subqueries are needed for more complex filtering.
-
-Therefore, the SQL query can be classified as "NON-NESTED" because it involves JOINs but not nested queries. 
-
-Label: "NON-NESTED"
+Therefore, the SQL query can be classified as "EASY" because it does not require JOINs or nested queries.
 ================================================================================
-classification: "NON-NESTED"
+classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-WITH LiquidityAnalysis AS (
-    SELECT 
-        SERIES_NAME,
-        CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
-        CAST(TOTAL_LIABILITIES AS FLOAT) as Short_Term_Obligations
-    FROM 
-        FUND_REPORTED_INFO
-    WHERE 
-        CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
-        AND TOTAL_LIABILITIES IS NOT NULL
-)
-SELECT 
-    SERIES_NAME,
-    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio
-FROM 
-    LiquidityAnalysis
-WHERE 
-    Short_Term_Obligations > 0
-ORDER BY 
-    Cash_Coverage_Ratio ASC
-LIMIT 15;
+SELECT fri.accession_number, 
+       fri.cash_not_rptd_in_c_or_d, 
+       fri.total_liabilities, 
+       sl.is_loan_by_fund, 
+       dsri.issue_title
+FROM fund_reported_info fri
+JOIN fund_reported_holding frh ON fri.accession_number = frh.accession_number
+JOIN debt_security_ref_instrument dsri ON frh.holding_id = dsri.holding_id
+JOIN securities_lending sl ON frh.holding_id = sl.holding_id
+WHERE fri.cash_not_rptd_in_c_or_d < fri.total_liabilities
+  AND sl.is_loan_by_fund = 'Y';
 ```
-
-This query identifies funds with potential liquidity issues by calculating the cash coverage ratio and ordering the results to highlight those with the lowest ratios.
 ================================================================================
 final_output: 
-WITH LiquidityAnalysis AS (
-    SELECT 
-        SERIES_NAME,
-        CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
-        CAST(TOTAL_LIABILITIES AS FLOAT) as Short_Term_Obligations
-    FROM 
-        FUND_REPORTED_INFO
-    WHERE 
-        CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
-        AND TOTAL_LIABILITIES IS NOT NULL
-)
-SELECT 
-    SERIES_NAME,
-    Cash / NULLIF(Short_Term_Obligations, 0) as Cash_Coverage_Ratio
-FROM 
-    LiquidityAnalysis
-WHERE 
-    Short_Term_Obligations > 0
-ORDER BY 
-    Cash_Coverage_Ratio ASC
-LIMIT 15
+SELECT fri.accession_number, 
+       fri.cash_not_rptd_in_c_or_d, 
+       fri.total_liabilities, 
+       sl.is_loan_by_fund, 
+       dsri.issue_title
+FROM fund_reported_info fri
+JOIN fund_reported_holding frh ON fri.accession_number = frh.accession_number
+JOIN debt_security_ref_instrument dsri ON frh.holding_id = dsri.holding_id
+JOIN securities_lending sl ON frh.holding_id = sl.holding_id
+WHERE fri.cash_not_rptd_in_c_or_d < fri.total_liabilities
+  AND sl.is_loan_by_fund = 'Y'
 ================================================================================
 Result: False
 ================================================================================

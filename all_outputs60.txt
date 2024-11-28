@@ -27,69 +27,44 @@ ORDER BY
 LIMIT 15;
 ================================================================================
 Schema Links for Question: Find funds with the highest quality fixed-income holdings
-{'table_columns': ['securities_lending.is_loan_by_fund', 'fund_reported_holding.holding_id'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['fund_reported_holding.holding_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To determine the classification of the query "Find funds with the highest quality fixed-income holdings," we need to analyze the schema and the relationships between the tables involved.
+classification reasoning: To answer the question "Find funds with the highest quality fixed-income holdings," we need to consider the following:
 
-1. **Identify Relevant Tables and Columns**:
-   - The query is about finding funds with high-quality fixed-income holdings. This suggests we need information about holdings and their quality.
-   - The `FUND_REPORTED_HOLDING` table contains information about holdings, including `HOLDING_ID`.
-   - The `SECURITIES_LENDING` table might provide additional information about whether the holdings are loans by the fund, which could relate to the quality of the holdings.
+1. **Identify Relevant Tables**: 
+   - The `FUND_REPORTED_HOLDING` table is relevant because it contains information about the holdings of the fund, including asset categories.
+   - The `DEBT_SECURITY` table might be relevant if it contains information about the quality of fixed-income holdings, such as credit ratings or other indicators of quality.
 
-2. **Determine the Need for Joins**:
-   - To find the highest quality fixed-income holdings, we might need to join `FUND_REPORTED_HOLDING` with other tables that provide details about the holdings' quality.
-   - The `DEBT_SECURITY` table could be relevant if it contains information about the quality of fixed-income securities.
-   - The foreign key relationships indicate that `FUND_REPORTED_HOLDING.HOLDING_ID` is linked to several other tables, including `DEBT_SECURITY`.
+2. **Determine Necessary Joins**:
+   - We need to join `FUND_REPORTED_HOLDING` with `DEBT_SECURITY` to access detailed information about the fixed-income holdings.
+   - The join would be based on the `HOLDING_ID`, which is a foreign key in the `DEBT_SECURITY` table linking it to `FUND_REPORTED_HOLDING`.
 
-3. **Assess the Need for Nested Queries**:
-   - If determining the "highest quality" requires aggregating or comparing data across multiple holdings or funds, a nested query might be necessary.
-   - However, if the quality can be determined directly from a single join or a straightforward condition, a nested query might not be needed
+3. **Assess Query Complexity**:
+   - Since we need to join two tables to get the required information, this query involves a JOIN operation.
+   - We do not need nested queries (e.g., subqueries) unless we need to perform additional filtering or aggregation that cannot be done in a single query.
+
+Based on the need for a JOIN but not requiring nested queries, the SQL query can be classified as "NON-NESTED." 
+
+Label: "NON-NESTED"
 ================================================================================
-classification: "NESTED"
+classification: "NON-NESTED"
 ================================================================================
-process_thesql: To find funds with the highest quality fixed-income holdings, we need to identify holdings that are classified as high-quality fixed-income securities. This typically involves looking at the credit rating or fair value level of the securities. In this case, we can assume that a higher fair value level indicates higher quality. We will then aggregate these holdings by fund to determine which funds have the highest quality fixed-income holdings.
-
-Here's how we can construct the SQL query:
-
-1. Identify fixed-income holdings with high fair value levels.
-2. Aggregate these holdings by fund to determine the total value of high-quality fixed-income holdings for each fund.
-3. Sort the funds by the total value of high-quality fixed-income holdings in descending order.
-
-```sql
-WITH HighQualityFixedIncome AS (
-    SELECT 
-        H.ACCESSION_NUMBER,
-        H.HOLDING_ID,
-        H.FAIR_VALUE_LEVEL,
-        CAST(H.CURRENCY_VALUE AS FLOAT) AS Currency_Value
-    FROM 
-        FUND_REPORTED_HOLDING H
-    JOIN DEBT_SECURITY DS ON H.HOLDING_ID = DS.HOLDING_ID
-    WHERE 
-        H.FAIR_VALUE_LEVEL IS NOT NULL
-        AND H.FAIR_VALUE_LEVEL IN ('1', '2')  -- Assuming levels 1 and 2 are high quality
-),
-FundHighQualityHoldings AS (
-    SELECT 
-        F.ACCESSION_NUMBER,
-        SUM(HQFI.Currency_Value) AS Total_High_Quality_Value
-    FROM 
-        HighQualityFixedIncome HQFI
-    JOIN FUND_REPORTED_INFO F ON HQFI.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    GROUP BY 
-        F.ACCESSION_NUMBER
-)
-SELECT 
-    F.SERIES_NAME,
-    FH.Total_High_Quality_Value
-FROM 
-    FundHighQualityHoldings FH
-JOIN FUND_REPORTED_INFO F ON FH.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-ORDER BY 
-    FH.Total_High_Quality_Value DESC;
+process_thesql: ```sql
+SELECT frh.accession_number, frh.holding_id, frh.percentage
+FROM fund_reported_holding frh
+JOIN debt_security ds ON frh.holding_id = ds.holding_id
+WHERE ds.is_default = 'N' AND ds.coupon_type = 'fixed'
+ORDER BY frh.percentage DESC;
 ```
 
-This query first identifies high-quality fixed-income holdings based on their fair value level, then aggregates these holdings by fund, and finally sorts the funds by the total value of these high-quality holdings. Adjust the fair value levels as needed based on the specific criteria for high quality.
+This query identifies funds with high-quality fixed-income holdings by filtering for non-defaulted, fixed-coupon securities and ordering by their significance within the fund.
 ================================================================================
-Error in refine_query of Self-Correction
+final_output: 
+SELECT frh.accession_number, frh.holding_id, frh.percentage
+FROM fund_reported_holding frh
+JOIN debt_security ds ON frh.holding_id = ds.holding_id
+WHERE ds.is_default = 'N' AND ds.coupon_type = 'fixed'
+ORDER BY frh.percentage DESC
+================================================================================
+Result: False
 ================================================================================

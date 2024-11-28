@@ -9,35 +9,30 @@ WHERE
     SERIES_NAME LIKE '%INTERNATIONAL%';
 ================================================================================
 Schema Links for Question: Show me all funds with 'International' in their name
-{'table_columns': ['registrant.registrant_name', 'nonforeign_exchange_swap.termination_date', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['registrant.registrant_name', 'fund_reported_info.series_name', 'securities_lending.is_loan_by_fund', 'nonforeign_exchange_swap.termination_date'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Show me all funds with 'International' in their name" involves searching for a specific keyword in the fund names. The relevant table for this query is "registrant," specifically the "registrant_name" column, where we would look for names containing the word "International."
+classification reasoning: The SQL query for the question "Show me all funds with 'International' in their name" needs to access the "fund_reported_info" table to find the series names that contain the word "International." The relevant column here is "fund_reported_info.series_name."
 
-- The query only involves a single table, "registrant," and does not require any joins with other tables.
-- It also does not require any nested queries, as we are simply filtering based on a condition applied to a single column.
+- We only need data from the "fund_reported_info" table, so we don't need to perform any JOIN operations.
+- The query does not require any nested queries, as we are simply filtering the "series_name" column for a specific substring.
 
-Therefore, the SQL query for this question can be classified as "EASY."
+Therefore, the SQL query can be classified as "EASY" because it doesn't require JOINs or nested queries. 
+
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%INTERNATIONAL%';
+SELECT DISTINCT f.series_name
+FROM fund_reported_info f
+JOIN registrant r ON r.accession_number = f.accession_number
+WHERE f.series_name LIKE '%International%';
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-WHERE 
-    SERIES_NAME LIKE '%International%'
+SELECT DISTINCT f.series_name
+FROM fund_reported_info f
+WHERE f.series_name LIKE '%International%'
 ================================================================================
-Result: True
+Result: False
 ================================================================================

@@ -35,76 +35,93 @@ ORDER BY
     FAIR_VALUE_LEVEL;
 ================================================================================
 Schema Links for Question: Track bond default rates and interest payment issues by credit rating
-{'table_columns': ['debt_security.are_any_interest_payment', 'convertible_security_currency.conversion_ratio', 'interest_rate_risk.interest_rate_risk_id', 'debt_security.is_default', 'interest_rate_risk.interest_rate_risk_id', 'fund_reported_info.credit_spread_3mon_invest', 'debt_security_ref_instrument.issue_title'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['convertible_security_currency.conversion_ratio', 'debt_security.is_default', 'fund_reported_info.credit_spread_3mon_invest', 'interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id', 'debt_security.are_any_interest_payment'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "Track bond default rates and interest payment issues by credit rating" involves analyzing bond default rates and interest payment issues, which are likely related to the "debt_security" table for default status and interest payment issues. Additionally, credit ratings might be inferred from interest rate risk or credit spread data, which could involve the "interest_rate_risk" or "fund_reported_info" tables.
+classification reasoning: To address the question "Track bond default rates and interest payment issues by credit rating," we need to consider the following:
 
-To achieve this, we would need to:
+1. **Tables Involved**: 
+   - The `DEBT_SECURITY` table is relevant because it contains information about bond defaults (`IS_DEFAULT`) and interest payment issues (`ARE_ANY_INTEREST_PAYMENT`).
+   - The `FUND_REPORTED_INFO` table might be relevant if credit ratings are stored there, but the schema does not explicitly mention credit ratings. We might need to infer or join with another table that provides credit ratings.
 
-1. Access the "debt_security" table to check for default status (`debt_security.is_default`) and interest payment issues (`debt_security.are_any_interest_payment`).
-2. Possibly join with the "fund_reported_info" or "interest_rate_risk" tables to get credit spread or other related data that might help infer credit ratings.
+2. **Joins Required**:
+   - We need to join `DEBT_SECURITY` with `FUND_REPORTED_HOLDING` to access the `HOLDING_ID` and potentially link to other tables that might contain credit rating information.
+   - If credit ratings are stored in another table, we would need to join with that table as well.
 
-Given these requirements, the query will likely involve joining multiple tables to correlate bond default and interest payment data with credit-related information. This makes it a "NON-NESTED" query because it requires JOIN operations but does not necessarily need nested queries.
+3. **Nested Queries**:
+   - If credit ratings are not directly available in the tables we are considering, we might need a nested query to filter or aggregate data based on credit ratings.
 
-Label: "NON-NESTED"
+Given these considerations, the query will likely require:
+- **Joins** to connect `DEBT_SECURITY` with other tables to access credit ratings.
+- **Potential Nested Queries** if credit ratings need to be derived or filtered through additional conditions.
+
+Therefore, the SQL query can be classified as "NESTED" due to the potential need for nested queries to handle credit ratings and the complexity of tracking default rates and interest payment issues. 
+
+Label: "NESTED"
 ================================================================================
-classification: "NON-NESTED"
+classification: "NESTED"
 ================================================================================
-process_thesql: ```sql
-WITH BondIssues AS (
-    SELECT 
-        F.ACCESSION_NUMBER,
-        DS.IS_DEFAULT,
-        DS.ARE_ANY_INTEREST_PAYMENT,
-        CASE 
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 1 THEN 'AAA'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 2 THEN 'AA'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 3 THEN 'A'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 4 THEN 'BBB'
-            ELSE 'Below BBB'
-        END as Credit_Rating
-    FROM 
-        DEBT_SECURITY DS
-        JOIN FUND_REPORTED_HOLDING H ON DS.HOLDING_ID = H.HOLDING_ID
-        JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    WHERE 
-        DS.IS_DEFAULT IS NOT NULL
-        AND DS.ARE_ANY_INTEREST_PAYMENT IS NOT NULL
-)
+process_thesql: To track bond default rates and interest payment issues by credit rating, we need to focus on the `DEBT_SECURITY` table for default status and interest payment issues, and the `FUND_REPORTED_INFO` table for credit spread information, which can be used as a proxy for credit rating.
+
+1. **Identify Default Rates and Interest Payment Issues:**
+   - Use the `DEBT_SECURITY` table to find bonds that are in default (`IS_DEFAULT`) and those with interest payment issues (`ARE_ANY_INTEREST_PAYMENT`).
+
+2. **Link to Credit Rating:**
+   - Use the `FUND_REPORTED_INFO` table to get credit spread information, which can be indicative of credit rating. The columns `CREDIT_SPREAD_3MON_INVEST`, `CREDIT_SPREAD_1YR_INVEST`, etc., can be used to infer the credit rating.
+
+3. **Join Tables:**
+   - Join the `DEBT_SECURITY` table with the `FUND_REPORTED_HOLDING` table using `HOLDING_ID`.
+   - Join the `FUND_REPORTED_HOLDING` table with the `FUND_REPORTED_INFO` table using `ACCESSION_NUMBER`.
+
+4. **Filter and Select Relevant Data:**
+   - Select bonds that are in default or have interest payment issues.
+   - Include credit spread information to assess the credit rating.
+
+Here is the SQL query to achieve this:
+
+```sql
 SELECT 
-    Credit_Rating,
-    COUNT(CASE WHEN IS_DEFAULT = 'Y' THEN 1 END) as Default_Count,
-    COUNT(CASE WHEN ARE_ANY_INTEREST
+    frh.issuer_name,
+    ds.is_default,
+    ds.are_any_interest_payment,
+    fri.credit_spread_3mon_invest,
+    fri.credit_spread_1yr_invest,
+    fri.credit_spread_5yr_invest,
+    fri.credit_spread_10yr_invest,
+    fri.credit_spread_30yr_invest
+FROM 
+    debt_security ds
+JOIN 
+    fund_reported_holding frh ON ds.holding_id = frh.holding_id
+JOIN 
+    fund_reported_info fri ON frh.accession_number = fri.accession_number
+WHERE 
+    ds.is_default = 'Y' OR ds.are_any_interest_payment = 'Y';
+```
+
+**Explanation:**
+- The query selects the issuer name, default status, interest payment issues, and various credit spread values.
+- It joins the `DEBT_SECURITY` table with the `FUND_REPORTED_HOLDING` table to get issuer information.
+- It further joins with the `FUND_REPORTED_INFO` table to get credit spread data.
+- The `WHERE` clause filters for bonds that are in default or have interest payment issues.
 ================================================================================
 final_output: 
-WITH BondIssues AS (
-    SELECT 
-        F.ACCESSION_NUMBER,
-        DS.IS_DEFAULT,
-        DS.ARE_ANY_INTEREST_PAYMENT,
-        CASE 
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 1 THEN 'AAA'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 2 THEN 'AA'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 3 THEN 'A'
-            WHEN CAST(F.CREDIT_SPREAD_3MON_INVEST AS FLOAT) < 4 THEN 'BBB'
-            ELSE 'Below BBB'
-        END as Credit_Rating
-    FROM 
-        DEBT_SECURITY DS
-        JOIN FUND_REPORTED_HOLDING H ON DS.HOLDING_ID = H.HOLDING_ID
-        JOIN FUND_REPORTED_INFO F ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    WHERE 
-        DS.IS_DEFAULT IS NOT NULL
-        AND DS.ARE_ANY_INTEREST_PAYMENT IS NOT NULL
-)
 SELECT 
-    Credit_Rating,
-    COUNT(CASE WHEN IS_DEFAULT = 'Y' THEN 1 END) as Default_Count,
-    COUNT(CASE WHEN ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) as Interest_Payment_Issues_Count
+    frh.issuer_name,
+    ds.is_default,
+    ds.are_any_interest_payment,
+    fri.credit_spread_3mon_invest,
+    fri.credit_spread_1yr_invest,
+    fri.credit_spread_5yr_invest,
+    fri.credit_spread_10yr_invest,
+    fri.credit_spread_30yr_invest
 FROM 
-    BondIssues
-GROUP BY 
-    Credit_Rating
+    debt_security ds
+JOIN 
+    fund_reported_holding frh ON ds.holding_id = frh.holding_id
+JOIN 
+    fund_reported_info fri ON frh.accession_number = fri.accession_number
+WHERE 
+    ds.is_default = 'Y' OR ds.are_any_interest_payment = 'Y'
 ================================================================================
 Result: False
 ================================================================================

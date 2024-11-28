@@ -25,100 +25,65 @@ ORDER BY
     CAST(TOTAL_ASSETS AS FLOAT) DESC;
 ================================================================================
 Schema Links for Question: What's PIMCO's current duration positioning across their major bond funds?
-{'table_columns': ['interest_rate_risk.currency_code', 'convertible_security_currency.conversion_ratio', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['interest_rate_risk.currency_code', 'securities_lending.is_loan_by_fund', 'convertible_security_currency.conversion_ratio'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To answer the question "What's PIMCO's current duration positioning across their major bond funds?", we need to consider the following:
+classification reasoning: To answer the question "What's PIMCO's current duration positioning across their major bond funds?" we need to consider the following:
 
-1. **Identify PIMCO's Registrant Information**: We need to find PIMCO's registrant details, which would be in the `REGISTRANT` table. This involves filtering by `REGISTRANT_NAME` to find PIMCO.
+1. **Identify PIMCO's Funds**: We need to identify which funds are managed by PIMCO. This information can be found in the `REGISTRANT` table, where we can filter by `REGISTRANT_NAME` to find entries related to PIMCO.
 
-2. **Interest Rate Risk Data**: The `INTEREST_RATE_RISK` table contains information about duration positioning, as it includes columns like `INTRST_RATE_CHANGE_3MON_DV01`, `INTRST_RATE_CHANGE_1YR_DV01`, etc. We need to join this table with the `REGISTRANT` table using the `ACCESSION_NUMBER` to get PIMCO's specific data.
+2. **Link to Fund Information**: Once we have identified PIMCO's funds, we need to link this information to the `FUND_REPORTED_INFO` table to get details about each fund, such as the `ACCESSION_NUMBER`.
 
-3. **Join Requirement**: Since we need to combine data from the `REGISTRANT` and `INTEREST_RATE_RISK` tables, a JOIN operation is necessary.
+3. **Interest Rate Risk Data**: To understand the duration positioning, we need to look at the `INTEREST_RATE_RISK` table, which contains information about interest rate changes and their impact on the portfolio. This table is linked to the `FUND_REPORTED_INFO` table via the `ACCESSION_NUMBER`.
 
-4. **No Nested Queries Required**: The query does not require any nested operations like subqueries or set operations (INTERSECT, UNION, etc.). It is a straightforward join between two tables.
+4. **Join Tables**: We will need to join the `REGISTRANT`, `FUND_REPORTED_INFO`, and `INTEREST_RATE_RISK` tables to gather all necessary information. This involves using the `ACCESSION_NUMBER` as a foreign key to connect these tables.
 
-Based on this analysis, the SQL query would require a JOIN but not a nested query. Therefore, the query can be classified as "NON-NESTED."
+5. **Filter and Aggregate Data**: After joining the tables, we will filter the data to include only PIMCO's funds and then aggregate or analyze the interest rate risk data to determine the duration positioning.
 
-Label: "NON-NESTED"
+Since this query involves joining multiple tables and filtering based on specific conditions, it requires a non-nested query with JOIN operations.
+
+Therefore, the SQL query can be classified as "NON-NESTED."
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To determine PIMCO's current duration positioning across their major bond funds, we need to follow these steps:
-
-1. **Identify PIMCO's Funds**: First, we need to identify the funds managed by PIMCO. This can be done by filtering the `REGISTRANT` table for entries where the `REGISTRANT_NAME` contains "PIMCO".
-
-2. **Join with Fund Information**: Once we have identified PIMCO's funds, we need to join this information with the `FUND_REPORTED_INFO` table to get details about each fund, including the `ACCESSION_NUMBER`.
-
-3. **Join with Interest Rate Risk Data**: Next, we need to join the `FUND_REPORTED_INFO` with the `INTEREST_RATE_RISK` table using the `ACCESSION_NUMBER` to get the duration positioning data. This table contains various duration measures like `INTRST_RATE_CHANGE_10YR_DV01` and `INTRST_RATE_CHANGE_30YR_DV01`.
-
-4. **Filter for Major Bond Funds**: We should filter the results to focus on major bond funds. This can be done by checking if the `SERIES_NAME` in the `FUND_REPORTED_INFO` table contains keywords like "BOND" or "FIXED INCOME".
-
-5. **Select Relevant Data**: Finally, we select the relevant columns to show PIMCO's duration positioning, such as the `SERIES_NAME`, `INTRST_RATE_CHANGE_10YR_DV01`, and `INTRST_RATE_CHANGE_30YR_DV01`.
-
-Here is the SQL query that implements these steps:
-
-```sql
-WITH PIMCOFunds AS (
-    SELECT 
-        R.ACCESSION_NUMBER,
-        F.SERIES_NAME
-    FROM 
-        REGISTRANT R
-        JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    WHERE 
-        R.REGISTRANT_NAME LIKE '%PIMCO%'
-        AND (F.SERIES_NAME LIKE '%BOND%' OR F.SERIES_NAME LIKE '%FIXED INCOME%')
-),
-DurationPositioning AS (
-    SELECT 
-        P.SERIES_NAME,
-        IR.INTRST_RATE_CHANGE_10YR_DV01,
-        IR.INTRST_RATE_CHANGE_30YR_DV01
-    FROM 
-        PIMCOFunds P
-        JOIN INTEREST_RATE_RISK IR ON P.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
-)
+process_thesql: ```sql
 SELECT 
-    SERIES_NAME,
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) AS Ten_Year_Duration,
-    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) AS Thirty_Year_Duration
+    r.registrant_name, 
+    irr.currency_code, 
+    irr.intrst_rate_change_3mon_dv01, 
+    irr.intrst_rate_change_1yr_dv01, 
+    irr.intrst_rate_change_5yr_dv01, 
+    irr.intrst_rate_change_10yr_dv01, 
+    irr.intrst_rate_change_30yr_dv01
 FROM 
-    DurationPositioning
-ORDER BY 
-    SERIES_NAME;
+    registrant r
+JOIN 
+    fund_reported_info fri ON r.accession_number = fri.accession_number
+JOIN 
+    interest_rate_risk irr ON fri.accession_number = irr.accession_number
+WHERE 
+    r.registrant_name LIKE '%PIMCO%'
 ```
 
-This query will provide a list of PIMCO's major bond funds along with their duration positioning based on the 10-year and
+This query will provide the duration positioning for PIMCO's major bond funds by showing the sensitivity of their portfolios to changes in interest rates across different maturities.
 ================================================================================
 final_output: 
-WITH PIMCOFunds AS (
-    SELECT 
-        R.ACCESSION_NUMBER,
-        F.SERIES_NAME
-    FROM 
-        REGISTRANT R
-        JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    WHERE 
-        R.REGISTRANT_NAME LIKE '%PIMCO%'
-        AND (F.SERIES_NAME LIKE '%BOND%' OR F.SERIES_NAME LIKE '%FIXED INCOME%')
-),
-DurationPositioning AS (
-    SELECT 
-        P.SERIES_NAME,
-        IR.INTRST_RATE_CHANGE_10YR_DV01,
-        IR.INTRST_RATE_CHANGE_30YR_DV01
-    FROM 
-        PIMCOFunds P
-        JOIN INTEREST_RATE_RISK IR ON P.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
-)
 SELECT 
-    SERIES_NAME,
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) AS Ten_Year_Duration,
-    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) AS Thirty_Year_Duration
+    r.registrant_name, 
+    irr.currency_code, 
+    irr.intrst_rate_change_3mon_dv01, 
+    irr.intrst_rate_change_1yr_dv01, 
+    irr.intrst_rate_change_5yr_dv01, 
+    irr.intrst_rate_change_10yr_dv01, 
+    irr.intrst_rate_change_30yr_dv01
 FROM 
-    DurationPositioning
-ORDER BY 
-    SERIES_NAME
+    registrant r
+JOIN 
+    fund_reported_info fri ON r.accession_number = fri.accession_number
+JOIN 
+    interest_rate_risk irr ON fri.accession_number = irr.accession_number
+WHERE 
+    r.registrant_name LIKE '%PIMCO%'
+```
 ================================================================================
 Result: False
 ================================================================================

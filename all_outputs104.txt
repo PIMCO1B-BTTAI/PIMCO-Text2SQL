@@ -44,100 +44,66 @@ ORDER BY
     Total_Value DESC;
 ================================================================================
 Schema Links for Question: Track PIMCO's international exposure trends across quarters
-{'table_columns': ['nonforeign_exchange_swap.termination_date', 'registrant.quarter', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'nonforeign_exchange_swap.termination_date', 'registrant.quarter'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To address the query "Track PIMCO's international exposure trends across quarters," we need to consider the following:
+classification reasoning: To track PIMCO's international exposure trends across quarters, we need to analyze data from multiple tables. Specifically, we need to:
 
-1. **Tables Involved**: 
-   - The query involves tracking trends, which suggests analyzing data over time. This typically involves the `quarter` column.
-   - We need to identify PIMCO's exposure, which likely involves the `registrant` table to identify PIMCO and potentially other tables that detail exposure, such as `nonforeign_exchange_swap` for international exposure.
+1. Identify PIMCO's filings using the `REGISTRANT` table, focusing on the `REGISTRANT_NAME` column.
+2. Determine the international exposure, which might involve examining holdings in the `FUND_REPORTED_HOLDING` table, particularly the `INVESTMENT_COUNTRY` column.
+3. Analyze trends across quarters, which requires temporal data, possibly from the `SUBMISSION` table's `FILING_DATE` or a similar time-related column.
 
-2. **Joins Required**:
-   - To connect PIMCO's information with its exposure data, we need to join the `registrant` table with other relevant tables like `nonforeign_exchange_swap`.
-   - The foreign key relationships provided indicate that `NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID` is linked to `FUND_REPORTED_HOLDING.HOLDING_ID`, which in turn is linked to `FUND_REPORTED_INFO.ACCESSION_NUMBER`, and this is linked to `REGISTRANT.ACCESSION_NUMBER`.
+Given these requirements, we need to join multiple tables: `REGISTRANT` to identify PIMCO, `FUND_REPORTED_HOLDING` to assess international exposure, and potentially `SUBMISSION` to track the timing of filings.
 
-3. **Complexity**:
-   - The query requires joining multiple tables to gather the necessary data, which makes it more complex than a simple query.
-   - However, it does not necessarily require nested queries, as the information can be obtained through joins.
-
-Given these considerations, the query involves multiple joins but does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
-
-Label: "NON-NEST
+Since this involves joining multiple tables and potentially aggregating data over time, the query will require JOIN operations but not necessarily nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To track PIMCO's international exposure trends across quarters, we need to focus on the `REGISTRANT` and `FUND_REPORTED_HOLDING` tables. The `REGISTRANT` table will help us identify PIMCO's funds, and the `FUND_REPORTED_HOLDING` table will provide information about the holdings, including their geographic exposure.
-
-Here’s how we can approach this:
-
-1. **Identify PIMCO's Funds**: Use the `REGISTRANT` table to filter for PIMCO by its `REGISTRANT_NAME`.
-
-2. **Join with Holdings**: Join the `REGISTRANT` table with the `FUND_REPORTED_HOLDING` table using the `ACCESSION_NUMBER` to get the holdings related to PIMCO.
-
-3. **Filter for International Holdings**: In the `FUND_REPORTED_HOLDING` table, filter for holdings where the `INVESTMENT_COUNTRY` is not 'US' to identify international exposure.
-
-4. **Aggregate by Quarter**: Group the results by `QUARTER` to track the trends over time.
-
-5. **Calculate Exposure**: Sum the `CURRENCY_VALUE` of the international holdings to quantify the exposure.
-
-Now, let's construct the SQL query:
-
-```sql
-WITH PIMCOInternationalExposure AS (
-    SELECT 
-        R.QUARTER,
-        H.INVESTMENT_COUNTRY,
-        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) AS International_Exposure
-    FROM 
-        REGISTRANT R
-        JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-    WHERE 
-        R.REGISTRANT_NAME LIKE '%PIMCO%'
-        AND H.INVESTMENT_COUNTRY IS NOT NULL
-        AND H.INVESTMENT_COUNTRY != 'US'
-    GROUP BY 
-        R.QUARTER, H.INVESTMENT_COUNTRY
-)
+process_thesql: ```sql
 SELECT 
-    QUARTER,
-    SUM(International_Exposure) AS Total_International_Exposure
+    QUARTER(s.filing_date) AS quarter,
+    SUM(ir.intrst_rate_change_3mon_dv01) AS total_interest_rate_risk_3mon,
+    SUM(ns.notional_amount) AS total_swap_notional_amount
 FROM 
-    PIMCOInternationalExposure
+    registrant r
+JOIN 
+    fund_reported_info fri ON r.accession_number = fri.accession_number
+JOIN 
+    interest_rate_risk ir ON ir.accession_number = fri.accession_number
+JOIN 
+    fund_reported_holding frh ON frh.accession_number = fri.accession_number
+JOIN 
+    nonforeign_exchange_swap ns ON ns.holding_id = frh.holding_id
+JOIN 
+    submission s ON s.accession_number = fri.accession_number
+WHERE 
+    r.registrant_name = 'PIMCO'
 GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
+    QUARTER(s.filing_date);
 ```
 
-This query will provide the total international exposure of PIMCO's funds for each quarter, allowing you to track trends over time.
+This query will provide a summary of PIMCO's international exposure trends across quarters by aggregating interest rate risk and swap notional amounts.
 ================================================================================
 final_output: 
-WITH PIMCOInternationalExposure AS (
-    SELECT 
-        F.QUARTER,
-        H.INVESTMENT_COUNTRY,
-        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) AS International_Exposure
-    FROM 
-        REGISTRANT R
-        JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-    WHERE 
-        R.REGISTRANT_NAME LIKE '%PIMCO%'
-        AND H.INVESTMENT_COUNTRY IS NOT NULL
-        AND H.INVESTMENT_COUNTRY != 'US'
-    GROUP BY 
-        F.QUARTER, H.INVESTMENT_COUNTRY
-)
 SELECT 
-    QUARTER,
-    SUM(International_Exposure) AS Total_International_Exposure
+    QUARTER(s.filing_date) AS quarter,
+    SUM(ir.intrst_rate_change_3mon_dv01) AS total_interest_rate_risk_3mon,
+    SUM(ns.notional_amount) AS total_swap_notional_amount
 FROM 
-    PIMCOInternationalExposure
+    registrant r
+JOIN 
+    fund_reported_info fri ON r.accession_number = fri.accession_number
+JOIN 
+    interest_rate_risk ir ON ir.accession_number = fri.accession_number
+JOIN 
+    fund_reported_holding frh ON frh.accession_number = fri.accession_number
+JOIN 
+    nonforeign_exchange_swap ns ON ns.holding_id = frh.holding_id
+JOIN 
+    submission s ON s.accession_number = fri.accession_number
+WHERE 
+    r.registrant_name = 'PIMCO'
 GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC
+    QUARTER(s.filing_date)
 ================================================================================
-Result: False
+Error Executing LLM-Generated SQL: no such function: QUARTER
 ================================================================================

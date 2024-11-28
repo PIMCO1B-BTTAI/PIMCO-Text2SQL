@@ -12,34 +12,24 @@ ORDER BY
 Schema Links for Question: List all registrants with their ZIP codes
 {'table_columns': ['registrant.registrant_name', 'interest_rate_risk.currency_code', 'registrant.zip'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER']}
 ================================================================================
-classification reasoning: The SQL query for the question "List all registrants with their ZIP codes" needs these tables: [registrant]. We are only interested in retrieving the registrant names and their ZIP codes, which are both available in the "registrant" table. 
+classification reasoning: The SQL query for the question "List all registrants with their ZIP codes" needs these tables: [registrant]. We are only interested in retrieving the registrant names and their ZIP codes, which are both available in the "registrant" table. Therefore, we don't need to perform any JOIN operations.
 
-- We don't need to join with any other tables because all the required information is contained within the "registrant" table.
-- Additionally, there is no need for nested queries since we are not performing any operations that require subqueries or set operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN.
+Additionally, the query does not require any nested queries involving operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN. We are simply selecting data from a single table without any complex conditions or subqueries.
 
-Therefore, the SQL query can be classified as "EASY".
+Since we don't need JOIN and don't need nested queries, the SQL query can be classified as "EASY."
+
+Label: "EASY"
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    REGISTRANT_NAME,
-    ZIP,
-    STATE 
-FROM 
-    REGISTRANT 
-ORDER BY 
-    ZIP;
+SELECT registrant_name, zip
+FROM registrant;
 ```
 ================================================================================
 final_output: 
-SELECT 
-    REGISTRANT_NAME,
-    ZIP
-FROM 
-    REGISTRANT 
-ORDER BY 
-    ZIP
+SELECT registrant_name, zip
+FROM registrant
 ================================================================================
 Result: False
 ================================================================================

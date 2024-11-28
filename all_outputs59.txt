@@ -32,66 +32,62 @@ ORDER BY
 Schema Links for Question: Help me find funds that might be too concentrated in specific sectors
 {'table_columns': ['securities_lending.is_loan_by_fund'], 'primary_keys': ['SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: To address the question "Help me find funds that might be too concentrated in specific sectors," we need to consider the relevant schema links provided. The relevant tables are "securities_lending" and "fund_reported_holding." 
+classification reasoning: To determine if funds are too concentrated in specific sectors, we need to analyze the holdings of each fund and categorize them by sector. This involves examining the "FUND_REPORTED_HOLDING" table, which contains information about the holdings of the fund, including asset categories. 
 
-1. **Understanding the Requirement**: The question is about identifying funds that might be too concentrated in specific sectors. This typically involves analyzing the distribution of holdings across different sectors.
+Here's the step-by-step breakdown:
 
-2. **Schema Analysis**:
-   - The "securities_lending" table has a column "is_loan_by_fund," which might indicate whether a fund is involved in securities lending.
-   - The "fund_reported_holding" table would likely contain information about the holdings of a fund, including sector information.
+1. **Identify Relevant Tables**: 
+   - The "FUND_REPORTED_HOLDING" table is crucial as it contains the asset category information for each holding.
+   - We might also need the "FUND_REPORTED_INFO" table to get the overall context of the fund, such as total assets, to compare against sector concentration.
 
-3. **Data Retrieval**:
-   - To determine concentration in specific sectors, we would need to analyze the holdings data to see if a significant portion of the fund's assets is concentrated in a particular sector.
-   - This would typically involve aggregating holdings by sector and comparing the proportions.
+2. **Determine Sector Concentration**:
+   - We need to group the holdings by asset category (sector) and calculate the percentage of total assets each sector represents.
+   - This requires aggregating data within the "FUND_REPORTED_HOLDING" table.
 
-4. **Query Complexity**:
-   - Since we need to analyze holdings data and potentially aggregate it by sector, this would involve joining the "securities_lending" table with the "fund_reported_holding" table to get the necessary data.
-   - However, the question does not explicitly mention the need for nested queries, such as using subqueries or set operations like INTERSECT, UNION, or EXCEPT.
+3. **Set a Threshold for Concentration**:
+   - Define what constitutes "too concentrated" (e.g., a single sector representing more than 30% of the fund's total assets).
 
-Given the need to join tables but not
+4. **SQL Query Requirements**:
+   - We need to join "FUND_REPORTED_HOLDING" with "FUND_REPORTED_INFO" to get the total assets for each fund.
+   - Calculate the percentage of each sector's holdings relative to the total assets.
+   - Filter funds where any sector exceeds the defined concentration threshold.
+
+Given these steps, the query involves joining tables and performing calculations, but it doesn't necessarily require nested queries. Therefore, the SQL query can be classified as "NON-NESTED." 
+
+Label: "NON-NESTED"
 ================================================================================
-classification: "NESTED"
+classification: "NON-NESTED"
 ================================================================================
-process_thesql: To find funds that might be too concentrated in specific sectors, we need to analyze the distribution of holdings across different sectors for each fund. A fund is considered too concentrated if a significant portion of its holdings is in a single sector. Here's how we can approach this:
-
-1. Calculate the percentage of each fund's holdings in each sector.
-2. Identify funds where a single sector accounts for a large percentage of the total holdings.
-
-Here's the SQL query to achieve this:
-
-```sql
-WITH SectorConcentration AS (
-    SELECT 
-        F.SERIES_NAME,
-        H.ASSET_CAT AS Sector,
-        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) AS Sector_Value,
-        SUM(SUM(CAST(H.CURRENCY_VALUE AS FLOAT))) OVER (PARTITION BY F.SERIES_NAME) AS Total_Fund_Value,
-        (SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) / SUM(SUM(CAST(H.CURRENCY_VALUE AS FLOAT))) OVER (PARTITION BY F.SERIES_NAME)) * 100 AS Sector_Percentage
-    FROM 
-        FUND_REPORTED_INFO F
-        JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
-    WHERE 
-        H.ASSET_CAT IS NOT NULL
-    GROUP BY 
-        F.SERIES_NAME, H.ASSET_CAT
-)
+process_thesql: ```sql
 SELECT 
-    SERIES_NAME,
-    Sector,
-    ROUND(Sector_Value / 1000000, 2) AS Sector_Value_Millions,
-    ROUND(Total_Fund_Value / 1000000, 2) AS Total_Fund_Value_Millions,
-    ROUND(Sector_Percentage, 2) AS Sector_Percentage
+    frh.ACCESSION_NUMBER, 
+    frh.ASSET_CAT, 
+    SUM(frh.CURRENCY_VALUE) AS total_value, 
+    SUM(frh.CURRENCY_VALUE) / SUM(SUM(frh.CURRENCY_VALUE)) OVER (PARTITION BY frh.ACCESSION_NUMBER) AS concentration_ratio
 FROM 
-    SectorConcentration
-WHERE 
-    Sector_Percentage > 30 -- Assuming a threshold of 30% for concentration
-ORDER BY 
-    Sector_Percentage DESC;
+    FUND_REPORTED_HOLDING frh
+GROUP BY 
+    frh.ACCESSION_NUMBER, 
+    frh.ASSET_CAT
+HAVING 
+    SUM(frh.CURRENCY_VALUE) / SUM(SUM(frh.CURRENCY_VALUE)) OVER (PARTITION BY frh.ACCESSION_NUMBER) > 0.5; -- Assuming 50% as a threshold for concentration
 ```
 
-### Explanation:
-- **SectorConcentration CTE**: This common table expression calculates the total value of holdings in each sector for each fund and computes the percentage of the fund's total value that each sector represents.
-- **Main Query**: Selects funds where a single sector accounts for more than 30% of the total fund value, indicating potential concentration risk. The results are ordered by the sector percentage in descending order to highlight the most concentrated funds.
+This query identifies funds where more than 50% of their holdings are concentrated in a single asset category, which could indicate a potential risk of over-concentration in specific sectors. Adjust the threshold as needed based on the specific criteria for concentration.
 ================================================================================
-Error in refine_query of Self-Correction
+final_output: 
+SELECT 
+    frh.ACCESSION_NUMBER, 
+    frh.ASSET_CAT, 
+    SUM(frh.CURRENCY_VALUE) AS total_value, 
+    SUM(frh.CURRENCY_VALUE) / SUM(frh.CURRENCY_VALUE) OVER (PARTITION BY frh.ACCESSION_NUMBER) AS concentration_ratio
+FROM 
+    FUND_REPORTED_HOLDING frh
+GROUP BY 
+    frh.ACCESSION_NUMBER, 
+    frh.ASSET_CAT
+HAVING 
+    SUM(frh.CURRENCY_VALUE) / SUM(frh.CURRENCY_VALUE) OVER (PARTITION BY frh.ACCESSION_NUMBER) > 0.5
+================================================================================
+Error Executing LLM-Generated SQL: misuse of window function SUM()
 ================================================================================

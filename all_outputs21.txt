@@ -12,38 +12,24 @@ LIMIT 10;
 Schema Links for Question: List the top 10 funds by net assets
 {'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'fund_reported_holding.asset_cat', 'fund_reported_info.net_assets', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "List the top 10 funds by net assets" involves retrieving data from the "fund_reported_info" table, specifically focusing on the "net_assets" column. The task is to sort the funds by their net assets and select the top 10.
+classification reasoning: The SQL query for the question "List the top 10 funds by net assets" needs data from the "FUND_REPORTED_INFO" table, specifically the "NET_ASSETS" column. Since we are only interested in the top 10 funds by net assets, we can achieve this by sorting the records based on the "NET_ASSETS" column and limiting the result to 10 entries. This operation does not require any JOINs or nested queries, as it involves a single table and straightforward sorting and limiting operations.
 
-1. **Tables Involved**: The query only requires data from the "fund_reported_info" table, as it contains the "net_assets" column.
-
-2. **Joins**: There is no need to join with other tables since all the necessary information is contained within the "fund_reported_info" table.
-
-3. **Nested Queries**: The query does not require any nested operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN. It simply involves sorting and limiting the results.
-
-Given these points, the query does not require any joins or nested queries. Therefore, it can be classified as "EASY".
+Therefore, the SQL query can be classified as "EASY."
 ================================================================================
 classification: "EASY"
 ================================================================================
 process_thesql: ```sql
-SELECT 
-    SERIES_NAME,
-    NET_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-ORDER BY 
-    CAST(NET_ASSETS AS FLOAT) DESC 
+SELECT series_name, net_assets
+FROM fund_reported_info
+ORDER BY net_assets DESC
 LIMIT 10;
 ```
 ================================================================================
 final_output: 
-SELECT 
-    SERIES_NAME,
-    NET_ASSETS 
-FROM 
-    FUND_REPORTED_INFO 
-ORDER BY 
-    CAST(NET_ASSETS AS FLOAT) DESC 
+SELECT series_name, net_assets
+FROM fund_reported_info
+ORDER BY net_assets DESC
 LIMIT 10
 ================================================================================
-Result: True
+Result: False
 ================================================================================

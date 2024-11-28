@@ -12,75 +12,43 @@ GROUP BY
     R.REGISTRANT_NAME;
 ================================================================================
 Schema Links for Question: List all registrants with their fund count and total assets
-{'table_columns': ['fund_reported_info.total_assets', 'registrant.registrant_name', 'fund_reported_holding.asset_cat', 'registrant.country', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
+{'table_columns': ['registrant.country', 'fund_reported_info.total_assets', 'fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund', 'registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID']}
 ================================================================================
-classification reasoning: The query "List all registrants with their fund count and total assets" involves retrieving data from multiple tables. Specifically, we need to:
+classification reasoning: To answer the question "List all registrants with their fund count and total assets," we need to gather information from two tables: "REGISTRANT" and "FUND_REPORTED_INFO." 
 
-1. Get the registrant names from the `REGISTRANT` table.
-2. Count the number of funds associated with each registrant, which involves the `FUND_REPORTED_INFO` table.
-3. Sum the total assets for each registrant, which also involves the `FUND_REPORTED_INFO` table.
+1. **Tables Involved**:
+   - "REGISTRANT" for registrant details.
+   - "FUND_REPORTED_INFO" for total assets and to count the number of funds.
 
-To achieve this, we need to join the `REGISTRANT` table with the `FUND_REPORTED_INFO` table using the `ACCESSION_NUMBER` as the foreign key. This requires a join operation to link the registrant information with their respective fund details.
+2. **Required Operations**:
+   - We need to join these tables on the common column "ACCESSION_NUMBER" to associate each registrant with their respective funds.
+   - We need to count the number of funds for each registrant, which requires a GROUP BY operation on the registrant's identifier (likely CIK or ACCESSION_NUMBER).
+   - We need to sum the total assets for each registrant.
 
-Since the query involves a join but does not require nested queries (like subqueries or set operations such as INTERSECT, UNION, EXCEPT), it can be classified as "NON-NESTED."
+3. **SQL Query Characteristics**:
+   - This query requires a JOIN to combine data from the "REGISTRANT" and "FUND_REPORTED_INFO" tables.
+   - It involves aggregation functions (COUNT and SUM) and a GROUP BY clause.
+
+Since the query requires a JOIN but does not involve nested queries, it can be classified as "NON-NESTED."
 
 Label: "NON-NESTED"
 ================================================================================
 classification: "NON-NESTED"
 ================================================================================
-process_thesql: To generate the SQL query for the given question, we need to follow these steps:
-
-1. **Identify the Tables and Columns Needed**: 
-   - We need to list all registrants, which means we need the `REGISTRANT` table.
-   - We need the fund count and total assets, which are in the `FUND_REPORTED_INFO` table.
-
-2. **Determine the Relationships**:
-   - The `REGISTRANT` table is linked to the `FUND_REPORTED_INFO` table through the `ACCESSION_NUMBER` column.
-
-3. **Construct the SQL Query**:
-   - We will join the `REGISTRANT` and `FUND_REPORTED_INFO` tables on the `ACCESSION_NUMBER`.
-   - We will count the number of funds for each registrant and sum the total assets.
-
-4. **Group and Aggregate**:
-   - Group the results by `REGISTRANT_NAME`.
-   - Use `COUNT` to get the number of funds and `SUM` to get the total assets.
-
-Here is the SQL query:
-
-```sql
-SELECT 
-    R.REGISTRANT_NAME,
-    COUNT(DISTINCT F.SERIES_NAME) AS Fund_Count,
-    SUM(CAST(F.TOTAL_ASSETS AS FLOAT)) AS Total_Assets
-FROM 
-    REGISTRANT R
-JOIN 
-    FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-GROUP BY 
-    R.REGISTRANT_NAME
-ORDER BY 
-    Total_Assets DESC;
+process_thesql: ```sql
+SELECT registrant.registrant_name, COUNT(fund_reported_info.accession_number) AS fund_count, SUM(fund_reported_info.total_assets) AS total_assets
+FROM registrant
+JOIN fund_reported_info ON registrant.accession_number = fund_reported_info.accession_number
+GROUP BY registrant.registrant_name;
 ```
 
-### Explanation:
-- **SELECT Clause**: We select the `REGISTRANT_NAME`, count of distinct `SERIES_NAME` as `Fund_Count`, and the sum of `TOTAL_ASSETS` cast to a float for accurate numerical operations.
-- **FROM and JOIN Clauses**: We join the `REGISTRANT` and `FUND_REPORTED_INFO` tables using the `ACCESSION_NUMBER` as the key.
-- **GROUP BY Clause**: We group the results by `REGISTRANT_NAME` to aggregate the fund count and total assets for each registrant.
-- **ORDER BY Clause**: We order the results by `Total_Assets` in descending order to list registrants with the highest total assets first.
+This query will provide a list of all registrants along with the count of funds they have and the total assets of those funds.
 ================================================================================
 final_output: 
-SELECT 
-    R.REGISTRANT_NAME,
-    COUNT(DISTINCT F.SERIES_NAME) AS Fund_Count,
-    SUM(CAST(F.TOTAL_ASSETS AS FLOAT)) AS Total_Assets
-FROM 
-    REGISTRANT R
-JOIN 
-    FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-GROUP BY 
-    R.REGISTRANT_NAME
-ORDER BY 
-    Total_Assets DESC
+SELECT registrant.registrant_name, COUNT(fund_reported_info.accession_number) AS fund_count, SUM(fund_reported_info.total_assets) AS total_assets
+FROM registrant
+JOIN fund_reported_info ON registrant.accession_number = fund_reported_info.accession_number
+GROUP BY registrant.registrant_name
 ================================================================================
 Result: False
 ================================================================================
