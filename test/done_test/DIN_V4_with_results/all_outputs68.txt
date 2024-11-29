@@ -1,0 +1,103 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT
+    h.ISSUER_TYPE,
+    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*))
+FROM 
+    FUND_REPORTED_HOLDING h
+    JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
+WHERE 
+    h.ISSUER_TYPE IS NOT NULL
+GROUP BY 
+    h.ISSUER_TYPE
+ORDER BY 
+    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*)) DESC;
+================================================================================
+Schema Links for Question: What percentage of bonds have missed interest payments by sector?
+{'table_columns': ['fund_reported_holding.percentage', 'interest_rate_risk.interest_rate_risk_id', 'debt_security_ref_instrument.issue_title', 'debt_security.are_any_interest_payment'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The question "What percentage of bonds have missed interest payments by sector?" requires us to determine the percentage of bonds that have missed interest payments, categorized by sector. To achieve this, we need to:
+
+1. Identify bonds that have missed interest payments. This information can be found in the `debt_security` table, specifically in the `are_any_interest_payment` column.
+
+2. Determine the sector of each bond. This information is likely found in the `fund_reported_holding` table, which includes the `asset_cat` column that categorizes the asset type.
+
+3. Calculate the percentage of bonds with missed interest payments within each sector. This requires aggregating data by sector and calculating the percentage.
+
+To perform these steps, we need to join the `debt_security` table with the `fund_reported_holding` table using the `holding_id` as a foreign key. This allows us to associate each bond with its sector. The query will involve a join and aggregation, but it does not require nested queries.
+
+Therefore, the SQL query can be classified as "NON-NESTED."
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To solve the problem of determining the percentage of bonds that have missed interest payments by sector, we need to follow these steps:
+
+1. **Identify Relevant Tables and Columns**: 
+   - We need to identify bonds that have missed interest payments. The `DEBT_SECURITY` table contains the column `ARE_ANY_INTEREST_PAYMENT`, which indicates if any interest payments are missed.
+   - We need to categorize these bonds by sector. The `DEBT_SECURITY_REF_INSTRUMENT` table contains the `ISSUE_TITLE` column, which can be used to infer the sector.
+
+2. **Join Tables**:
+   - We need to join the `DEBT_SECURITY` and `DEBT_SECURITY_REF_INSTRUMENT` tables using the `HOLDING_ID` as the common key. This will allow us to associate each bond with its sector.
+
+3. **Calculate Percentages**:
+   - We need to calculate the total number of bonds and the number of bonds with missed interest payments for each sector.
+   - The percentage of bonds with missed interest payments in each sector can be calculated as:
+     \[
+     \text{Percentage} = \left(\frac{\text{Number of Bonds with Missed Payments}}{\text{Total Number of Bonds}}\right) \times 100
+     \]
+
+4. **SQL Query Structure**:
+   - Use a `WITH` clause to create a common table expression (CTE) that calculates the total number of bonds and the number of bonds with missed payments for each sector.
+   - Use `GROUP BY` to group the results by sector.
+   - Use `SUM` and `COUNT` to calculate the necessary totals and percentages.
+
+Here is the SQL query that implements the above logic:
+
+```sql
+WITH BondCounts AS (
+    SELECT 
+        DSR.ISSUE_TITLE AS Sector,
+        COUNT(*) AS TotalBonds,
+        SUM(CASE WHEN DS.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 ELSE 0 END) AS MissedPayments
+    FROM 
+        DEBT_SECURITY DS
+    JOIN 
+        DEBT_SECURITY_REF_INSTRUMENT DSR ON DS.HOLDING_ID = DSR.HOLDING_ID
+    GROUP BY 
+        DSR.ISSUE_TITLE
+)
+SELECT 
+    Sector,
+    (CAST(MissedPayments AS FLOAT) / TotalBonds) * 100 AS PercentageMissed
+FROM 
+    BondCounts;
+```
+
+### Explanation:
+- **CTE `BondCounts`**: This CTE calculates the total number of bonds (`TotalBonds`) and the number of bonds with missed interest payments (`MissedPayments`) for each sector.
+- **`JOIN` Clause**: We join `DEBT_SECURITY` and `DEBT_SECURITY_REF_INSTRUMENT` on `HOLDING_ID` to link bonds with their sectors.
+- **`SUM` with `CASE`**: We use a `CASE` statement to count only those bonds where `ARE_ANY_INTEREST_PAYMENT` is 'Y', indicating missed payments.
+- **`GROUP BY`**: We group the results by `ISSUE_TITLE` to calculate totals for each sector.
+- **Final `SELECT`**: We calculate the percentage of missed payments by dividing `MissedPayments` by `TotalBonds` and multiplying by 100. We cast `MissedPayments` to `FLOAT` to ensure accurate division.
+================================================================================
+final_output: 
+WITH BondCounts AS (
+    SELECT 
+        DSR.ISSUE_TITLE AS Sector,
+        COUNT(*) AS TotalBonds,
+        SUM(CASE WHEN DS.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 ELSE 0 END) AS MissedPayments
+    FROM 
+        DEBT_SECURITY DS
+    JOIN 
+        DEBT_SECURITY_REF_INSTRUMENT DSR ON DS.HOLDING_ID = DSR.HOLDING_ID
+    GROUP BY 
+        DSR.ISSUE_TITLE
+)
+SELECT 
+    Sector,
+    (CAST(MissedPayments AS FLOAT) / TotalBonds) * 100 AS PercentageMissed
+FROM 
+    BondCounts
+================================================================================
+Result: False
+================================================================================

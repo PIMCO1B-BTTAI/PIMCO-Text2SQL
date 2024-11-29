@@ -1,0 +1,39 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH FundCountryDiversity AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        COUNT(DISTINCT H.INVESTMENT_COUNTRY) AS Country_Count
+    FROM 
+        FUND_REPORTED_INFO F
+    JOIN 
+        FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.INVESTMENT_COUNTRY IS NOT NULL
+        AND F.TOTAL_ASSETS IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME, F.TOTAL_ASSETS
+),
+EligibleFunds AS (
+    SELECT 
+        SERIES_NAME,
+        TOTAL_ASSETS,
+        Country_Count
+    FROM 
+        FundCountryDiversity
+    WHERE 
+        Country_Count >= 5
+        AND CAST(TOTAL_ASSETS AS FLOAT) > 500000000
+)
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS,
+    Country_Count
+FROM 
+    EligibleFunds
+ORDER BY 
+    TOTAL_ASSETS DESC;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

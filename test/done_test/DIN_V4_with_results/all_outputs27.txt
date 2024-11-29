@@ -1,0 +1,70 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    F.SERIES_NAME,
+    CAST(SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) AS FLOAT) /
+    NULLIF(SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) + SUM(CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)), 0) * 100
+FROM 
+    FUND_REPORTED_INFO F
+WHERE 
+    F.SERIES_NAME LIKE '%BOND%'
+    OR F.SERIES_NAME LIKE '%FIXED INCOME%'
+GROUP BY 
+    F.SERIES_NAME
+HAVING 
+    SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) + SUM(CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)) > 0
+ORDER BY 
+    NULLIF(SUM(CAST(F.CREDIT_SPREAD_10YR_INVEST AS FLOAT)) + SUM(CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)), 0) * 100 DESC
+LIMIT 1;
+================================================================================
+Schema Links for Question: Find funds with the highest quality fixed-income holdings
+{'table_columns': ['fund_reported_holding.holding_id', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To determine the classification of the query "Find funds with the highest quality fixed-income holdings," we need to consider the following:
+
+1. **Understanding the Query**: The query is asking for funds with the highest quality fixed-income holdings. This implies that we need to identify fixed-income holdings and assess their quality.
+
+2. **Relevant Tables and Columns**:
+   - The `FUND_REPORTED_HOLDING` table contains information about the holdings of the fund, including asset categories.
+   - The `DEBT_SECURITY` table provides additional information for debt securities, which are typically fixed-income instruments. This table includes details like maturity dates, coupon types, and default statuses, which can be used to assess the quality of the holdings.
+
+3. **Joins and Conditions**:
+   - We need to join `FUND_REPORTED_HOLDING` with `DEBT_SECURITY` to access information about fixed-income holdings.
+   - We may need to filter or sort based on attributes that determine the quality of the fixed-income holdings, such as `ANNUALIZED_RATE`, `IS_DEFAULT`, or `COUPON_TYPE`.
+
+4. **Classification**:
+   - Since the query involves joining multiple tables to gather the necessary information about fixed-income holdings and their quality, it requires a JOIN operation.
+   - The query does not explicitly require nested queries (e.g., using subqueries with INTERSECT, UNION, EXCEPT, IN, NOT IN).
+
+Based on this analysis, the query requires JOIN operations but does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: ** Joins the CTE with `FUND_REPORTED_INFO` to get the `SERIES_NAME` of the fund and orders the results by `ANNUALIZED_RATE` in descending order to list the funds with the highest quality fixed-income holdings.
+- **LIMIT 10:** This limits the result to the top 10 funds with the highest quality fixed-income holdings based on the `ANNUALIZED_RATE`. Adjust the limit as needed based on the requirement.
+================================================================================
+final_output: 
+WITH FixedIncomeHoldings AS (
+    SELECT 
+        FRH.ACCESSION_NUMBER, 
+        DS.ANNUALIZED_RATE
+    FROM 
+        FUND_REPORTED_HOLDING FRH
+    JOIN 
+        DEBT_SECURITY DS ON FRH.HOLDING_ID = DS.HOLDING_ID
+    WHERE 
+        DS.IS_DEFAULT = 'N' AND DS.ANNUALIZED_RATE IS NOT NULL
+)
+SELECT 
+    FRI.SERIES_NAME, 
+    FI.ANNUALIZED_RATE
+FROM 
+    FixedIncomeHoldings FI
+JOIN 
+    FUND_REPORTED_INFO FRI ON FI.ACCESSION_NUMBER = FRI.ACCESSION_NUMBER
+ORDER BY 
+    FI.ANNUALIZED_RATE DESC
+LIMIT 10
+================================================================================
+Result: False
+================================================================================

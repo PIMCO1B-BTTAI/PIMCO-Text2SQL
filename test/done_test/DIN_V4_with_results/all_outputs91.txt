@@ -1,0 +1,26 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH BondRates AS (
+    SELECT 
+        h.FAIR_VALUE_LEVEL,
+        AVG(CAST(d.ANNUALIZED_RATE AS FLOAT)) as Avg_Coupon_Rate,
+        COUNT(DISTINCT h.HOLDING_ID) as Number_of_Bonds,
+        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Total_Value
+    FROM 
+        DEBT_SECURITY d
+        JOIN FUND_REPORTED_HOLDING h ON d.HOLDING_ID = h.HOLDING_ID
+    WHERE 
+        d.ANNUALIZED_RATE IS NOT NULL
+    GROUP BY 
+        h.FAIR_VALUE_LEVEL
+)
+SELECT 
+    FAIR_VALUE_LEVEL,
+    ROUND(Avg_Coupon_Rate, 2) as Average_Coupon,
+    Number_of_Bonds,
+    Total_Value
+FROM 
+    BondRates;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

@@ -1,0 +1,54 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LendingActivity AS (
+    SELECT 
+        r.REGISTRANT_NAME,
+        f.SERIES_NAME,
+        COUNT(CASE WHEN sl.IS_LOAN_BY_FUND = 'Y' THEN 1 END) as Securities_Lent,
+        COUNT(*) as Total_Securities,
+        CAST(f.TOTAL_ASSETS AS FLOAT) as Fund_Assets
+    FROM 
+        FUND_REPORTED_INFO f
+        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
+        LEFT JOIN SECURITIES_LENDING sl ON f.ACCESSION_NUMBER = sl.HOLDING_ID
+    GROUP BY 
+        r.REGISTRANT_NAME,
+        f.SERIES_NAME,
+        f.TOTAL_ASSETS
+),
+CompanyMetrics AS (
+    SELECT 
+        REGISTRANT_NAME,
+        SUM(Securities_Lent) as Total_Securities_Lent,
+        SUM(Total_Securities) as Total_Securities,
+        SUM(Fund_Assets) as Total_Assets,
+        COUNT(DISTINCT SERIES_NAME) as Number_of_Funds
+    FROM 
+        LendingActivity
+    GROUP BY 
+        REGISTRANT_NAME
+)
+SELECT 
+    p.Total_Securities_Lent as PIMCO_Securities_Lent,
+    p.Total_Securities as PIMCO_Total_Securities,
+    (p.Total_Securities_Lent * 100.0 / NULLIF(p.Total_Securities, 0)) as PIMCO_Lending_Percentage,
+    (i.Total_Securities_Lent * 100.0 / NULLIF(i.Total_Securities, 0)) as Industry_Lending_Percentage
+FROM 
+    CompanyMetrics p
+    CROSS JOIN (
+        SELECT 
+            SUM(Total_Securities_Lent) as Total_Securities_Lent,
+            SUM(Total_Securities) as Total_Securities
+        FROM 
+            CompanyMetrics
+        WHERE 
+            REGISTRANT_NAME NOT LIKE '%PIMCO%'
+    ) i
+WHERE 
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
+================================================================================
+Schema Links for Question: Examine PIMCO's securities lending activity and revenue
+{'table_columns': ['submission.report_ending_period', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+Error in process_question_classification of Classification: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

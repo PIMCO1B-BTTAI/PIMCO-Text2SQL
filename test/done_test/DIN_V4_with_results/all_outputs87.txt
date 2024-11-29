@@ -1,0 +1,46 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH CashPositions AS (
+    SELECT 
+        r.REGISTRANT_NAME,
+        f.SERIES_NAME,
+        CAST(f.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash_Position,
+        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO f
+        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
+    WHERE 
+        f.CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+),
+CompanyCashMetrics AS (
+    SELECT 
+        REGISTRANT_NAME,
+        AVG(Cash_Position / NULLIF(Total_Assets, 0) * 100) as Avg_Cash_Percentage,
+        COUNT(DISTINCT SERIES_NAME) as Number_of_Funds
+    FROM 
+        CashPositions
+    GROUP BY 
+        REGISTRANT_NAME
+    HAVING 
+        Number_of_Funds >= 5
+)
+SELECT 
+    p.Avg_Cash_Percentage as PIMCO_Cash_Percentage,
+    i.Industry_Cash_Percentage,
+    p.Number_of_Funds as PIMCO_Funds,
+    p.Avg_Cash_Percentage - i.Industry_Cash_Percentage as Cash_Differential
+FROM 
+    CompanyCashMetrics p
+    CROSS JOIN (
+        SELECT 
+            AVG(Avg_Cash_Percentage) as Industry_Cash_Percentage
+        FROM 
+            CompanyCashMetrics
+        WHERE 
+            REGISTRANT_NAME NOT LIKE '%PIMCO%'
+    ) i
+WHERE 
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

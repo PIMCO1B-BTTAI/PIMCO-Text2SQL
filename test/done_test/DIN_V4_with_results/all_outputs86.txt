@@ -1,0 +1,49 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH DurationMetrics AS (
+    SELECT 
+        r.REGISTRANT_NAME,
+        ir.INTRST_RATE_CHANGE_10YR_DV01 as Duration_10Y,
+        ir.INTRST_RATE_CHANGE_30YR_DV01 as Duration_30Y,
+        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO f
+        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
+        JOIN INTEREST_RATE_RISK ir ON f.ACCESSION_NUMBER = ir.ACCESSION_NUMBER
+    WHERE 
+        f.SERIES_NAME LIKE '%BOND%'
+        OR f.SERIES_NAME LIKE '%FIXED%'
+        OR f.SERIES_NAME LIKE '%INCOME%'
+),
+CompanyDuration AS (
+    SELECT 
+        REGISTRANT_NAME,
+        AVG(CAST(Duration_10Y AS FLOAT)) as Avg_Duration_10Y,
+        AVG(CAST(Duration_30Y AS FLOAT)) as Avg_Duration_30Y,
+        SUM(Total_Assets) as Company_Assets
+    FROM 
+        DurationMetrics
+    GROUP BY 
+        REGISTRANT_NAME
+)
+SELECT 
+    p.Avg_Duration_10Y as PIMCO_Duration_10Y,
+    p.Avg_Duration_30Y as PIMCO_Duration_30Y,
+    i.Avg_Duration_10Y as Industry_Avg_Duration_10Y,
+    i.Avg_Duration_30Y as Industry_Avg_Duration_30Y
+FROM 
+    CompanyDuration p
+    CROSS JOIN (
+        SELECT 
+            AVG(Avg_Duration_10Y) as Avg_Duration_10Y,
+            AVG(Avg_Duration_30Y) as Avg_Duration_30Y
+        FROM 
+            CompanyDuration
+        WHERE 
+            REGISTRANT_NAME NOT LIKE '%PIMCO%'
+    ) i
+WHERE 
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

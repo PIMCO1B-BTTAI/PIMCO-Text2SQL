@@ -1,0 +1,36 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH RegistrantFundStats AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        F.SERIES_NAME,
+        CAST(F.TOTAL_LIABILITIES AS FLOAT) AS Fund_Liabilities,
+        AVG(CAST(F.TOTAL_LIABILITIES AS FLOAT)) OVER (PARTITION BY R.REGISTRANT_NAME) AS Avg_Liabilities
+    FROM 
+        REGISTRANT R
+    JOIN 
+        FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE 
+        F.TOTAL_LIABILITIES IS NOT NULL
+),
+UnevenFunds AS (
+    SELECT 
+        REGISTRANT_NAME,
+        SERIES_NAME,
+        Fund_Liabilities,
+        Avg_Liabilities
+    FROM 
+        RegistrantFundStats
+    WHERE 
+        Fund_Liabilities > 2 * Avg_Liabilities
+)
+SELECT 
+    REGISTRANT_NAME,
+    SERIES_NAME,
+    Fund_Liabilities,
+    Avg_Liabilities
+FROM 
+    UnevenFunds;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

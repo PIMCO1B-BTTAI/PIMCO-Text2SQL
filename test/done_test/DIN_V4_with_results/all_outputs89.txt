@@ -1,0 +1,48 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AssetCategories AS (
+    SELECT 
+        r.REGISTRANT_NAME,
+        h.ASSET_CAT,
+        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Category_Value
+    FROM 
+        FUND_REPORTED_HOLDING h
+        JOIN FUND_REPORTED_INFO f ON h.ACCESSION_NUMBER = f.ACCESSION_NUMBER
+        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
+    WHERE 
+        h.ASSET_CAT IS NOT NULL
+    GROUP BY 
+        r.REGISTRANT_NAME,
+        h.ASSET_CAT
+),
+MarketShares AS (
+    SELECT 
+        p.ASSET_CAT,
+        p.Category_Value as PIMCO_Value,
+        t.Total_Category_Value,
+        (p.Category_Value * 100.0 / NULLIF(t.Total_Category_Value, 0)) as Market_Share
+    FROM 
+        AssetCategories p
+        JOIN (
+            SELECT 
+                ASSET_CAT,
+                SUM(Category_Value) as Total_Category_Value
+            FROM 
+                AssetCategories
+            GROUP BY 
+                ASSET_CAT
+        ) t ON p.ASSET_CAT = t.ASSET_CAT
+    WHERE 
+        p.REGISTRANT_NAME LIKE '%PIMCO%'
+)
+SELECT 
+    ASSET_CAT,
+    ROUND(PIMCO_Value / 1000000, 2) as PIMCO_Value_Millions,
+    ROUND(Total_Category_Value / 1000000, 2) as Total_Market_Millions,
+    ROUND(Market_Share, 2) as Market_Share_Percentage,
+    ROW_NUMBER() OVER (ORDER BY Market_Share DESC)
+FROM 
+    MarketShares;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

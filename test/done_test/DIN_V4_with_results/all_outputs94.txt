@@ -1,0 +1,37 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH DefaultMetrics AS (
+    SELECT 
+        h.FAIR_VALUE_LEVEL,
+        COUNT(DISTINCT h.HOLDING_ID) as Total_Bonds,
+        COUNT(DISTINCT CASE WHEN d.IS_DEFAULT = 'Y' THEN h.HOLDING_ID END) as Defaulted_Bonds,
+        COUNT(DISTINCT CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN h.HOLDING_ID END) as Missed_Payments,
+        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Total_Value
+    FROM 
+        FUND_REPORTED_HOLDING h
+        JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
+    WHERE 
+        h.FAIR_VALUE_LEVEL IS NOT NULL
+    GROUP BY 
+        h.FAIR_VALUE_LEVEL
+)
+SELECT 
+    FAIR_VALUE_LEVEL,
+    Total_Bonds,
+    Defaulted_Bonds,
+    Missed_Payments,
+    ROUND(Total_Value / 1000000, 2) as Value_Millions,
+    ROUND(Defaulted_Bonds * 100.0 / NULLIF(Total_Bonds, 0), 2) as Default_Rate,
+    ROUND(Missed_Payments * 100.0 / NULLIF(Total_Bonds, 0), 2) as Missed_Payment_Rate
+FROM 
+    DefaultMetrics
+WHERE 
+    Total_Bonds >= 10
+ORDER BY 
+    FAIR_VALUE_LEVEL;
+================================================================================
+Schema Links for Question: Track bond default rates and interest payment issues by credit rating
+{'table_columns': ['debt_security.is_default', 'interest_rate_risk.interest_rate_risk_id', 'convertible_security_currency.conversion_ratio', 'fund_reported_info.credit_spread_3mon_invest', 'debt_security.are_any_interest_payment', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.CONVERTIBLE_SECURITY_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+Error in process_question_classification of Classification: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

@@ -1,0 +1,106 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    H.ISSUER_NAME,
+    COUNT(*),
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT))
+FROM 
+    FUND_REPORTED_HOLDING H
+    JOIN SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
+WHERE 
+    SL.IS_LOAN_BY_FUND = 'Y'
+GROUP BY 
+    H.ISSUER_NAME
+HAVING 
+    COUNT(*) > 1
+ORDER BY 
+    COUNT(*) DESC,
+    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) DESC
+LIMIT 1;
+================================================================================
+Schema Links for Question: Which securities are most actively lent out?
+{'table_columns': ['submission.report_ending_period', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To determine which securities are most actively lent out, we need to analyze the data related to securities lending. The relevant information is likely contained in the "SECURITIES_LENDING" table, which would include details about the securities being lent. However, to identify the specific securities, we would also need to reference the "FUND_REPORTED_HOLDING" table, which contains information about the holdings, including identifiers like CUSIP or ISIN.
+
+The query would involve joining these tables to match the securities lending data with the specific securities. This requires a JOIN operation between "SECURITIES_LENDING" and "FUND_REPORTED_HOLDING" based on the common "HOLDING_ID" key. Since this involves a JOIN but does not require nested queries, the SQL query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: To determine which securities are most actively lent out, we need to focus on the securities lending activities within the database. The relevant information for securities lending is likely contained in the `SECURITIES_LENDING` table, which includes details about whether securities are loaned by the fund. However, to identify the specific securities, we need to link this information to the holdings of the fund, which are detailed in the `FUND_REPORTED_HOLDING` table.
+
+Here's the step-by-step reasoning:
+
+1. **Identify Relevant Tables and Columns**:
+   - The `SECURITIES_LENDING` table contains information about securities lending activities, including whether the fund is the lender (`IS_LOAN_BY_FUND`).
+   - The `FUND_REPORTED_HOLDING` table contains details about each security held by the fund, including the `HOLDING_ID`, `ISSUER_NAME`, and `BALANCE`.
+
+2. **Join Tables**:
+   - We need to join the `SECURITIES_LENDING` table with the `FUND_REPORTED_HOLDING` table to get details about the securities that are lent out. The common key for joining these tables is `HOLDING_ID`.
+
+3. **Filter and Aggregate Data**:
+   - Filter the records where `IS_LOAN_BY_FUND` is 'Y' to identify securities that are actively lent out by the fund.
+   - Aggregate the data to determine which securities are most actively lent out. This can be done by summing the `BALANCE` of securities that are lent out.
+
+4. **Order and Limit Results**:
+   - Order the results by the total balance of lent securities in descending order to identify the most actively lent securities.
+   - Use a `LIMIT` clause if necessary to restrict the output to the top results.
+
+Based on this reasoning, the SQL query would look like this:
+
+```sql
+WITH ActiveLentSecurities AS (
+    SELECT 
+        FRH.ISSUER_NAME, 
+        SUM(CAST(FRH.BALANCE AS FLOAT)) AS Total_Lent_Balance
+    FROM 
+        SECURITIES_LENDING SL
+    JOIN 
+        FUND_REPORTED_HOLDING FRH ON SL.HOLDING_ID = FRH.HOLDING_ID
+    WHERE 
+        SL.IS_LOAN_BY_FUND = 'Y'
+    GROUP BY 
+        FRH.ISSUER_NAME
+)
+SELECT 
+    ISSUER_NAME, 
+    Total_Lent_Balance
+FROM 
+    ActiveLentSecurities
+ORDER BY 
+    Total_Lent_Balance DESC;
+```
+
+### Explanation:
+- **CTE (Common Table Expression)**: `ActiveLentSecurities` is used to calculate the total balance of securities lent out by each issuer.
+- **JOIN**: The `SECURITIES_LENDING` table is joined with the `FUND_REPORTED_HOLDING` table using `HOLDING_ID` to get details about the securities.
+- **WHERE Clause**: Filters records to include only those where the fund is the lender (`IS_LOAN_BY_FUND = 'Y'`).
+- **GROUP BY**: Aggregates the data by `ISSUER_NAME` to calculate the total balance of lent securities for each issuer.
+- **ORDER BY**: Orders the results by `Total_Lent_Balance` in descending order to identify the most actively lent securities.
+================================================================================
+final_output: 
+WITH ActiveLentSecurities AS (
+    SELECT 
+        FRH.ISSUER_NAME, 
+        SUM(CAST(FRH.BALANCE AS FLOAT)) AS Total_Lent_Balance
+    FROM 
+        SECURITIES_LENDING SL
+    JOIN 
+        FUND_REPORTED_HOLDING FRH ON SL.HOLDING_ID = FRH.HOLDING_ID
+    WHERE 
+        SL.IS_LOAN_BY_FUND = 'Y'
+    GROUP BY 
+        FRH.ISSUER_NAME
+)
+SELECT 
+    ISSUER_NAME, 
+    Total_Lent_Balance
+FROM 
+    ActiveLentSecurities
+ORDER BY 
+    Total_Lent_Balance DESC
+================================================================================
+Result: False
+================================================================================
