@@ -14,7 +14,7 @@ This involves parsing the intent of the query and understanding the structure of
 database_overview_instructions = f"""
 ```
 Database Overview:
-- The Database combines information from 30 tables of the NPORT dataset from quarter 4 of 2019 to quarter 3 of 2024.
+- The Database is information from 30 tables of the NPORT dataset. 
 - The data includes a comprehensive view of fund-level information, holdings, debt securities, repurchase agreements, and derivative instruments.
 - Each relation represents detailed information about financial transactions, security holdings, and fund performance, including key identifiers like ACCESSION_NUMBER, HOLDING_ID, and CUSIP for borrowers, holdings, and securities.
 - The table provides essential metrics like total assets, liabilities, interest rate risks, monthly returns, and details for securities lending and collateral.
@@ -24,10 +24,10 @@ Database Overview:
 
 # Schema information as plain text with descriptions for each column in the database
 schema_info = """
-Schema description:
-Below is the schema desciprtion of some tables and their attributes
-
 ```
+Schema description:
+Below is the schema description of all tables and their attributes
+
 Table: SUBMISSION
     - This table contains information from the EDGAR(Electronic Data Gathering, Analysis, and Retrieval) submission
     - ACCESSION_NUMBER (Primary Key): 
@@ -58,8 +58,7 @@ Table: SUBMISSION
     - IS_LAST_FILING: 
         This field indicates whether this is the fund's final report. 
         'N' means this is not the last report for the fund, and the fund will continue to submit future reports.
-```
-```
+
 Table: REGISTRANT 
     - This table contains information about the registrant
     - ACCESSION_NUMBER (Primary Key): 
@@ -95,8 +94,7 @@ Table: REGISTRANT
         The ZIP code or postal code of the registrant's address.
     - PHONE:
         The phone number for the registrant.
-```
-```
+
 Table: FUND_REPORTED_INFO
     - This table contains information about the fund
     - ACCESSION_NUMBER (Primary Key): 
@@ -231,8 +229,7 @@ Table: FUND_REPORTED_INFO
     - REDEMPTION_FLOW_MON3: 
         This captures the NAV of shares redeemed or repurchased, including exchanges, during the third month. 
         Redemptions represent investor outflows as shares are sold back to the fund.
-```
-```
+
 Table: INTEREST_RATE_RISK
     - This table contains information about interest rate risk
     - ACCESSION_NUMBER (Dual Primary Key): 
@@ -266,8 +263,7 @@ Table: INTEREST_RATE_RISK
         Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 10 year.
     - INTRST_RATE_CHANGE_30YR_DV100:
         Change in value of the portfolio resulting from a 100 basis point change in interest rates for maturity in 30 year.
-```
-```
+
 Table: BORROWER
     - This table contains information for each borrower in a securities lending transaction
     - ACCESSION_NUMBER (Dual Primary Key): 
@@ -287,8 +283,7 @@ Table: BORROWER
     - AGGREGATE_VALUE:
         This field shows the total value of all securities on loan to this specific borrower. 
         It provides insight into the scale of the lending activity involving each borrower, reflecting their financial engagement in the securities loan.
-```
-```
+
 Table: BORROW_AGGREGATE
     - This table contains information for each category of non-cash collateral received for loaned securities
     - ACCESSION_NUMBER (Dual Primary Key): 
@@ -309,8 +304,7 @@ Table: BORROW_AGGREGATE
     - INVESTMENT_CAT: 
         This column specifies the category or type of the collateral provided. 
         Common categories include well-defined asset classes such as UST (U.S. Treasury securities).
-```
-```
+
 Table: MONTHLY_TOTAL_RETURN 
     - This table contains monthly total return information for each of the preceding three months.
     - ACCESSION_NUMBER (Primary Key): 
@@ -331,8 +325,7 @@ Table: MONTHLY_TOTAL_RETURN
         The total return for the fund for the second month of the reporting period.
     - MONTHLY_TOTAL_RETURN3: 
         The total return for the fund for the third month of the reporting period.
-```
-```
+
 Table: MONTHLY_RETURN_CAT_INSTRUMENT 
     - This table contains monthly return information attributable to derivatives for each of the preceding three month.
     - ACCESSION_NUMBER (Primary Key): 
@@ -357,8 +350,7 @@ Table: MONTHLY_RETURN_CAT_INSTRUMENT
         Net realized gain (loss) attributable to derivatives for the third month of the reporting period.
     - NET_UNREALIZED_AP_MON3:
         Net change in unrealized appreciation (or depreciation) attributable to derivatives for the third month.
-```
-```
+
 Table: FUND_VAR_INFO 
     - This table provides information about the Fund's designated index.
     - ACCESSION_NUMBER (Primary Key): 
@@ -373,8 +365,7 @@ Table: FUND_VAR_INFO
     - DESIGNATED_INDEX_IDENTIFIER: 
         The identifier for the fund's designated index, which may be a specific code or alphanumeric string 
         used to uniquely identify the index in financial databases.
-```
-```
+
 Table: FUND_REPORTED_HOLDING 
     - This table contains information about the holdings of the fund, including key identifiers, financial metrics, and contextual information about issuers and assets.
     -  ACCESSION_NUMBER (Primary Key):
@@ -415,8 +406,7 @@ Table: FUND_REPORTED_HOLDING
         A flag indicating whether the investment is classified as a restricted security.
     -  FAIR_VALUE_LEVEL:
         Indicates the level within the fair value hierarchy as defined by US GAAP, which classifies fair value measurements based on the observability of inputs used in the valuation.
-```
-```
+
 Table: IDENTIFIERS
     - This table contains other identifiers for the holding, ensuring comprehensive tracking and cross-referencing of securities.
     - HOLDING_ID (Primary Key):
@@ -431,8 +421,7 @@ Table: IDENTIFIERS
         Additional identifiers associated with the holding that are not covered by the ISIN or ticker.
     - OTHER_IDENTIFIER_DESC:
         A description of the type of other identifier used in the OTHER_IDENTIFIER field.
-```
-```
+
 Table: DEBT_SECURITY
     - This table contains additional information for debt securities holdings, including metrics such as maturity dates, coupon types, and any default statuses.
     - HOLDING_ID:
@@ -453,8 +442,7 @@ Table: DEBT_SECURITY
         A flag indicating whether the debt security is a mandatory convertible security. 
     - IS_CONVTIBLE_CONTINGENT:
         A flag indicating whether the debt security is a contingent convertible security.
-```
-```
+
 Table: DEBT_SECURITY_REF_INSTRUMENT
     - This table contains information about each debt security reference instrument within a portfolio, including identifiers, issuer details, and currency information.
     - HOLDING_ID (Primary Key):
@@ -477,8 +465,7 @@ Table: DEBT_SECURITY_REF_INSTRUMENT
         An additional identifier for the debt security if one is available, providing an alternative means of identification beyond CUSIP or ISIN.
     - OTHER_DESC:
         A description of the type of identifier provided in the OTHER_IDENTIFIER field, specifying the kind of alternative identifier being used.
-```
-```
+
 Table: CONVERTIBLE_SECURITY_CURRENCY
     - This table contains information about convertible securities, including identifiers, conversion ratio, and currency information associated with each security.
     - HOLDING_ID (Primary Key):
@@ -489,8 +476,7 @@ Table: CONVERTIBLE_SECURITY_CURRENCY
         The conversion ratio for the convertible security, indicating the rate at which the security can be converted into another form.
     - CURRENCY_CODE:
         The 3-character code representing the currency associated with the convertible security.
-```
-```
+
 Table: REPURCHASE_AGREEMENT
     - This table contains information about repurchase agreements, including transaction type, clearing details, counterparty information, repurchase rate, and maturity date.
     - HOLDING_ID (Primary Key):
@@ -507,8 +493,7 @@ Table: REPURCHASE_AGREEMENT
         The repurchase rate applied to the agreement, representing the interest rate or return rate associated with the transaction.
     - MATURITY_DATE:
         The maturity date of the repurchase agreement, indicating when the agreement is set to conclude.
-```
-```
+
 Table: REPURCHASE_COUNTERPARTY
     - This table contains information about the counterparties involved in repurchase agreements, including unique identifiers, counterparty names, and LEI information.
     - HOLDING_ID (Primary Key):
@@ -519,8 +504,7 @@ Table: REPURCHASE_COUNTERPARTY
         The name of the counterparty involved in the repurchase agreement, identifying the organization or entity responsible for the counterparty role.
     - LEI:
         The Legal Entity Identifier (LEI) of the counterparty, if available. This is a 20-character alphanumeric code used globally to identify legal entities in financial transactions.
-```
-```
+
 Table: REPURCHASE_COLLATERAL
     This table contains information about the collateral associated with repurchase agreements, including principal and collateral amounts, currency codes, investment categories, and descriptions.
     - HOLDING_ID (Primary Key):
@@ -539,8 +523,7 @@ Table: REPURCHASE_COLLATERAL
         The category of investments that most closely represents the type of collateral provided, such as specific asset classes.
     - OTHER_INSTRUMENT_DESC:
         A brief description provided if the category of the investment is designated as "Other Instrument," giving context about the collateral.
-```
-```
+
 Table: DERIVATIVE_COUNTERPARTY
     - This table contains information about the counterparties involved in derivative transactions, including unique identifiers, counterparty names, and LEI information.
     - HOLDING_ID (Primary Key):
@@ -551,8 +534,7 @@ Table: DERIVATIVE_COUNTERPARTY
         The name of the counterparty involved in the derivative transaction, identifying the organization or entity responsible for the counterparty role.
     - DERIVATIVE_COUNTERPARTY_LEI:
         The Legal Entity Identifier (LEI) of the counterparty, if available. This is a 20-character alphanumeric code used globally to identify legal entities in financial transactions.
-```
-```
+
 Table: SWAPTION_OPTION_WARNT_DERIV
     - This table contains information about options and warrants, including attributes such as the type of option, payoff profile, and underlying share counts.
     - HOLDING_ID (Primary Key):
@@ -573,8 +555,7 @@ Table: SWAPTION_OPTION_WARNT_DERIV
         The expiration date of the contract. 
     - UNREALIZED_APPRECIATION:
         Indicates unrealized appreciation or depreciation of the instrument. Depreciation is reported as a negative value. 
-```
-```
+
 Table: DESC_REF_INDEX_BASKET
     - This table contains the index or custom basket reference instrument for options and warrants, including options on a derivative (swaptions).
     - HOLDING_ID (Primary Key):
@@ -585,8 +566,7 @@ Table: DESC_REF_INDEX_BASKET
         Provides a unique identifier for the index. 
     - NARRATIVE_DESC:
         Contains a narrative description of the index. 
-```
-```
+
 Table: DESC_REF_INDEX_COMPONENT
     - This table provides detailed information on individual components within index references associated with portfolio holdings.
     - HOLDING_ID (Primary Key):
@@ -613,8 +593,7 @@ Table: DESC_REF_INDEX_COMPONENT
         The current value of the component. 
     - ISSUER_CURRENCY_CODE:
         The currency code of the issuer for the component. 
-```
-```
+
 Table: DESC_REF_OTHER 
     - This table stores information about other descriptive references associated with portfolio holdings.
     - HOLDING_ID (Primary Key):
@@ -635,8 +614,7 @@ Table: DESC_REF_OTHER
         Another identifier if CUSIP or ISIN are not applicable. 
     - OTHER_DESC:
         Describes the type of alternative identifier used. 
-```
-```
+
 Table: FUT_FWD_NONFOREIGNCUR_CONTRA
     - This table contains information about futures and forward contracts not denominated in foreign currency. 
     - HOLDING_ID (Primary Key):
@@ -651,8 +629,7 @@ Table: FUT_FWD_NONFOREIGNCUR_CONTRA
         The currency code in which the contract is denominated. 
     - UNREALIZED_APPRECIATION:
         Indicates the unrealized appreciation or depreciation of the contract, with depreciation recorded as a negative value. 
-```
-```
+
 Table: FWD_FOREIGNCUR_CONTRACT_SWAP
     - This table contains information about forward contracts and currency swaps involving foreign currencies. 
     - HOLDING_ID (Primary Key):
@@ -669,8 +646,7 @@ Table: FWD_FOREIGNCUR_CONTRACT_SWAP
         The date when the contract is set to settle. 
     - UNREALIZED_APPRECIATION: 
         The unrealized appreciation or depreciation of the contract, with depreciation reported as a negative number. 
-```
-```
+
 Table: NONFOREIGN_EXCHANGE_SWAP
     - This table contains swap information (other than foreign exchange swaps).
     - HOLDING_ID (Primary Key):
@@ -711,8 +687,7 @@ Table: NONFOREIGN_EXCHANGE_SWAP
         The currency of the payment, indicating the denomination.
     - AMOUNT_PAYMENT: 
         The payment amount calculated based on the swap terms, including any fixed or floating rates.
-```
-```
+
 Table: FLOATING_RATE_RESET_TENOR
     - This table is for swaps, the terms of payments paid and received.
     - HOLDING_ID (Dual Primary Key):
@@ -730,8 +705,7 @@ Table: FLOATING_RATE_RESET_TENOR
         The term or period used to calculate the interest rate for the reset. This term can influence the rate applied to each reset period.
     - RATE_TENOR_UNIT: 
         Specifies the unit for the rate tenor, such as days or months, indicating the length of the period over which the interest rate is calculated.
-```
-```
+
 Table: OTHER_DERIV
     - This table contains information for other derivatives.
     - HOLDING_ID (Primary Key):
@@ -742,8 +716,7 @@ Table: OTHER_DERIV
         The termination or maturity date of the derivative, marking the end of the contract.
     - UNREALIZED_APPRECIATION: 
         The unrealized appreciation or depreciation of the derivative, reflecting market value changes since the acquisition.
-```
-```
+
 Table: OTHER_DERIV_NOTIONAL_AMOUNT
     - This table contains notional amount(s) for other derivatives.
     - HOLDING_ID (Dual Primary Key):
@@ -754,8 +727,7 @@ Table: OTHER_DERIV_NOTIONAL_AMOUNT
         The face or notional amount of the derivative, serving as the reference amount for payment calculations.
     - CURRENCY_CODE: 
         The currency code representing the currency in which the notional amount is denominated.
-```
-```
+
 Table: SECURITIES_LENDING
     - This table contains information for securities lending.
     - HOLDING_ID (Primary Key):
@@ -767,8 +739,7 @@ Table: SECURITIES_LENDING
         A flag indicating whether any portion of the collateral received was non-cash, such as securities or other assets.
     - IS_LOAN_BY_FUND: 
         A flag indicating whether the fund itself is the lender of the securities. This shows if the fund is directly engaging in securities lending.
-```
-```
+
 Table: EXPLANATORY_NOTE
     - This table contains any information provided by the fund in response to an item.
     - ACCESSION_NUMBER (Dual Primary Key): 
@@ -795,24 +766,27 @@ nlp_query_handling_instructions = """
 Natural Language Processing Instructions:
 - Decompose the user's query to identify requirements regarding asset classes, sectors, time periods, or specific filings.
 - Detect keywords related to filing dates, submission types, registrant details, and financial data.
-- Default to the most recent time period ('2024q3') if not specified, and consider all asset classes unless otherwise mentioned.
 ```
 """
 
 # Define default behavior for unspecified fields or conditions
 default_query_behavior = f"""
 ```
-Default values and assumptions:
-- Assume the most recent filing period ('{latest_time_period}') if no time period is specified, which is indicated by QUARTER column in the database.
-- Include all asset classes and sectors unless specified in the query.
-- Retrieve all filings if no specific criteria are provided.
+Default assumptions:
+- Include all asset classes and sectors unless specified in the question
+- Retrieve all rows if no specific criteria are provided, only use LIMIT clauses when the question asks for the "highest", "most", "best", or "largest" of something.
+- Do not use ORDER BY unless specified in the question.
+- Do not use arithmetic or aggregate functions unless specified in the question.
+- When using arithmetics or aggregate functions, type cast columns from TEXT to FLOAT before computation. 
+- Always use common table expressions instead of using nested queries or calculating values within SELECT statements when possible.
+- Do not rename columns or use aliases in the output unless specified in the question
 ```
 """
 
 # Example Natural Language Queries and Corresponding SQL Translations
 example_queries = """
 ```
-Example queries set 1, where Natural language request is encased in double quotations " and desired output is the SQL query after 'SQL:'
+Example queries set, where Natural language request is encased in double quotations " and desired output is the SQL query after 'SQL:'
 1. "List the top 5 registrants by total net assets, including their CIK and country."
    SQL: 
    WITH FundAssets AS (
@@ -963,19 +937,6 @@ Example queries set 1, where Natural language request is encased in double quota
     SELECT ASSET_CAT, Category_Count
     FROM AssetDistribution
     ORDER BY Category_Count DESC;
-
-13. "Find the top 10 funds with the highest average monthly returns in the past quarter."
-   SQL: 
-   WITH AvgMonthlyReturn AS (
-       SELECT ACCESSION_NUMBER, 
-              (MONTHLY_TOTAL_RETURN1 + MONTHLY_TOTAL_RETURN2 + MONTHLY_TOTAL_RETURN3) / 3.0 AS Avg_Return
-       FROM MONTHLY_TOTAL_RETURN
-   )
-   SELECT F.SERIES_NAME, A.ACCESSION_NUMBER, A.Avg_Return
-   FROM AvgMonthlyReturn A
-   JOIN FUND_REPORTED_INFO F ON A.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-   ORDER BY A.Avg_Return DESC
-   LIMIT 10;
 
 14. "Compare the latest net assets of the top 5 funds."
    SQL: 
@@ -1141,10 +1102,8 @@ reasoning_instruction = """
 ```
 Reasoning Instructions:
 1. Reasoning you provide should first focus on why a nested query was chosen or why it wasn't chosen.
-2. It should give a query plan on how to solve this question - explain 
-the mapping of the columns to the words in the input question.
-3. It should explain each of the clauses and why they are structured the way they are structured. 
-   For example, if there is a `GROUP BY`, an explanation should be given as to why it exists.
+2. It should give a query plan on how to solve this question - explain the mapping of the columns to the words in the input question.
+3. It should explain each of the clauses and why they are structured the way they are structured. For example, if there is a `GROUP BY`, an explanation should be given as to why it exists.
 4. If there's any `SUM()` or any other function used, it should be explained as to why it was required.
 ```
 """
@@ -1156,7 +1115,6 @@ Format the generated SQL with proper indentation - the columns in the
 (`SELECT` statement should have more indentation than the keyword `SELECT` 
 and so on for each SQL clause.)
 Output only the SQLite's SQL query syntax, without blank padding on the left or right, any string prefix suffix, or any delimiters ```.
-
 ```
 """
 
@@ -1473,113 +1431,6 @@ WHERE
 ORDER BY 
     (CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) +
      CAST(F.BORROWING_PAY_AFTER_1YR AS FLOAT)) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 DESC;
-
-30. "How has the average fund size changed over the last few quarters?"
-SELECT 
-    QUARTER,
-    COUNT(DISTINCT SERIES_NAME),
-    AVG(CAST(TOTAL_ASSETS AS FLOAT)),
-    SUM(CAST(TOTAL_ASSETS AS FLOAT))
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    TOTAL_ASSETS IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-31. "Show quarterly trends in credit quality for fixed income funds"
-SELECT 
-    QUARTER,
-    AVG(CAST(CREDIT_SPREAD_10YR_INVEST AS FLOAT)),
-    AVG(CAST(CREDIT_SPREAD_10YR_NONINVEST AS FLOAT))
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    CREDIT_SPREAD_10YR_INVEST IS NOT NULL 
-    OR CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-32. "How has average fund leverage changed quarter by quarter?"
-SELECT 
-    QUARTER,
-    AVG(CAST(BORROWING_PAY_WITHIN_1YR AS FLOAT) + CAST(BORROWING_PAY_AFTER_1YR AS FLOAT)),
-    COUNT(DISTINCT SERIES_NAME)
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    BORROWING_PAY_WITHIN_1YR IS NOT NULL 
-    OR BORROWING_PAY_AFTER_1YR IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-33. "What's the quarterly trend in average monthly returns?"
-    QUARTER,
-    AVG(CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT)),
-    AVG(CAST(MONTHLY_TOTAL_RETURN2 AS FLOAT)),
-    AVG(CAST(MONTHLY_TOTAL_RETURN3 AS FLOAT))
-FROM 
-    MONTHLY_TOTAL_RETURN
-WHERE 
-    MONTHLY_TOTAL_RETURN1 IS NOT NULL
-    AND MONTHLY_TOTAL_RETURN2 IS NOT NULL
-    AND MONTHLY_TOTAL_RETURN3 IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-34. "Show the evolution of debt security maturity profiles by quarter"
-SELECT 
-    QUARTER,
-    COUNT(CASE WHEN MATURITY_DATE <= DATE('now', '+1 year') THEN 1 END) AS Short_Term,
-    COUNT(CASE WHEN MATURITY_DATE > DATE('now', '+1 year') 
-               AND MATURITY_DATE <= DATE('now', '+5 year') THEN 1 END) AS Medium_Term,
-    COUNT(CASE WHEN MATURITY_DATE > DATE('now', '+5 year') THEN 1 END) AS Long_Term
-FROM 
-    DEBT_SECURITY
-WHERE 
-    MATURITY_DATE IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-35. "What's the quarterly pattern of fund cash positions?"
-SELECT 
-    QUARTER,
-    AVG(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS Avg_Cash_Position,
-    MAX(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS Max_Cash_Position,
-    MIN(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS Min_Cash_Position
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
-
-36. "What percentage of funds in each quarter have total assets over $1 billion?"
-SELECT 
-    QUARTER,
-    COUNT(*),
-    COUNT(CASE WHEN CAST(TOTAL_ASSETS AS FLOAT) > 1000000000 THEN 1 END),
-    (COUNT(CASE WHEN CAST(TOTAL_ASSETS AS FLOAT) > 1000000000 THEN 1 END) * 100.0 / COUNT(*))
-FROM 
-    FUND_REPORTED_INFO
-WHERE 
-    TOTAL_ASSETS IS NOT NULL
-GROUP BY 
-    QUARTER
-ORDER BY 
-    QUARTER DESC;
 
 37. "Can you flag any funds that have liabilities over half their assets?"
 SELECT 
@@ -1940,24 +1791,6 @@ ORDER BY
     Fund_Type_Count DESC
 LIMIT 1;
 
-21. "How have the largest funds performed compared to smaller ones this quarter?"
-SELECT 
-    NTILE(4) OVER (ORDER BY CAST(F.TOTAL_ASSETS AS FLOAT)) as Size_Quartile,
-    AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)),
-    COUNT(*),
-    AVG(CAST(F.TOTAL_ASSETS AS FLOAT))
-FROM 
-    FUND_REPORTED_INFO F
-    JOIN MONTHLY_TOTAL_RETURN M 
-        ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
-WHERE 
-    F.TOTAL_ASSETS IS NOT NULL
-    AND M.MONTHLY_TOTAL_RETURN1 IS NOT NULL
-GROUP BY 
-    Size_Quartile
-ORDER BY 
-    Size_Quartile;
-
 22. "Which investment companies are most exposed to international markets?"
 SELECT 
     R.REGISTRANT_NAME,
@@ -2077,9 +1910,7 @@ FROM
 WHERE 
     M.MONTHLY_TOTAL_RETURN1 IS NOT NULL
     AND M.MONTHLY_TOTAL_RETURN2 IS NOT NULL
-    AND M.MONTHLY_TOTAL_RETURN3 IS NOT NULL
-ORDER BY 
-    Return_Deviation DESC
+    AND M.MONTHLY_TOTAL_RETURN3 IS NOT NULL;
 
 29. "Show me which funds have the most diverse debt security holdings by maturity"
 SELECT 
@@ -2102,39 +1933,6 @@ GROUP BY
 ORDER BY 
     Maturity_Types DESC
 LIMIT 1;
-
-30. "Show me quarterly changes in securities lending activity"
-SELECT 
-    SL.QUARTER,
-    COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END),
-    COUNT(DISTINCT SERIES_NAME),
-    (COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN SERIES_NAME END) * 100.0 / COUNT(DISTINCT SERIES_NAME))
-FROM 
-    FUND_REPORTED_INFO F
-    LEFT JOIN SECURITIES_LENDING SL 
-        ON F.ACCESSION_NUMBER = SL.HOLDING_ID
-GROUP BY 
-    SL.QUARTER
-ORDER BY 
-    SL.QUARTER DESC;
-
-31. "How has the geographic distribution of investments changed quarterly?"
-SELECT 
-    H.QUARTER,
-    H.INVESTMENT_COUNTRY,
-    COUNT(*),
-    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)),
-    COUNT(DISTINCT F.SERIES_NAME)
-FROM 
-    FUND_REPORTED_HOLDING H
-    JOIN FUND_REPORTED_INFO F 
-        ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE 
-    H.INVESTMENT_COUNTRY IS NOT NULL
-GROUP BY 
-    H.QUARTER, H.INVESTMENT_COUNTRY
-ORDER BY 
-    H.QUARTER DESC;
 
 32. "How many funds does each investment company manage?"
 SELECT 
@@ -2228,7 +2026,6 @@ FROM
 WHERE 
     D.MATURITY_DATE IS NOT NULL
 GROUP BY 
-    H.QUARTER,
     H.FAIR_VALUE_LEVEL;
 
 38. "Let's look at convertible securities with high conversion ratios - could be significant upside."
@@ -2258,7 +2055,6 @@ WHERE
 GROUP BY 
     h.ISSUER_TYPE
 ORDER BY 
-    h.QUARTER DESC,
     (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*)) DESC;
 
 40. “Find the total number of registrants and their average assets per state”
@@ -2362,30 +2158,6 @@ FROM
 WHERE 
     Short_Term_Borrow_Ratio + Long_Term_Borrow_Ratio > 10;
 
-4. "What are the top 5 largest funds by total assets for each quarter?"
-WITH RankedFunds AS (
-    SELECT 
-        QUARTER,
-        SERIES_NAME,
-        CAST(TOTAL_ASSETS AS FLOAT) as Assets,
-        ROW_NUMBER() OVER (PARTITION BY QUARTER ORDER BY CAST(TOTAL_ASSETS AS FLOAT) DESC) as Rank
-    FROM 
-        FUND_REPORTED_INFO
-    WHERE 
-        TOTAL_ASSETS IS NOT NULL
-)
-SELECT 
-    QUARTER,
-    SERIES_NAME,
-    Assets
-FROM 
-    RankedFunds
-WHERE 
-    Rank <= 5
-ORDER BY 
-    QUARTER DESC, 
-    Assets DESC;
-
 5. "I need to check for concentration risk - show me any holdings that are the biggest position in their funds."
 WITH HoldingPercentages AS (
     SELECT 
@@ -2443,7 +2215,7 @@ WITH FundFlows AS (
     SELECT 
         F.SERIES_NAME,
         F.NET_ASSETS,
-        LAG(F.NET_ASSETS) OVER (PARTITION BY F.SERIES_ID ORDER BY F.QUARTER) as Prev_Assets,
+        LAG(F.NET_ASSETS) OVER (PARTITION BY F.SERIES_ID) as Prev_Assets,
         (F.SALES_FLOW_MON1 + F.SALES_FLOW_MON2 + F.SALES_FLOW_MON3) as Total_Sales
     FROM 
         FUND_REPORTED_INFO F
@@ -2799,106 +2571,9 @@ ORDER BY
     CAST(TOTAL_ASSETS AS FLOAT) DESC
 LIMIT 1;
 
-19. "How does PIMCO's credit quality distribution compare to industry averages by quarter?"
-WITH CreditMetrics AS (
-    SELECT 
-        f.QUARTER,
-        r.REGISTRANT_NAME,
-        f.SERIES_NAME,
-        CAST(f.CREDIT_SPREAD_10YR_INVEST AS FLOAT) as Investment_Grade,
-        CAST(f.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) as Non_Investment_Grade,
-        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
-    FROM 
-        FUND_REPORTED_INFO f
-        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
-    WHERE 
-        f.CREDIT_SPREAD_10YR_INVEST IS NOT NULL 
-        OR f.CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL
-),
-PIMCOStats AS (
-    SELECT 
-        QUARTER,
-        AVG(Investment_Grade) as PIMCO_Inv_Grade,
-        AVG(Non_Investment_Grade) as PIMCO_Non_Inv_Grade,
-        SUM(Total_Assets) as PIMCO_Total_Assets
-    FROM 
-        CreditMetrics
-    WHERE 
-        REGISTRANT_NAME LIKE '%PIMCO%'
-    GROUP BY 
-        QUARTER
-),
-IndustryStats AS (
-    SELECT 
-        QUARTER,
-        AVG(Investment_Grade) as Industry_Inv_Grade,
-        AVG(Non_Investment_Grade) as Industry_Non_Inv_Grade,
-        SUM(Total_Assets) as Industry_Total_Assets
-    FROM 
-        CreditMetrics
-    GROUP BY 
-        QUARTER
-)
-SELECT 
-    p.QUARTER,
-    p.PIMCO_Inv_Grade,
-    i.Industry_Inv_Grade,
-    p.PIMCO_Non_Inv_Grade,
-    i.Industry_Non_Inv_Grade,
-    p.PIMCO_Total_Assets / i.Industry_Total_Assets * 100
-FROM 
-    PIMCOStats p
-    JOIN IndustryStats i ON p.QUARTER = i.QUARTER
-ORDER BY 
-    p.QUARTER DESC;
-
-20. "Track PIMCO's international exposure trends across quarters"
-WITH InternationalHoldings AS (
-    SELECT 
-        h.QUARTER,
-        r.REGISTRANT_NAME,
-        h.INVESTMENT_COUNTRY,
-        COUNT(*) as Holdings_Count,
-        SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Total_Value
-    FROM 
-        FUND_REPORTED_HOLDING h
-        JOIN FUND_REPORTED_INFO f ON h.ACCESSION_NUMBER = f.ACCESSION_NUMBER
-        JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
-    WHERE 
-        r.REGISTRANT_NAME LIKE '%PIMCO%'
-        AND h.INVESTMENT_COUNTRY IS NOT NULL
-    GROUP BY 
-        h.QUARTER,
-        r.REGISTRANT_NAME,
-        h.INVESTMENT_COUNTRY
-),
-QuarterlyTotals AS (
-    SELECT 
-        QUARTER,
-        SUM(Total_Value) as Quarter_Total_Value
-    FROM 
-        InternationalHoldings
-    GROUP BY 
-        QUARTER
-)
-SELECT 
-    i.QUARTER,
-    i.INVESTMENT_COUNTRY,
-    i.Holdings_Count,
-    i.Total_Value,
-    i.Total_Value / qt.Quarter_Total_Value * 100
-FROM 
-    InternationalHoldings i
-    JOIN QuarterlyTotals qt ON i.QUARTER = qt.QUARTER
-WHERE 
-    i.INVESTMENT_COUNTRY != 'US'
-ORDER BY 
-    i.QUARTER DESC;
-
 21. "Compare PIMCO's fixed income duration positioning vs competitors"
 WITH DurationMetrics AS (
     SELECT 
-        f.QUARTER,
         r.REGISTRANT_NAME,
         ir.INTRST_RATE_CHANGE_10YR_DV01 as Duration_10Y,
         ir.INTRST_RATE_CHANGE_30YR_DV01 as Duration_30Y,
@@ -2914,7 +2589,6 @@ WITH DurationMetrics AS (
 ),
 CompanyDuration AS (
     SELECT 
-        QUARTER,
         REGISTRANT_NAME,
         AVG(CAST(Duration_10Y AS FLOAT)) as Avg_Duration_10Y,
         AVG(CAST(Duration_30Y AS FLOAT)) as Avg_Duration_30Y,
@@ -2922,11 +2596,9 @@ CompanyDuration AS (
     FROM 
         DurationMetrics
     GROUP BY 
-        QUARTER,
         REGISTRANT_NAME
 )
 SELECT 
-    p.QUARTER,
     p.Avg_Duration_10Y as PIMCO_Duration_10Y,
     p.Avg_Duration_30Y as PIMCO_Duration_30Y,
     i.Avg_Duration_10Y as Industry_Avg_Duration_10Y,
@@ -2935,26 +2607,19 @@ FROM
     CompanyDuration p
     CROSS JOIN (
         SELECT 
-            QUARTER,
             AVG(Avg_Duration_10Y) as Avg_Duration_10Y,
             AVG(Avg_Duration_30Y) as Avg_Duration_30Y
         FROM 
             CompanyDuration
         WHERE 
             REGISTRANT_NAME NOT LIKE '%PIMCO%'
-        GROUP BY 
-            QUARTER
     ) i
 WHERE 
-    p.QUARTER = i.QUARTER
-    AND p.REGISTRANT_NAME LIKE '%PIMCO%'
-ORDER BY 
-    p.QUARTER DESC;
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
 
 22. "Analyze PIMCO's cash management strategy vs peers"
 WITH CashPositions AS (
     SELECT 
-        f.QUARTER,
         r.REGISTRANT_NAME,
         f.SERIES_NAME,
         CAST(f.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash_Position,
@@ -2967,20 +2632,17 @@ WITH CashPositions AS (
 ),
 CompanyCashMetrics AS (
     SELECT 
-        QUARTER,
         REGISTRANT_NAME,
         AVG(Cash_Position / NULLIF(Total_Assets, 0) * 100) as Avg_Cash_Percentage,
         COUNT(DISTINCT SERIES_NAME) as Number_of_Funds
     FROM 
         CashPositions
     GROUP BY 
-        QUARTER,
         REGISTRANT_NAME
     HAVING 
         Number_of_Funds >= 5
 )
 SELECT 
-    p.QUARTER,
     p.Avg_Cash_Percentage as PIMCO_Cash_Percentage,
     i.Industry_Cash_Percentage,
     p.Number_of_Funds as PIMCO_Funds,
@@ -2989,25 +2651,18 @@ FROM
     CompanyCashMetrics p
     CROSS JOIN (
         SELECT 
-            QUARTER,
             AVG(Avg_Cash_Percentage) as Industry_Cash_Percentage
         FROM 
             CompanyCashMetrics
         WHERE 
             REGISTRANT_NAME NOT LIKE '%PIMCO%'
-        GROUP BY 
-            QUARTER
     ) i
 WHERE 
-    p.QUARTER = i.QUARTER
-    AND p.REGISTRANT_NAME LIKE '%PIMCO%'
-ORDER BY 
-    p.QUARTER DESC;
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
 
 23. "Examine PIMCO's securities lending activity and revenue"
 WITH LendingActivity AS (
     SELECT 
-        f.QUARTER,
         r.REGISTRANT_NAME,
         f.SERIES_NAME,
         COUNT(CASE WHEN sl.IS_LOAN_BY_FUND = 'Y' THEN 1 END) as Securities_Lent,
@@ -3018,14 +2673,12 @@ WITH LendingActivity AS (
         JOIN REGISTRANT r ON f.ACCESSION_NUMBER = r.ACCESSION_NUMBER
         LEFT JOIN SECURITIES_LENDING sl ON f.ACCESSION_NUMBER = sl.HOLDING_ID
     GROUP BY 
-        f.QUARTER,
         r.REGISTRANT_NAME,
         f.SERIES_NAME,
         f.TOTAL_ASSETS
 ),
 CompanyMetrics AS (
     SELECT 
-        QUARTER,
         REGISTRANT_NAME,
         SUM(Securities_Lent) as Total_Securities_Lent,
         SUM(Total_Securities) as Total_Securities,
@@ -3034,11 +2687,9 @@ CompanyMetrics AS (
     FROM 
         LendingActivity
     GROUP BY 
-        QUARTER,
         REGISTRANT_NAME
 )
 SELECT 
-    p.QUARTER,
     p.Total_Securities_Lent as PIMCO_Securities_Lent,
     p.Total_Securities as PIMCO_Total_Securities,
     (p.Total_Securities_Lent * 100.0 / NULLIF(p.Total_Securities, 0)) as PIMCO_Lending_Percentage,
@@ -3047,26 +2698,19 @@ FROM
     CompanyMetrics p
     CROSS JOIN (
         SELECT 
-            QUARTER,
             SUM(Total_Securities_Lent) as Total_Securities_Lent,
             SUM(Total_Securities) as Total_Securities
         FROM 
             CompanyMetrics
         WHERE 
             REGISTRANT_NAME NOT LIKE '%PIMCO%'
-        GROUP BY 
-            QUARTER
     ) i
 WHERE 
-    p.QUARTER = i.QUARTER
-    AND p.REGISTRANT_NAME LIKE '%PIMCO%'
-ORDER BY 
-    p.QUARTER DESC;
+    p.REGISTRANT_NAME LIKE '%PIMCO%';
 
 24. "Track PIMCO's market share by asset category over time"
 WITH AssetCategories AS (
     SELECT 
-        h.QUARTER,
         r.REGISTRANT_NAME,
         h.ASSET_CAT,
         SUM(CAST(h.CURRENCY_VALUE AS FLOAT)) as Category_Value
@@ -3077,13 +2721,11 @@ WITH AssetCategories AS (
     WHERE 
         h.ASSET_CAT IS NOT NULL
     GROUP BY 
-        h.QUARTER,
         r.REGISTRANT_NAME,
         h.ASSET_CAT
 ),
 MarketShares AS (
     SELECT 
-        p.QUARTER,
         p.ASSET_CAT,
         p.Category_Value as PIMCO_Value,
         t.Total_Category_Value,
@@ -3092,29 +2734,24 @@ MarketShares AS (
         AssetCategories p
         JOIN (
             SELECT 
-                QUARTER,
                 ASSET_CAT,
                 SUM(Category_Value) as Total_Category_Value
             FROM 
                 AssetCategories
             GROUP BY 
-                QUARTER,
                 ASSET_CAT
-        ) t ON p.QUARTER = t.QUARTER AND p.ASSET_CAT = t.ASSET_CAT
+        ) t ON p.ASSET_CAT = t.ASSET_CAT
     WHERE 
         p.REGISTRANT_NAME LIKE '%PIMCO%'
 )
 SELECT 
-    QUARTER,
     ASSET_CAT,
     ROUND(PIMCO_Value / 1000000, 2) as PIMCO_Value_Millions,
     ROUND(Total_Category_Value / 1000000, 2) as Total_Market_Millions,
     ROUND(Market_Share, 2) as Market_Share_Percentage,
-    ROW_NUMBER() OVER (PARTITION BY QUARTER ORDER BY Market_Share DESC)
+    ROW_NUMBER() OVER (ORDER BY Market_Share DESC)
 FROM 
-    MarketShares
-ORDER BY 
-    QUARTER DESC;
+    MarketShares;
 
 25. "Show me the most commonly used CUSIP numbers across all holdings"
 WITH CUSIPFrequency AS (
@@ -3144,7 +2781,6 @@ LIMIT 1;
 26. "What's the average coupon rate for investment-grade vs high-yield bonds?"
 WITH BondRates AS (
     SELECT 
-        d.QUARTER,
         h.FAIR_VALUE_LEVEL,
         AVG(CAST(d.ANNUALIZED_RATE AS FLOAT)) as Avg_Coupon_Rate,
         COUNT(DISTINCT h.HOLDING_ID) as Number_of_Bonds,
@@ -3155,11 +2791,9 @@ WITH BondRates AS (
     WHERE 
         d.ANNUALIZED_RATE IS NOT NULL
     GROUP BY 
-        d.QUARTER,
         h.FAIR_VALUE_LEVEL
 )
 SELECT 
-    QUARTER,
     FAIR_VALUE_LEVEL,
     ROUND(Avg_Coupon_Rate, 2) as Average_Coupon,
     Number_of_Bonds,
@@ -3170,7 +2804,6 @@ FROM
 37. "What's the distribution of bond ratings across different maturities?"
 WITH BondDistribution AS (
     SELECT 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL,
         CASE 
             WHEN d.MATURITY_DATE <= DATE('now', '+1 year') THEN 'Short_Term'
@@ -3186,7 +2819,6 @@ WITH BondDistribution AS (
         d.MATURITY_DATE IS NOT NULL
         AND h.FAIR_VALUE_LEVEL IS NOT NULL
     GROUP BY 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL,
         Maturity_Band
 )
@@ -3201,7 +2833,6 @@ FROM
 28. "Track changes in high-yield vs investment-grade allocation"
 WITH BondAllocation AS (
     SELECT 
-        QUARTER,
         SUM(CAST(CREDIT_SPREAD_10YR_INVEST AS FLOAT)) as Investment_Grade_Exposure,
         SUM(CAST(CREDIT_SPREAD_10YR_NONINVEST AS FLOAT)) as High_Yield_Exposure
     FROM 
@@ -3209,23 +2840,17 @@ WITH BondAllocation AS (
     WHERE 
         CREDIT_SPREAD_10YR_INVEST IS NOT NULL
         OR CREDIT_SPREAD_10YR_NONINVEST IS NOT NULL
-    GROUP BY 
-        QUARTER
 )
 SELECT 
-    QUARTER,
     Investment_Grade_Exposure,
     High_Yield_Exposure,
     Investment_Grade_Exposure * 100.0 / (Investment_Grade_Exposure + High_Yield_Exposure)
 FROM 
-    BondAllocation
-ORDER BY 
-    QUARTER DESC;
+    BondAllocation;
 
 29. "Track bond default rates and interest payment issues by credit rating"
 WITH DefaultMetrics AS (
     SELECT 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL,
         COUNT(DISTINCT h.HOLDING_ID) as Total_Bonds,
         COUNT(DISTINCT CASE WHEN d.IS_DEFAULT = 'Y' THEN h.HOLDING_ID END) as Defaulted_Bonds,
@@ -3237,11 +2862,9 @@ WITH DefaultMetrics AS (
     WHERE 
         h.FAIR_VALUE_LEVEL IS NOT NULL
     GROUP BY 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL
 )
 SELECT 
-    QUARTER,
     FAIR_VALUE_LEVEL,
     Total_Bonds,
     Defaulted_Bonds,
@@ -3254,13 +2877,11 @@ FROM
 WHERE 
     Total_Bonds >= 10
 ORDER BY 
-    QUARTER DESC,
     FAIR_VALUE_LEVEL;
 
 30. "Compare fixed vs floating rate bond distribution across credit qualities"
 WITH BondTypes AS (
     SELECT 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL,
         d.COUPON_TYPE,
         COUNT(DISTINCT h.HOLDING_ID) as Number_of_Bonds,
@@ -3273,19 +2894,16 @@ WITH BondTypes AS (
         h.FAIR_VALUE_LEVEL IS NOT NULL
         AND d.COUPON_TYPE IS NOT NULL
     GROUP BY 
-        h.QUARTER,
         h.FAIR_VALUE_LEVEL,
         d.COUPON_TYPE
 ),
 QuarterlyTotals AS (
     SELECT 
-        QUARTER,
         FAIR_VALUE_LEVEL,
         SUM(Total_Value) as Total_Value_By_Rating
     FROM 
         BondTypes
     GROUP BY 
-        QUARTER,
         FAIR_VALUE_LEVEL
 )
 SELECT 
@@ -3296,13 +2914,11 @@ SELECT
     b.Total_Value * 100.0 / qt.Total_Value_By_Rating
 FROM 
     BondTypes b
-    JOIN QuarterlyTotals qt ON b.QUARTER = qt.QUARTER 
-        AND b.FAIR_VALUE_LEVEL = qt.FAIR_VALUE_LEVEL;
+    JOIN QuarterlyTotals qt ON b.FAIR_VALUE_LEVEL = qt.FAIR_VALUE_LEVEL;
 
 31. "What's the liquidity profile of funds?"
 WITH LiquidityMetrics AS (
     SELECT 
-        f.QUARTER,
         f.SERIES_NAME,
         CAST(f.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
         CAST(f.BORROWING_PAY_WITHIN_1YR AS FLOAT) as Short_Term_Obligations,
@@ -3314,7 +2930,6 @@ WITH LiquidityMetrics AS (
         AND f.TOTAL_ASSETS > 0
 )
 SELECT 
-    QUARTER,
     SERIES_NAME,
     Cash,
     Cash * 100.0 / Total_Assets,
@@ -3325,7 +2940,6 @@ FROM
 32. "Which funds have the highest interest rate sensitivity?"
 WITH InterestRateSensitivity AS (
     SELECT 
-        f.QUARTER,
         r.REGISTRANT_NAME,
         f.SERIES_NAME,
         CAST(ir.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) as DV01_10Y,
@@ -3340,7 +2954,6 @@ WITH InterestRateSensitivity AS (
         OR ir.INTRST_RATE_CHANGE_30YR_DV01 IS NOT NULL
 )
 SELECT 
-    QUARTER,
     REGISTRANT_NAME,
     SERIES_NAME,
     DV01_10Y,
@@ -3355,7 +2968,6 @@ LIMIT 1;
 33. "How has fund leverage changed over time?"
 WITH LeverageMetrics AS (
     SELECT 
-        QUARTER,
         COUNT(DISTINCT SERIES_NAME) as Total_Funds,
         AVG(CAST(BORROWING_PAY_WITHIN_1YR AS FLOAT) + 
             CAST(BORROWING_PAY_AFTER_1YR AS FLOAT)) as Avg_Borrowing,
@@ -3367,19 +2979,14 @@ WITH LeverageMetrics AS (
     WHERE 
         BORROWING_PAY_WITHIN_1YR IS NOT NULL
         AND BORROWING_PAY_AFTER_1YR IS NOT NULL
-    GROUP BY 
-        QUARTER
 )
 SELECT 
-    QUARTER,
     Total_Funds,
     Avg_Borrowing,
     Max_Borrowing,
     Avg_Borrowing / Avg_Assets * 100
 FROM 
-    LeverageMetrics
-ORDER BY 
-    QUARTER DESC;
+    LeverageMetrics;
 
 34. "Find the top 5 registrants with the highest average fund size across states"
 WITH FundSizes AS (
@@ -3624,6 +3231,7 @@ ORDER BY
 full_prompt = (
     overall_task_instructions +
     database_overview_instructions +
+    schema_info +
     nlp_query_handling_instructions +
     default_query_behavior +
     reasoning_instruction +
@@ -3634,6 +3242,16 @@ full_prompt = (
     output_instruction
 )
 
+common_part_prompt = (
+    overall_task_instructions +
+    database_overview_instructions +
+    schema_info +
+    nlp_query_handling_instructions +
+    default_query_behavior +
+    reasoning_instruction +
+    schema_info +
+    example_queries
+)
 
 import openai
 import logging
@@ -3676,4 +3294,169 @@ def generate_sql_and_reasoning(user_question: str) -> dict:
         logger.error(f"Unexpected error generating SQL: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
     
-    
+
+schema_linking_prompt = '''Table advisor, columns = [*,s_ID,i_ID]
+Table classroom, columns = [*,building,room_number,capacity]
+Table course, columns = [*,course_id,title,dept_name,credits]
+Table department, columns = [*,dept_name,building,budget]
+Table instructor, columns = [*,ID,name,dept_name,salary]
+Table prereq, columns = [*,course_id,prereq_id]
+Table section, columns = [*,course_id,sec_id,semester,year,building,room_number,time_slot_id]
+Table student, columns = [*,ID,name,dept_name,tot_cred]
+Table takes, columns = [*,ID,course_id,sec_id,semester,year,grade]
+Table teaches, columns = [*,ID,course_id,sec_id,semester,year]
+Table time_slot, columns = [*,time_slot_id,day,start_hr,start_min,end_hr,end_min]
+Foreign_keys = [course.dept_name = department.dept_name,instructor.dept_name = department.dept_name,section.building = classroom.building,section.room_number = classroom.room_number,section.course_id = course.course_id,teaches.ID = instructor.ID,teaches.course_id = section.course_id,teaches.sec_id = section.sec_id,teaches.semester = section.semester,teaches.year = section.year,student.dept_name = department.dept_name,takes.ID = student.ID,takes.course_id = section.course_id,takes.sec_id = section.sec_id,takes.semester = section.semester,takes.year = section.year,advisor.s_ID = student.ID,advisor.i_ID = instructor.ID,prereq.prereq_id = course.course_id,prereq.course_id = course.course_id]
+Q: "Find the buildings which have rooms with capacity more than 50."
+A: Let’s think step by step. In the question "Find the buildings which have rooms with capacity more than 50.", we are asked:
+"the buildings which have rooms" so we need column = [classroom.capacity]
+"rooms with capacity" so we need column = [classroom.building]
+Based on the columns and tables, we need these Foreign_keys = [].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [50]. So the Schema_links are:
+Schema_links: [classroom.building,classroom.capacity,50]
+
+Table department, columns = [*,Department_ID,Name,Creation,Ranking,Budget_in_Billions,Num_Employees]
+Table head, columns = [*,head_ID,name,born_state,age]
+Table management, columns = [*,department_ID,head_ID,temporary_acting]
+Foreign_keys = [management.head_ID = head.head_ID,management.department_ID = department.Department_ID]
+Q: "How many heads of the departments are older than 56 ?"
+A: Let’s think step by step. In the question "How many heads of the departments are older than 56 ?", we are asked:
+"How many heads of the departments" so we need column = [head.*]
+"older" so we need column = [head.age]
+Based on the columns and tables, we need these Foreign_keys = [].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [56]. So the Schema_links are:
+Schema_links: [head.*,head.age,56]
+
+Table department, columns = [*,Department_ID,Name,Creation,Ranking,Budget_in_Billions,Num_Employees]
+Table head, columns = [*,head_ID,name,born_state,age]
+Table management, columns = [*,department_ID,head_ID,temporary_acting]
+Foreign_keys = [management.head_ID = head.head_ID,management.department_ID = department.Department_ID]
+Q: "what are the distinct creation years of the departments managed by a secretary born in state 'Alabama'?"
+A: Let’s think step by step. In the question "what are the distinct creation years of the departments managed by a secretary born in state 'Alabama'?", we are asked:
+"distinct creation years of the departments" so we need column = [department.Creation]
+"departments managed by" so we need column = [management.department_ID]
+"born in" so we need column = [head.born_state]
+Based on the columns and tables, we need these Foreign_keys = [department.Department_ID = management.department_ID,management.head_ID = head.head_ID].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = ['Alabama']. So the Schema_links are:
+Schema_links: [department.Creation,department.Department_ID = management.department_ID,head.head_ID = management.head_ID,head.born_state,'Alabama']
+
+Table Addresses, columns = [*,address_id,line_1,line_2,city,zip_postcode,state_province_county,country]
+Table Candidate_Assessments, columns = [*,candidate_id,qualification,assessment_date,asessment_outcome_code]
+Table Candidates, columns = [*,candidate_id,candidate_details]
+Table Courses, columns = [*,course_id,course_name,course_description,other_details]
+Table People, columns = [*,person_id,first_name,middle_name,last_name,cell_mobile_number,email_address,login_name,password]
+Table People_Addresses, columns = [*,person_address_id,person_id,address_id,date_from,date_to]
+Table Student_Course_Attendance, columns = [*,student_id,course_id,date_of_attendance]
+Table Student_Course_Registrations, columns = [*,student_id,course_id,registration_date]
+Table Students, columns = [*,student_id,student_details]
+Foreign_keys = [Students.student_id = People.person_id,People_Addresses.address_id = Addresses.address_id,People_Addresses.person_id = People.person_id,Student_Course_Registrations.course_id = Courses.course_id,Student_Course_Registrations.student_id = Students.student_id,Student_Course_Attendance.student_id = Student_Course_Registrations.student_id,Student_Course_Attendance.course_id = Student_Course_Registrations.course_id,Candidates.candidate_id = People.person_id,Candidate_Assessments.candidate_id = Candidates.candidate_id]
+Q: "List the id of students who never attends courses?"
+A: Let’s think step by step. In the question "List the id of students who never attends courses?", we are asked:
+"id of students" so we need column = [Students.student_id]
+"never attends courses" so we need column = [Student_Course_Attendance.student_id]
+Based on the columns and tables, we need these Foreign_keys = [Students.student_id = Student_Course_Attendance.student_id].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = []. So the Schema_links are:
+Schema_links: [Students.student_id = Student_Course_Attendance.student_id]
+
+Table Country, columns = [*,id,name]
+Table League, columns = [*,id,country_id,name]
+Table Player, columns = [*,id,player_api_id,player_name,player_fifa_api_id,birthday,height,weight]
+Table Player_Attributes, columns = [*,id,player_fifa_api_id,player_api_id,date,overall_rating,potential,preferred_foot,attacking_work_rate,defensive_work_rate,crossing,finishing,heading_accuracy,short_passing,volleys,dribbling,curve,free_kick_accuracy,long_passing,ball_control,acceleration,sprint_speed,agility,reactions,balance,shot_power,jumping,stamina,strength,long_shots,aggression,interceptions,positioning,vision,penalties,marking,standing_tackle,sliding_tackle,gk_diving,gk_handling,gk_kicking,gk_positioning,gk_reflexes]
+Table Team, columns = [*,id,team_api_id,team_fifa_api_id,team_long_name,team_short_name]
+Table Team_Attributes, columns = [*,id,team_fifa_api_id,team_api_id,date,buildUpPlaySpeed,buildUpPlaySpeedClass,buildUpPlayDribbling,buildUpPlayDribblingClass,buildUpPlayPassing,buildUpPlayPassingClass,buildUpPlayPositioningClass,chanceCreationPassing,chanceCreationPassingClass,chanceCreationCrossing,chanceCreationCrossingClass,chanceCreationShooting,chanceCreationShootingClass,chanceCreationPositioningClass,defencePressure,defencePressureClass,defenceAggression,defenceAggressionClass,defenceTeamWidth,defenceTeamWidthClass,defenceDefenderLineClass]
+Table sqlite_sequence, columns = [*,name,seq]
+Foreign_keys = [Player_Attributes.player_api_id = Player.player_api_id,Player_Attributes.player_fifa_api_id = Player.player_fifa_api_id,League.country_id = Country.id,Team_Attributes.team_api_id = Team.team_api_id,Team_Attributes.team_fifa_api_id = Team.team_fifa_api_id]
+Q: "List the names of all left-footed players who have overall rating between 85 and 90."
+A: Let’s think step by step. In the question "List the names of all left-footed players who have overall rating between 85 and 90.", we are asked:
+"names of all left-footed players" so we need column = [Player.player_name,Player_Attributes.preferred_foot]
+"players who have overall rating" so we need column = [Player_Attributes.overall_rating]
+Based on the columns and tables, we need these Foreign_keys = [Player_Attributes.player_api_id = Player.player_api_id].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [left,85,90]. So the Schema_links are:
+Schema_links: [Player.player_name,Player_Attributes.preferred_foot,Player_Attributes.overall_rating,Player_Attributes.player_api_id = Player.player_api_id,left,85,90]
+
+Table advisor, columns = [*,s_ID,i_ID]
+Table classroom, columns = [*,building,room_number,capacity]
+Table course, columns = [*,course_id,title,dept_name,credits]
+Table department, columns = [*,dept_name,building,budget]
+Table instructor, columns = [*,ID,name,dept_name,salary]
+Table prereq, columns = [*,course_id,prereq_id]
+Table section, columns = [*,course_id,sec_id,semester,year,building,room_number,time_slot_id]
+Table student, columns = [*,ID,name,dept_name,tot_cred]
+Table takes, columns = [*,ID,course_id,sec_id,semester,year,grade]
+Table teaches, columns = [*,ID,course_id,sec_id,semester,year]
+Table time_slot, columns = [*,time_slot_id,day,start_hr,start_min,end_hr,end_min]
+Foreign_keys = [course.dept_name = department.dept_name,instructor.dept_name = department.dept_name,section.building = classroom.building,section.room_number = classroom.room_number,section.course_id = course.course_id,teaches.ID = instructor.ID,teaches.course_id = section.course_id,teaches.sec_id = section.sec_id,teaches.semester = section.semester,teaches.year = section.year,student.dept_name = department.dept_name,takes.ID = student.ID,takes.course_id = section.course_id,takes.sec_id = section.sec_id,takes.semester = section.semester,takes.year = section.year,advisor.s_ID = student.ID,advisor.i_ID = instructor.ID,prereq.prereq_id = course.course_id,prereq.course_id = course.course_id]
+Q: "Give the title of the course offered in Chandler during the Fall of 2010."
+A: Let’s think step by step. In the question "Give the title of the course offered in Chandler during the Fall of 2010.", we are asked:
+"title of the course" so we need column = [course.title]
+"course offered in Chandler" so we need column = [SECTION.building]
+"during the Fall" so we need column = [SECTION.semester]
+"of 2010" so we need column = [SECTION.year]
+Based on the columns and tables, we need these Foreign_keys = [course.course_id = SECTION.course_id].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [Chandler,Fall,2010]. So the Schema_links are:
+Schema_links: [course.title,course.course_id = SECTION.course_id,SECTION.building,SECTION.year,SECTION.semester,Chandler,Fall,2010]
+
+Table city, columns = [*,City_ID,Official_Name,Status,Area_km_2,Population,Census_Ranking]
+Table competition_record, columns = [*,Competition_ID,Farm_ID,Rank]
+Table farm, columns = [*,Farm_ID,Year,Total_Horses,Working_Horses,Total_Cattle,Oxen,Bulls,Cows,Pigs,Sheep_and_Goats]
+Table farm_competition, columns = [*,Competition_ID,Year,Theme,Host_city_ID,Hosts]
+Foreign_keys = [farm_competition.Host_city_ID = city.City_ID,competition_record.Farm_ID = farm.Farm_ID,competition_record.Competition_ID = farm_competition.Competition_ID]
+Q: "Show the status of the city that has hosted the greatest number of competitions."
+A: Let’s think step by step. In the question "Show the status of the city that has hosted the greatest number of competitions.", we are asked:
+"the status of the city" so we need column = [city.Status]
+"greatest number of competitions" so we need column = [farm_competition.*]
+Based on the columns and tables, we need these Foreign_keys = [farm_competition.Host_city_ID = city.City_ID].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = []. So the Schema_links are:
+Schema_links: [city.Status,farm_competition.Host_city_ID = city.City_ID,farm_competition.*]
+
+Table advisor, columns = [*,s_ID,i_ID]
+Table classroom, columns = [*,building,room_number,capacity]
+Table course, columns = [*,course_id,title,dept_name,credits]
+Table department, columns = [*,dept_name,building,budget]
+Table instructor, columns = [*,ID,name,dept_name,salary]
+Table prereq, columns = [*,course_id,prereq_id]
+Table section, columns = [*,course_id,sec_id,semester,year,building,room_number,time_slot_id]
+Table student, columns = [*,ID,name,dept_name,tot_cred]
+Table takes, columns = [*,ID,course_id,sec_id,semester,year,grade]
+Table teaches, columns = [*,ID,course_id,sec_id,semester,year]
+Table time_slot, columns = [*,time_slot_id,day,start_hr,start_min,end_hr,end_min]
+Foreign_keys = [course.dept_name = department.dept_name,instructor.dept_name = department.dept_name,section.building = classroom.building,section.room_number = classroom.room_number,section.course_id = course.course_id,teaches.ID = instructor.ID,teaches.course_id = section.course_id,teaches.sec_id = section.sec_id,teaches.semester = section.semester,teaches.year = section.year,student.dept_name = department.dept_name,takes.ID = student.ID,takes.course_id = section.course_id,takes.sec_id = section.sec_id,takes.semester = section.semester,takes.year = section.year,advisor.s_ID = student.ID,advisor.i_ID = instructor.ID,prereq.prereq_id = course.course_id,prereq.course_id = course.course_id]
+Q: "Find the id of instructors who taught a class in Fall 2009 but not in Spring 2010."
+A: Let’s think step by step. In the question "Find the id of instructors who taught a class in Fall 2009 but not in Spring 2010.", we are asked:
+"id of instructors who taught " so we need column = [teaches.id]
+"taught a class in" so we need column = [teaches.semester,teaches.year]
+Based on the columns and tables, we need these Foreign_keys = [].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [Fall,2009,Spring,2010]. So the Schema_links are:
+schema_links: [teaches.id,teaches.semester,teaches.year,Fall,2009,Spring,2010]
+
+Table Accounts, columns = [*,account_id,customer_id,date_account_opened,account_name,other_account_details]
+Table Customers, columns = [*,customer_id,customer_first_name,customer_middle_initial,customer_last_name,gender,email_address,login_name,login_password,phone_number,town_city,state_county_province,country]
+Table Financial_Transactions, columns = [*,transaction_id,account_id,invoice_number,transaction_type,transaction_date,transaction_amount,transaction_comment,other_transaction_details]
+Table Invoice_Line_Items, columns = [*,order_item_id,invoice_number,product_id,product_title,product_quantity,product_price,derived_product_cost,derived_vat_payable,derived_total_cost]
+Table Invoices, columns = [*,invoice_number,order_id,invoice_date]
+Table Order_Items, columns = [*,order_item_id,order_id,product_id,product_quantity,other_order_item_details]
+Table Orders, columns = [*,order_id,customer_id,date_order_placed,order_details]
+Table Product_Categories, columns = [*,production_type_code,product_type_description,vat_rating]
+Table Products, columns = [*,product_id,parent_product_id,production_type_code,unit_price,product_name,product_color,product_size]
+Foreign_keys = [Orders.customer_id = Customers.customer_id,Invoices.order_id = Orders.order_id,Accounts.customer_id = Customers.customer_id,Products.production_type_code = Product_Categories.production_type_code,Financial_Transactions.account_id = Accounts.account_id,Financial_Transactions.invoice_number = Invoices.invoice_number,Order_Items.order_id = Orders.order_id,Order_Items.product_id = Products.product_id,Invoice_Line_Items.product_id = Products.product_id,Invoice_Line_Items.invoice_number = Invoices.invoice_number,Invoice_Line_Items.order_item_id = Order_Items.order_item_id]
+Q: "Show the id, the date of account opened, the account name, and other account detail for all accounts."
+A: Let’s think step by step. In the question "Show the id, the date of account opened, the account name, and other account detail for all accounts.", we are asked:
+"the id, the date of account opened, the account name, and other account detail for all accounts." so we need column = [Accounts.account_id,Accounts.account_name,Accounts.other_account_details,Accounts.date_account_opened]
+Based on the columns and tables, we need these Foreign_keys = [].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = []. So the Schema_links are:
+Schema_links: [Accounts.account_id,Accounts.account_name,Accounts.other_account_details,Accounts.date_account_opened]
+
+Table city, columns = [*,City_ID,Official_Name,Status,Area_km_2,Population,Census_Ranking]
+Table competition_record, columns = [*,Competition_ID,Farm_ID,Rank]
+Table farm, columns = [*,Farm_ID,Year,Total_Horses,Working_Horses,Total_Cattle,Oxen,Bulls,Cows,Pigs,Sheep_and_Goats]
+Table farm_competition, columns = [*,Competition_ID,Year,Theme,Host_city_ID,Hosts]
+Foreign_keys = [farm_competition.Host_city_ID = city.City_ID,competition_record.Farm_ID = farm.Farm_ID,competition_record.Competition_ID = farm_competition.Competition_ID]
+Q: "Show the status shared by cities with population bigger than 1500 and smaller than 500."
+A: Let’s think step by step. In the question "Show the status shared by cities with population bigger than 1500 and smaller than 500.", we are asked:
+"the status shared by cities" so we need column = [city.Status]
+"cities with population" so we need column = [city.Population]
+Based on the columns and tables, we need these Foreign_keys = [].
+Based on the tables, columns, and Foreign_keys, The set of possible cell values are = [1500,500]. So the Schema_links are:
+Schema_links: [city.Status,city.Population,1500,500]
+
+'''

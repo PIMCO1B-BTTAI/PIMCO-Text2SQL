@@ -8,7 +8,8 @@ data/*
 !data/*.ipynb
 !data/.gitkeep
 sqlite/nport.db
+sqlite/nport.db-journal
 *.drawio
 model_info.json
 base_env_backup.txt
-
+temp_queries.json

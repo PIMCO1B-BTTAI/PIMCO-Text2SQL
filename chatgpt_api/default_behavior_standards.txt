@@ -1,0 +1,22 @@
+Notes:1. it’s hard for ChatGPT to understand that the “largest” and “the most recent” mean LIMIT 1. It will randomly give LIMIT 5 to LIMIT 15 for the rows. This is very hard to control. Maybe need to add descriptions such as Latest/most means just one.
+2. ChatGPT will automatically order by some of the attributes. Might need to add a line in the prompt saying “DON’T ORDER on unasked things”. 
+3. It seems all entries in the NPORT data are of TEXT type, needs to add in the prompt something like “cast the type (eg. from text to float for comparison) before comparing the value” [look at all_outputs2, we get a mismatch just because not casting] 
+4. also need to tell ChatGPT not to generate new column names in the select statement. 
+5. duplicated examples exist.
+6. Remember that example_queries might also need to be revised, especially that it should contain all tricky examples.
+
+What I did: 
+1. correct all the easy ground truth following the instructions I created below:
+	a. Nested Queries Check: use CTE if and only if there are nested queries presented.
+	b. No calculations should be performed in the SELECT clause.
+	c. Column are not being renamed:
+	d. Remove unmentioned ORDER BY and LIMIT, and add LIMIT 1 to those questions with keywords “most”and ”largest”
+	e. Move the non-easy prompt to its correct category(number 17) want to double check whether CTE equals nested query group.
+
+New findings:1. Self-correction seems to fail easily on CTE questions 
+2. Add to prompt that only do CTE when nested query is necessary. Some of the questions don’t need to be solved using CTE
+3. Key words for LIMIT 1: highest, most, best, largest, 
+4. Key words for ordering: across quarters=order by quarters DESC; activity = order by time(eg.quarters); over time = order by quarters DESC; track/ track changes = order by quarters DESC
+
+
+the extent/span of relevant columns is hard to dictate

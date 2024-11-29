@@ -17,8 +17,7 @@
                 { "name": "STATE", "type": "TEXT" },
                 { "name": "COUNTRY", "type": "TEXT" },
                 { "name": "ZIP", "type": "TEXT" },
-                { "name": "PHONE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "PHONE", "type": "TEXT" }
             ]
         },
         {
@@ -70,8 +69,7 @@
                 { "name": "REDEMPTION_FLOW_MON2", "type": "TEXT" },
                 { "name": "SALES_FLOW_MON3", "type": "TEXT" },
                 { "name": "REINVESTMENT_FLOW_MON3", "type": "TEXT" },
-                { "name": "REDEMPTION_FLOW_MON3", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "REDEMPTION_FLOW_MON3", "type": "TEXT" }
             ]
         },
         {
@@ -89,8 +87,7 @@
                 { "name": "INTRST_RATE_CHANGE_1YR_DV100", "type": "TEXT" },
                 { "name": "INTRST_RATE_CHANGE_5YR_DV100", "type": "TEXT" },
                 { "name": "INTRST_RATE_CHANGE_10YR_DV100", "type": "TEXT" },
-                { "name": "INTRST_RATE_CHANGE_30YR_DV100", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "INTRST_RATE_CHANGE_30YR_DV100", "type": "TEXT" }
             ]
         },
         {
@@ -100,8 +97,7 @@
                 { "name": "BORROWER_ID", "type": "TEXT" },
                 { "name": "NAME", "type": "TEXT" },
                 { "name": "LEI", "type": "TEXT" },
-                { "name": "AGGREGATE_VALUE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "AGGREGATE_VALUE", "type": "TEXT" }
             ]
         },
         {
@@ -123,8 +119,7 @@
                 { "name": "ISSUER_TYPE", "type": "TEXT" },
                 { "name": "INVESTMENT_COUNTRY", "type": "TEXT" },
                 { "name": "IS_RESTRICTED_SECURITY", "type": "TEXT" },
-                { "name": "FAIR_VALUE_LEVEL", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "FAIR_VALUE_LEVEL", "type": "TEXT" }
             ]
         },
         {
@@ -135,8 +130,7 @@
                 { "name": "SUB_TYPE", "type": "TEXT" },
                 { "name": "REPORT_ENDING_PERIOD", "type": "TEXT" },
                 { "name": "REPORT_DATE", "type": "TEXT" },
-                { "name": "IS_LAST_FILING", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "IS_LAST_FILING", "type": "TEXT" }
             ]
         },
         {
@@ -146,8 +140,7 @@
                 { "name": "BORROW_AGGREGATE_ID", "type": "TEXT" },
                 { "name": "AMOUNT", "type": "TEXT" },
                 { "name": "COLLATERAL", "type": "TEXT" },
-                { "name": "INVESTMENT_CAT", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "INVESTMENT_CAT", "type": "TEXT" }
             ]
         },
         {
@@ -155,8 +148,7 @@
             "columns": [
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "IDENTIFIERS_ID", "type": "TEXT" },
-                { "name": "IDENTIFIER_ISIN", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "IDENTIFIER_ISIN", "type": "TEXT" }
             ]
         },
         {
@@ -167,8 +159,7 @@
                 { "name": "CLASS_ID", "type": "TEXT" },
                 { "name": "MONTHLY_TOTAL_RETURN1", "type": "TEXT" },
                 { "name": "MONTHLY_TOTAL_RETURN2", "type": "TEXT" },
-                { "name": "MONTHLY_TOTAL_RETURN3", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "MONTHLY_TOTAL_RETURN3", "type": "TEXT" }
             ]
         },
         {
@@ -182,7 +173,15 @@
                 { "name": "NET_REALIZED_GAIN_MON2", "type": "TEXT" },
                 { "name": "NET_UNREALIZED_AP_MON2", "type": "TEXT" },
                 { "name": "NET_REALIZED_GAIN_MON3", "type": "TEXT" },
-                { "name": "NET_UNREALIZED_AP_MON3", "type": "TEXT" },
+                { "name": "NET_UNREALIZED_AP_MON3", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "FUND_VAR_INFO",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "TEXT" },
+                { "name": "DESIGNATED_INDEX_NAME", "type": "TEXT" },
+                { "name": "DESIGNATED_INDEX_IDENTIFIER", "type": "TEXT" },
                 { "name": "QUARTER", "type": "TEXT" }
             ]
         },
@@ -192,8 +191,7 @@
                 { "name": "ACCESSION_NUMBER", "type": "TEXT" },
                 { "name": "EXPLANATORY_NOTE_ID", "type": "TEXT" },
                 { "name": "ITEM_NO", "type": "TEXT" },
-                { "name": "EXPLANATORY_NOTE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "EXPLANATORY_NOTE", "type": "TEXT" }
             ]
         },
         {
@@ -207,8 +205,7 @@
                 { "name": "ARE_ANY_INTEREST_PAYMENT", "type": "TEXT" },
                 { "name": "IS_ANY_PORTION_INTEREST_PAID", "type": "TEXT" },
                 { "name": "IS_CONVTIBLE_MANDATORY", "type": "TEXT" },
-                { "name": "IS_CONVTIBLE_CONTINGENT", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "IS_CONVTIBLE_CONTINGENT", "type": "TEXT" }
             ]
         },
         {
@@ -217,8 +214,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "CONVERTIBLE_SECURITY_ID", "type": "TEXT" },
                 { "name": "CONVERSION_RATIO", "type": "TEXT" },
-                { "name": "CURRENCY_CODE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "CURRENCY_CODE", "type": "TEXT" }
             ]
         },
         {
@@ -230,8 +226,7 @@
                 { "name": "CENTRAL_COUNTER_PARTY", "type": "TEXT" },
                 { "name": "IS_TRIPARTY", "type": "TEXT" },
                 { "name": "REPURCHASE_RATE", "type": "TEXT" },
-                { "name": "MATURITY_DATE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "MATURITY_DATE", "type": "TEXT" }
             ]
         },
         {
@@ -240,8 +235,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "REPURCHASE_COUNTERPARTY_ID", "type": "TEXT" },
                 { "name": "NAME", "type": "TEXT" },
-                { "name": "LEI", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "LEI", "type": "TEXT" }
             ]
         },
         {
@@ -250,8 +244,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "DERIVATIVE_COUNTERPARTY_ID", "type": "TEXT" },
                 { "name": "DERIVATIVE_COUNTERPARTY_NAME", "type": "TEXT" },
-                { "name": "DERIVATIVE_COUNTERPARTY_LEI", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "DERIVATIVE_COUNTERPARTY_LEI", "type": "TEXT" }
             ]
         },
         {
@@ -268,8 +261,7 @@
                 { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
                 { "name": "CURRENCY_CODE", "type": "TEXT" },
                 { "name": "VALUE", "type": "TEXT" },
-                { "name": "ISSUER_CURRENCY_CODE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "ISSUER_CURRENCY_CODE", "type": "TEXT" }
             ]
         },
         {
@@ -280,8 +272,7 @@
                 { "name": "EXPIRATION_DATE", "type": "TEXT" },
                 { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
                 { "name": "CURRENCY_CODE", "type": "TEXT" },
-                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
             ]
         },
         {
@@ -293,8 +284,7 @@
                 { "name": "CURRENCY_PURCHASED_AMOUNT", "type": "TEXT" },
                 { "name": "DESC_CURRENCY_PURCHASED", "type": "TEXT" },
                 { "name": "SETTLEMENT_DATE", "type": "TEXT" },
-                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
             ]
         },
         {
@@ -321,8 +311,7 @@
                 { "name": "FLOATING_RATE_INDEX_PAYMENT", "type": "TEXT" },
                 { "name": "FLOATING_RATE_SPREAD_PAYMENT", "type": "TEXT" },
                 { "name": "CURRENCY_CODE_PAYMENT", "type": "TEXT" },
-                { "name": "AMOUNT_PAYMENT", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "AMOUNT_PAYMENT", "type": "TEXT" }
             ]
         },
         {
@@ -334,8 +323,7 @@
                 { "name": "RESET_DATE", "type": "TEXT" },
                 { "name": "RESET_DATE_UNIT", "type": "TEXT" },
                 { "name": "RATE_TENOR", "type": "TEXT" },
-                { "name": "RATE_TENOR_UNIT", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "RATE_TENOR_UNIT", "type": "TEXT" }
             ]
         },
         {
@@ -344,8 +332,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "OTHER_DESC", "type": "TEXT" },
                 { "name": "TERMINATION_DATE", "type": "TEXT" },
-                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
             ]
         },
         {
@@ -354,8 +341,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "OTHER_DERIV_NOTIONAL_AMOUNT_ID", "type": "TEXT" },
                 { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
-                { "name": "CURRENCY_CODE", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "CURRENCY_CODE", "type": "TEXT" }
             ]
         },
         {
@@ -367,8 +353,7 @@
                 { "name": "ISSUE_TITLE", "type": "TEXT" },
                 { "name": "CURRENCY_CODE", "type": "TEXT" },
                 { "name": "CUSIP", "type": "TEXT" },
-                { "name": "ISIN", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "ISIN", "type": "TEXT" }
             ]
         },
         {
@@ -380,8 +365,7 @@
                 { "name": "PRINCIPAL_CURRENCY_CODE", "type": "TEXT" },
                 { "name": "COLLATERAL_AMOUNT", "type": "TEXT" },
                 { "name": "COLLATERAL_CURRENCY_CODE", "type": "TEXT" },
-                { "name": "INVESTMENT_CAT", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "INVESTMENT_CAT", "type": "TEXT" }
             ]
         },
         {
@@ -393,8 +377,7 @@
                 { "name": "SHARES_CNT", "type": "TEXT" },
                 { "name": "EXERCISE_PRICE", "type": "TEXT" },
                 { "name": "EXPIRATION_DATE", "type": "TEXT" },
-                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
             ]
         },
         {
@@ -402,8 +385,7 @@
             "columns": [
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "INDEX_NAME", "type": "TEXT" },
-                { "name": "INDEX_IDENTIFIER", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "INDEX_IDENTIFIER", "type": "TEXT" }
             ]
         },
         {
@@ -413,8 +395,7 @@
                 { "name": "DESC_REF_OTHER_ID", "type": "TEXT" },
                 { "name": "ISSUER_NAME", "type": "TEXT" },
                 { "name": "ISSUE_TITLE", "type": "TEXT" },
-                { "name": "TICKER", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "TICKER", "type": "TEXT" }
             ]
         },
         {
@@ -423,8 +404,7 @@
                 { "name": "HOLDING_ID", "type": "TEXT" },
                 { "name": "IS_CASH_COLLATERAL", "type": "TEXT" },
                 { "name": "IS_NON_CASH_COLLATERAL", "type": "TEXT" },
-                { "name": "IS_LOAN_BY_FUND", "type": "TEXT" },
-                { "name": "QUARTER", "type": "TEXT" }
+                { "name": "IS_LOAN_BY_FUND", "type": "TEXT" }
             ]
         }
     ]
