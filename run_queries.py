@@ -33,7 +33,7 @@ def extract_all_query_sets(prompt_content: str) -> List[Tuple[str, str]]:
         if matches:
             queries_text = matches.group(1)
             queries = extract_queries(queries_text)
-            print(f"Found {len(queries)} {difficulty} queries")
+            print(f"{len(queries)} {difficulty}")
             all_queries.extend(queries)
         else:
             print(f"Warning: Could not find {difficulty} query set in the prompt file")
@@ -85,7 +85,7 @@ def run_all_queries_to_df(queries: List[Tuple[str, str]], db_path: str, output_f
 
 def main():
     db_path = os.path.join('sqlite', 'nport.db')
-    prompt_path = os.path.join('chatgpt_api', 'chat_prompt.py')
+    prompt_path = os.path.join('chatgpt_api', 'chat_prompt_revised.py')
     output_file = os.path.join('chatgpt_api', 'query_summary.csv')
     
     try:
