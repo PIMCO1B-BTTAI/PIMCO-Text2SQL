@@ -1,0 +1,43 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER;
+================================================================================
+Schema Links for Question: List all funds with their submission dates
+{'table_columns': ['submission', 'submission.filing_date', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "List all funds with their submission dates" involves retrieving data from two tables: "submission" for submission dates and "fund_reported_info" for fund details. To achieve this, we need to join these tables using the foreign key relationship between "submission.accession_number" and "fund_reported_info.accession_number." Since this requires a join but not a nested query, the SQL query can be classified as "NON-NESTED." 
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: **
+   - We will perform a `JOIN` operation between the `FUND_REPORTED_INFO` and `SUBMISSION` tables using the `ACCESSION_NUMBER` as the joining key.
+   - We will select the `SERIES_NAME` from the `FUND_REPORTED_INFO` table and the `FILING_DATE` from the `SUBMISSION` table.
+
+Here is the SQL query that accomplishes this:
+
+```sql
+SELECT FRI.SERIES_NAME, S.FILING_DATE
+FROM FUND_REPORTED_INFO FRI
+JOIN SUBMISSION S ON FRI.ACCESSION_NUMBER = S.ACCESSION_NUMBER;
+```
+
+**Explanation:**
+- `SELECT FRI.SERIES_NAME, S.FILING_DATE`: This selects the fund name and its corresponding submission date.
+- `FROM FUND_REPORTED_INFO FRI`: This specifies the `FUND_REPORTED_INFO` table as the source of fund names.
+- `JOIN SUBMISSION S ON FRI.ACCESSION_NUMBER = S.ACCESSION_NUMBER`: This joins the `FUND_REPORTED_INFO` table with the `SUBMISSION` table on the `ACCESSION_NUMBER`, ensuring that each fund is matched with its correct submission date.
+================================================================================
+final_output: 
+SELECT FRI.SERIES_NAME, S.FILING_DATE
+FROM FUND_REPORTED_INFO FRI
+JOIN SUBMISSION S ON FRI.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+================================================================================
+Result: True
+================================================================================

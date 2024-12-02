@@ -1,0 +1,33 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH FundDebtRatios AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        F.SERIES_NAME,
+        CAST(F.TOTAL_LIABILITIES AS FLOAT) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) AS Debt_Ratio
+    FROM 
+        REGISTRANT R
+    JOIN 
+        FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE 
+        F.TOTAL_ASSETS > 0
+),
+HighDebtFunds AS (
+    SELECT 
+        REGISTRANT_NAME,
+        SERIES_NAME,
+        Debt_Ratio
+    FROM 
+        FundDebtRatios
+    WHERE 
+        Debt_Ratio > 0.5
+)
+SELECT 
+    REGISTRANT_NAME,
+    SERIES_NAME,
+    Debt_Ratio
+FROM 
+    HighDebtFunds;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

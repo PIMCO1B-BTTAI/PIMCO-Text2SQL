@@ -1,0 +1,70 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN F.SERIES_NAME END),
+    COUNT(DISTINCT F.SERIES_NAME),
+    (COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN F.SERIES_NAME END) * 100.0 / COUNT(DISTINCT F.SERIES_NAME))
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    LEFT JOIN SECURITIES_LENDING SL 
+        ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    (COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN F.SERIES_NAME END) * 100.0 / COUNT(DISTINCT F.SERIES_NAME)) DESC
+LIMIT 1;
+================================================================================
+Schema Links for Question: See which fund families are most active in securities lending
+{'table_columns': ['submission.report_ending_period', 'fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To determine which fund families are most active in securities lending, we need to analyze data from multiple tables. Specifically, we need to:
+
+1. Identify the fund families, which can be derived from the "registrant" table using the "REGISTRANT_NAME" or "CIK" as identifiers.
+2. Determine the activity in securities lending, which is captured in the "securities_lending" table, particularly the "IS_LOAN_BY_FUND" column.
+
+To achieve this, we need to join the "registrant" table with the "securities_lending" table. The "securities_lending" table is linked to the "fund_reported_holding" table through the "HOLDING_ID", and the "fund_reported_holding" table is linked to the "fund_reported_info" table through the "ACCESSION_NUMBER". The "fund_reported_info" table is then linked to the "registrant" table through the "ACCESSION_NUMBER".
+
+This requires joining multiple tables to gather the necessary information, but it does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED".
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+process_thesql: ```sql
+WITH ActiveSecuritiesLending AS (
+    SELECT F.SERIES_NAME, COUNT(SL.HOLDING_ID) AS Lending_Activity_Count
+    FROM FUND_REPORTED_INFO F
+    JOIN SECURITIES_LENDING SL ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+    WHERE SL.IS_LOAN_BY_FUND = 'Y'
+    GROUP BY F.SERIES_NAME
+)
+SELECT SERIES_NAME, Lending_Activity_Count
+FROM ActiveSecuritiesLending
+ORDER BY Lending_Activity_Count DESC;
+```
+
+### Explanation:
+
+- **WITH ActiveSecuritiesLending AS**: This common table expression (CTE) is used to create a temporary result set that contains the count of securities lending activities for each fund family.
+- **JOIN**: We join `FUND_REPORTED_INFO` and `SECURITIES_LENDING` on `ACCESSION_NUMBER` to link the fund information with its securities lending activities.
+- **WHERE SL.IS_LOAN_BY_FUND = 'Y'**: This condition filters the records to include only those funds that are actively involved in securities lending.
+- **GROUP BY F.SERIES_NAME**: This groups the results by fund family, identified by `SERIES_NAME`.
+- **COUNT(SL.HOLDING_ID) AS Lending_Activity_Count**: This counts the number of securities lending activities for each fund family.
+- **ORDER BY Lending_Activity_Count DESC**: This orders the results to show the most active fund families first.
+================================================================================
+final_output: 
+WITH ActiveSecuritiesLending AS (
+    SELECT F.SERIES_NAME, COUNT(SL.HOLDING_ID) AS Lending_Activity_Count
+    FROM FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING FRH ON F.ACCESSION_NUMBER = FRH.ACCESSION_NUMBER
+    JOIN SECURITIES_LENDING SL ON FRH.HOLDING_ID = SL.HOLDING_ID
+    WHERE SL.IS_LOAN_BY_FUND = 'Y'
+    GROUP BY F.SERIES_NAME
+)
+SELECT SERIES_NAME, Lending_Activity_Count
+FROM ActiveSecuritiesLending
+ORDER BY Lending_Activity_Count DESC
+================================================================================
+Result: False
+================================================================================

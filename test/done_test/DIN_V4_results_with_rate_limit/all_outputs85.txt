@@ -1,0 +1,67 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH PIMCORiskProfile AS (
+    SELECT 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        -- Duration Risk
+        IR.INTRST_RATE_CHANGE_10YR_DV01 as Duration_Risk,
+        -- Credit Risk
+        (CAST(F.CREDIT_SPREAD_10YR_NONINVEST AS FLOAT) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100 as High_Yield_Exposure,
+        -- Leverage
+        (CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT) + 
+         CAST(F.BORROWING_PAY_AFTER_1YR AS FLOAT)) / 
+         NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Leverage_Ratio,
+        -- Derivatives Exposure
+        COUNT(DISTINCT OD.HOLDING_ID) as Derivative_Positions,
+        -- Liquidity Profile
+        CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / 
+        NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0) * 100 as Cash_Position,
+        -- Recent Performance
+        M.MONTHLY_TOTAL_RETURN1
+    FROM 
+        FUND_REPORTED_INFO F
+        JOIN REGISTRANT R 
+            ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+        LEFT JOIN INTEREST_RATE_RISK IR 
+            ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+        LEFT JOIN OTHER_DERIV OD 
+            ON F.ACCESSION_NUMBER = OD.HOLDING_ID
+        LEFT JOIN MONTHLY_TOTAL_RETURN M 
+            ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+    WHERE 
+        R.REGISTRANT_NAME LIKE '%PIMCO%'
+        AND F.TOTAL_ASSETS IS NOT NULL
+    GROUP BY 
+        F.SERIES_NAME,
+        F.TOTAL_ASSETS,
+        IR.INTRST_RATE_CHANGE_10YR_DV01,
+        F.CREDIT_SPREAD_10YR_NONINVEST,
+        F.BORROWING_PAY_WITHIN_1YR,
+        F.BORROWING_PAY_AFTER_1YR,
+        F.CASH_NOT_RPTD_IN_C_OR_D,
+        M.MONTHLY_TOTAL_RETURN1
+)
+SELECT 
+    SERIES_NAME,
+    CAST(TOTAL_ASSETS AS FLOAT) / 1000000 as Assets_MM,
+    Duration_Risk as Duration_DV01,
+    High_Yield_Exposure as HY_Pct,
+    Leverage_Ratio as Leverage_Pct,
+    Derivative_Positions,
+    Cash_Position as Cash_Pct,
+    CAST(MONTHLY_TOTAL_RETURN1 AS FLOAT) as Latest_Monthly_Return,
+    CASE
+        WHEN Duration_Risk > 1 AND High_Yield_Exposure > 20 THEN 'High Risk'
+        WHEN Duration_Risk > 1 OR High_Yield_Exposure > 20 THEN 'Moderate Risk'
+        ELSE 'Conservative'
+    END as Risk_Category
+FROM 
+    PIMCORiskProfile
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 1;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

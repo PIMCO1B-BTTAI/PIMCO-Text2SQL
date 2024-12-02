@@ -1,0 +1,26 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LeverageMetrics AS (
+    SELECT 
+        COUNT(DISTINCT SERIES_NAME) as Total_Funds,
+        AVG(CAST(BORROWING_PAY_WITHIN_1YR AS FLOAT) + 
+            CAST(BORROWING_PAY_AFTER_1YR AS FLOAT)) as Avg_Borrowing,
+        MAX(CAST(BORROWING_PAY_WITHIN_1YR AS FLOAT) + 
+            CAST(BORROWING_PAY_AFTER_1YR AS FLOAT)) as Max_Borrowing,
+        AVG(CAST(TOTAL_ASSETS AS FLOAT)) as Avg_Assets
+    FROM 
+        FUND_REPORTED_INFO
+    WHERE 
+        BORROWING_PAY_WITHIN_1YR IS NOT NULL
+        AND BORROWING_PAY_AFTER_1YR IS NOT NULL
+)
+SELECT 
+    Total_Funds,
+    Avg_Borrowing,
+    Max_Borrowing,
+    Avg_Borrowing / Avg_Assets * 100
+FROM 
+    LeverageMetrics;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

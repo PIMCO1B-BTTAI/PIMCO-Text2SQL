@@ -1,0 +1,34 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH EquityInvestments AS (
+    SELECT 
+        R.REGISTRANT_NAME,
+        SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) AS Total_Equity_Value
+    FROM 
+        REGISTRANT R
+    JOIN 
+        FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN 
+        FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    WHERE 
+        H.ASSET_CAT LIKE '%EQUITY%'
+    GROUP BY 
+        R.REGISTRANT_NAME
+),
+LargeRegistrants AS (
+    SELECT 
+        REGISTRANT_NAME,
+        Total_Equity_Value
+    FROM 
+        EquityInvestments
+    WHERE 
+        Total_Equity_Value > 10000000000
+)
+SELECT 
+    REGISTRANT_NAME,
+    Total_Equity_Value
+FROM 
+    LargeRegistrants;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

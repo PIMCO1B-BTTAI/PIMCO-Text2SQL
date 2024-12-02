@@ -1,0 +1,24 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH LiquidityMetrics AS (
+    SELECT 
+        f.SERIES_NAME,
+        CAST(f.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) as Cash,
+        CAST(f.BORROWING_PAY_WITHIN_1YR AS FLOAT) as Short_Term_Obligations,
+        CAST(f.TOTAL_ASSETS AS FLOAT) as Total_Assets
+    FROM 
+        FUND_REPORTED_INFO f
+    WHERE 
+        f.CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+        AND f.TOTAL_ASSETS > 0
+)
+SELECT 
+    SERIES_NAME,
+    Cash,
+    Cash * 100.0 / Total_Assets,
+    Cash / NULLIF(Short_Term_Obligations, 0)
+FROM 
+    LiquidityMetrics;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================
