@@ -116,9 +116,7 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from rapidfuzz import fuzz
-os.chdir("..")
-from chatgpt_api import chat_prompt_revised
-from chatgpt_api import api
+from . import chat_prompt_revised
 print(os.getcwd())
 
 nltk.download('punkt')
