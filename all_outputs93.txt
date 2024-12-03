@@ -1,0 +1,13 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AvgRegistrantsPerState AS (
+    SELECT AVG(REG_COUNT) AS AVG_COUNT
+    FROM (SELECT STATE, COUNT(*) AS REG_COUNT FROM REGISTRANT GROUP BY STATE) Subquery
+)
+SELECT STATE
+FROM REGISTRANT
+GROUP BY STATE
+HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgRegistrantsPerState);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

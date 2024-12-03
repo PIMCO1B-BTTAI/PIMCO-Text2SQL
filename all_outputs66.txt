@@ -1,0 +1,68 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT
+    h.ISSUER_TYPE,
+    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*))
+FROM 
+    FUND_REPORTED_HOLDING h
+    JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
+WHERE 
+    h.ISSUER_TYPE IS NOT NULL
+GROUP BY 
+    h.ISSUER_TYPE
+ORDER BY 
+    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*)) DESC;
+================================================================================
+Schema Links for Question: What percentage of bonds have missed interest payments by sector?
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'debt_security_ref_instrument.issue_title', 'debt_security.are_any_interest_payment', 'fund_reported_holding.percentage'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To answer the question "What percentage of bonds have missed interest payments by sector?", we need to consider the following:
+
+1. **Tables Involved**: 
+   - `FUND_REPORTED_HOLDING`: This table contains information about the holdings of the fund, including the asset category which can be used to identify bonds.
+   - `DEBT_SECURITY`: This table contains information about debt securities, including whether any interest payments are in arrears (`ARE_ANY_INTEREST_PAYMENT`).
+
+2. **Relevant Columns**:
+   - `FUND_REPORTED_HOLDING.ASSET_CAT`: To identify bonds.
+   - `DEBT_SECURITY.ARE_ANY_INTEREST_PAYMENT`: To check if interest payments are missed.
+   - `FUND_REPORTED_HOLDING.PERCENTAGE`: To calculate the percentage of bonds.
+
+3. **Joins Needed**: 
+   - We need to join `FUND_REPORTED_HOLDING` and `DEBT_SECURITY` on `HOLDING_ID` to get the necessary information about bonds and their missed interest payments.
+
+4. **Calculation**:
+   - We need to filter bonds (`ASSET_CAT` indicating bonds) and check for missed interest payments (`ARE_ANY_INTEREST_PAYMENT`).
+   - Calculate the percentage of bonds with missed payments by sector.
+
+Given these steps, the query requires joining tables and performing calculations based on conditions, but it does not require nested queries. Therefore, the SQL query can be classified as "NON-NESTED."
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required for this query. The 'debt_security' table is crucial as it contains the 'are_any_interest_payment' column, which indicates if interest payments were missed.", helpful=True), Thought(thought="Next, we need to determine how to categorize bonds by sector. The 'debt_security_ref_instrument' table likely contains sector information through the 'issue_title' column.", helpful=True), Thought(thought='We need to calculate the percentage of bonds that have missed interest payments. This requires counting the total number of bonds and the number of bonds with missed payments, then calculating the percentage.', helpful=True), Thought(thought='A GROUP BY clause is necessary to aggregate the data by sector, allowing us to calculate the percentage of missed payments within each sector.', helpful=True), Thought(thought='Finally, we should ensure that the query is structured to join the necessary tables and apply the correct conditions to filter and group the data appropriately.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    dsi.issue_title AS sector, 
+    (SUM(CASE WHEN ds.are_any_interest_payment = 'No' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS percentage_missed_payments 
+FROM 
+    debt_security ds 
+JOIN 
+    debt_security_ref_instrument dsi ON ds.holding_id = dsi.holding_id 
+GROUP BY 
+    dsi.issue_title;
+================================================================================
+final_output: SELECT 
+    dsi.ISSUER_NAME AS sector, 
+    (SUM(CASE WHEN ds.ARE_ANY_INTEREST_PAYMENT = 'No' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS percentage_missed_payments 
+FROM 
+    DEBT_SECURITY ds 
+JOIN 
+    DEBT_SECURITY_REF_INSTRUMENT dsi ON ds.HOLDING_ID = dsi.HOLDING_ID 
+GROUP BY 
+    dsi.ISSUER_NAME
+================================================================================
+False, not all ground truth columns are in generated csv
+================================================================================
+Result: False
+================================================================================

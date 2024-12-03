@@ -1,0 +1,15 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AvgNetAssets AS (
+    SELECT AVG(CAST(NET_ASSETS AS FLOAT)) AS AVG_NET_ASSETS
+    FROM FUND_REPORTED_INFO
+)
+SELECT R.STATE, COUNT(*) AS REGISTRANT_COUNT
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE CAST(F.NET_ASSETS AS FLOAT) > (SELECT AVG_NET_ASSETS FROM AvgNetAssets)
+GROUP BY R.STATE
+HAVING COUNT(*) > 10;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

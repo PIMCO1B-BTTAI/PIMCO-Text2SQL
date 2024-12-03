@@ -1,0 +1,39 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+================================================================================
+Schema Links for Question: Show me all funds with 'Growth' in their name
+{'table_columns': ['fund_reported_info.series_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me all funds with 'Growth' in their name" needs to access the "fund_reported_info" table to filter funds based on their names. Specifically, we are interested in the "series_name" column to find names containing the word "Growth." This operation can be performed using a simple SELECT statement with a WHERE clause to filter the names. Since this query only involves a single table and does not require any JOINs or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="The main table of interest is 'fund_reported_info' because it contains the 'series_name' column, which likely holds the fund names.", helpful=True), Thought(thought="We need to filter the 'series_name' column to find entries that contain the word 'Growth'. This can be done using a WHERE clause with a LIKE operator.", helpful=True), Thought(thought='No complex joins or aggregations are necessary because the query only requires filtering based on a single column in one table.', helpful=True), Thought(thought='The query does not require any Common Table Expressions (CTEs) or nested queries because the task is straightforward and involves a simple filter operation.', helpful=True), Thought(thought="The SQL query will be structured to select the 'series_name' from 'fund_reported_info' where 'series_name' contains 'Growth'.", helpful=True)]
+================================================================================
+SQL: SELECT 
+    series_name 
+FROM 
+    fund_reported_info 
+WHERE 
+    series_name LIKE '%Growth%';
+================================================================================
+final_output: SELECT 
+    series_name 
+FROM 
+    fund_reported_info 
+WHERE 
+    series_name LIKE '%Growth%'
+================================================================================
+False, not all ground truth columns are in generated csv
+================================================================================
+Result: False
+================================================================================

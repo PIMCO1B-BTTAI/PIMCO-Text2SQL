@@ -1,0 +1,17 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH RegistrantsWithLargeFunds AS (
+    SELECT REGISTRANT_NAME
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+    HAVING MAX(CAST(F.TOTAL_ASSETS AS FLOAT)) > 500000000
+)
+SELECT R.REGISTRANT_NAME, SUM(CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS TOTAL_CASH
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE R.REGISTRANT_NAME IN (SELECT REGISTRANT_NAME FROM RegistrantsWithLargeFunds)
+GROUP BY R.REGISTRANT_NAME;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

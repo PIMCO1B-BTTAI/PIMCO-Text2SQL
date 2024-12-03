@@ -9,6 +9,7 @@ data/*
 !data/.gitkeep
 sqlite/nport.db
 sqlite/nport.db-journal
+sqlite/db_version_storage
 *.drawio
 model_info.json
 base_env_backup.txt

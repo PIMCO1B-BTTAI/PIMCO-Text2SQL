@@ -1,0 +1,30 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    ADDRESS1 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'FL';
+================================================================================
+Schema Links for Question: Show me all registrants from Florida
+{'table_columns': ['registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me all registrants from Florida" needs data from the "registrant" table, specifically filtering by the state of Florida. This can be achieved by using a simple SELECT statement with a WHERE clause to filter by the state. Since this query only involves a single table and does not require any JOINs or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table required for the query. The table 'registrant' is likely where registrant information is stored.", helpful=True), Thought(thought='Next, we need to determine if there is a column that specifies the state of the registrant. However, the schema information provided does not explicitly mention a column for state.', helpful=True), Thought(thought='Since the schema does not provide a direct column for state, we need to consider if there might be another table or a missing column in the schema that contains state information.', helpful=True), Thought(thought="Given the lack of explicit state information in the schema, we assume that the 'registrant' table should have a column for state, even though it's not listed. We will proceed with this assumption for the query.", helpful=True), Thought(thought="The WHERE clause will filter registrants based on the assumed 'state' column being 'Florida'.", helpful=True)]
+================================================================================
+SQL: SELECT registrant_name FROM registrant WHERE state = 'Florida';
+================================================================================
+final_output: SELECT registrant_name FROM REGISTRANT WHERE STATE = 'Florida'
+================================================================================
+False, not all ground truth columns are in generated csv
+================================================================================
+Result: False
+================================================================================

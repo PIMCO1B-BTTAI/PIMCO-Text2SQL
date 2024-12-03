@@ -1,0 +1,14 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH VanguardLargestFund AS (
+    SELECT STATE, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE R.REGISTRANT_NAME LIKE '%VANGUARD%'
+    GROUP BY STATE
+)
+SELECT STATE, MAX_ASSETS
+FROM VanguardLargestFund;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

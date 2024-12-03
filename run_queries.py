@@ -85,7 +85,7 @@ def run_all_queries_to_df(queries: List[Tuple[str, str]], db_path: str, output_f
 
 def main():
     db_path = os.path.join('sqlite', 'nport.db')
-    prompt_path = os.path.join('chatgpt_api', 'chat_prompt_revised.py')
+    prompt_path = os.path.join('chatgpt_api', 'chat_prompt_V3.py')
     output_file = os.path.join('chatgpt_api', 'query_summary.csv')
     
     try:

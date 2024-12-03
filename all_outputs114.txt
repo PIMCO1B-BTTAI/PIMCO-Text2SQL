@@ -1,0 +1,17 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH StateMaxCash AS (
+    SELECT R.STATE, MAX(CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT)) AS MAX_CASH_RATIO
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE CAST(F.TOTAL_ASSETS AS FLOAT) > 0
+    GROUP BY R.STATE
+)
+SELECT R.REGISTRANT_NAME, R.STATE, F.SERIES_NAME, F.CASH_NOT_RPTD_IN_C_OR_D
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT) = 
+      (SELECT MAX_CASH_RATIO FROM StateMaxCash WHERE STATE = R.STATE);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

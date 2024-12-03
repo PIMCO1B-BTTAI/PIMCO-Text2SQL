@@ -1,0 +1,13 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH MinBondFundLiability AS (
+    SELECT MIN(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MIN_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME, TOTAL_LIABILITIES
+FROM FUND_REPORTED_INFO
+WHERE CAST(TOTAL_LIABILITIES AS FLOAT) < (SELECT MIN_LIABILITY FROM MinBondFundLiability);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

@@ -1,0 +1,15 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH SmallestFunds AS (
+    SELECT REGISTRANT_NAME, MIN(CAST(TOTAL_ASSETS AS FLOAT)) AS MIN_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT R.REGISTRANT_NAME, F.SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MIN_ASSETS FROM SmallestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

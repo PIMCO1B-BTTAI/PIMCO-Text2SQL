@@ -1,0 +1,12 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH MaxLiability AS (
+    SELECT MAX(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MAX_LIABILITY
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME, TOTAL_LIABILITIES
+FROM FUND_REPORTED_INFO
+WHERE CAST(TOTAL_LIABILITIES AS FLOAT) > 0.9 * (SELECT MAX_LIABILITY FROM MaxLiability);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

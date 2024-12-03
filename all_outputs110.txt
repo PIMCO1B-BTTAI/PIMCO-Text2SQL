@@ -1,0 +1,13 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AvgEquityCashRatio AS (
+    SELECT AVG(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) AS AVG_CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%' AND CAST(TOTAL_ASSETS AS FLOAT) > 0
+)
+SELECT SERIES_NAME, CASH_NOT_RPTD_IN_C_OR_D, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+WHERE (CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) > (SELECT AVG_CASH_RATIO FROM AvgEquityCashRatio);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

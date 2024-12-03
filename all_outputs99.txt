@@ -1,0 +1,12 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AvgRedemptionFlow AS (
+    SELECT AVG(CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) AS AVG_FLOW
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME, REDEMPTION_FLOW_MON1, REDEMPTION_FLOW_MON2, REDEMPTION_FLOW_MON3
+FROM FUND_REPORTED_INFO
+WHERE (CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) > (SELECT AVG_FLOW FROM AvgRedemptionFlow);
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================
