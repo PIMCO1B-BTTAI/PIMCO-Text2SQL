@@ -888,3 +888,1207 @@ SELECT series_name FROM fund_reported_info WHERE series_name LIKE '%equity%'
 ================================================================================
 Error Executing LLM-Generated SQL: no such table: fund_reported_info
 ================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'submission.is_last_filing', 'fund_reported_info.total_assets', 'fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'submission.is_last_filing', 'fund_reported_info.total_assets', 'fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. Since we are only dealing with one table and no other tables are involved, we don't need a JOIN. Additionally, the query does not require any nested queries, as it simply involves selecting and ordering data from a single table. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['submission.is_last_filing', 'fund_reported_holding.asset_cat', 'fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and then limit the results to the top 20. This operation can be performed using a single table without requiring any JOINs or nested queries. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security', 'fund_reported_holding.asset_cat', 'fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" involves retrieving data from the "fund_reported_info" table, specifically the "total_assets" column. To find the largest funds, we need to sort the data by "total_assets" in descending order and limit the results to the top 20 entries. This operation does not require any JOINs or nested queries, as it involves a straightforward selection and sorting operation on a single table. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund', 'submission.is_last_filing', 'fund_reported_holding.asset_cat'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs these tables = [fund_reported_info], as it involves retrieving the largest funds based on the 'total_assets' column. This query does not require any JOIN operations since all the necessary information is contained within a single table. Additionally, it does not require nested queries with operations like INTERSECT, UNION, EXCEPT, IN, or NOT IN. The query can be executed using a simple SELECT statement with an ORDER BY clause and a LIMIT to get the top 20 results. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['securities_lending.is_loan_by_fund', 'fund_reported_info.total_assets', 'submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security', 'fund_reported_holding.asset_cat'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by their total assets in descending order and then limit the results to the top 20. This operation can be performed using a simple query with an ORDER BY clause and a LIMIT clause. Since this query only involves a single table and does not require any joins or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="The main table of interest is 'fund_reported_info' because it contains the 'total_assets' column, which is directly related to the query.", helpful=True), Thought(thought="We need to sort the funds by 'total_assets' in descending order to identify the largest funds.", helpful=True), Thought(thought='The query should limit the results to the top 20 entries to satisfy the requirement of showing the top 20 largest funds.', helpful=True), Thought(thought='No complex joins or subqueries are necessary since the required data is contained within a single table.', helpful=True), Thought(thought="A 'WHERE' clause is not needed as there are no additional filtering conditions specified in the query.", helpful=True)]
+================================================================================
+SQL: SELECT 
+    total_assets 
+FROM 
+    fund_reported_info 
+ORDER BY 
+    total_assets DESC 
+LIMIT 20;
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME, 
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    TOTAL_ASSETS DESC 
+LIMIT 20
+================================================================================
+Error Executing LLM-Generated SQL: no such table: FUND_REPORTED_INFO
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund', 'submission.is_last_filing', 'fund_reported_info.total_assets'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and then limit the results to the top 20. This operation does not require joining multiple tables or using nested queries. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='Maximum retries exceeded', helpful=False)]
+================================================================================
+SQL: SELECT 1
+================================================================================
+final_output: 
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+================================================================================
+Column Mappings: 
+```
+Here are the two sql statements that are to be compared:
+```
+
+```
+SQL Query 1:
+```
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+```
+
+```
+SQL Query 2:
+```
+
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+```
+
+```
+Generate a column mapping corresponding to the given input sql queries
+and the description of the table provided below.
+```
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund', 'submission.is_last_filing', 'fund_reported_info.total_assets'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+```
+
+```
+Here's a more detailed set of instructions:
+```
+
+```
+Task Overview
+```
+Given two sql queries which are supposed to be equivalent, as inputs, 
+the task is to give a column mapping between the output columns in one sql query
+to the other sql query.
+```
+
+```
+The mapping is to be generated as a list of tuples.
+```
+
+```
+For each element of the list which would be a tuple, 
+the first entry in the tuple would be the column name used in sql query 1,
+and the second entry in the tuple would be the corresponding column name in the sql query 2.
+```
+
+```
+
+```
+Reasoning as to why the query is correct:
+```
+
+```
+1. Reasoning you provide should first focus on whether the input sql queries contain 
+a nested query or not.
+2. It should give a plan on how to solve this question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+
+
+
+
+```
+Use the following JSON Schema as the grammar to create the structure 
+for the step by step reasoning, and then to 
+create the final SQL query.
+```
+
+```
+Schema for Reasoning:
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'description': "Returns a detailed reasoning to the user's question.", 'properties': {'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}}, 'required': ['reasonings'], 'title': 'CMReasonings', 'type': 'object'}
+```
+
+```
+The instructions on how to structure the reasoning is provided below:
+```
+
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+Generate two separate thoughts, one each for the two input sql queries, 
+to figure out the list of output columns in each of the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are present in both the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1 
+which are in sql query 1 but 
+which are not present in sql query 2.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are in sql query 2 but 
+which are not present in sql query 1.
+```
+
+```
+If the query uses common table expressions or nested queries, 
+the above thoughts should be generated for each of the CTE separately.
+```
+
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of why the mapping is correct.
+
+```
+
+```
+Schema for Overall Output:
+(This includes the reasonings schema above as an element)
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'properties': {'input_sql_query_1': {'description': 'Returns the exact same first query that the user gave as input.', 'title': 'Input Sql Query 1', 'type': 'string'}, 'input_sql_query_2': {'description': 'Returns the exact same second query that the user gave as input.', 'title': 'Input Sql Query 2', 'type': 'string'}, 'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}, 'column_mapping_list': {'description': 'Returns the list of the corresponding column names in first sql query, sql 1, which\n        corresponds to the column name in the other sql query, sql 2, as a list of tuple entries', 'items': {'maxItems': 2, 'minItems': 2, 'prefixItems': [{'type': 'string'}, {'type': 'string'}], 'type': 'array'}, 'title': 'Column Mapping List', 'type': 'array'}}, 'required': ['input_sql_query_1', 'input_sql_query_2', 'reasonings', 'column_mapping_list'], 'title': 'FinalQueryOutput', 'type': 'object'}
+```
+
+```
+The final response should be a json with `names` as 
+    `input_sql_query_1`,
+    `input_sql_query_2`,
+    `reasonings`,
+    `column_mapping_list`.
+```
+
+
+```
+Response for Column Mapping Generation:
+```
+
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['submission.is_last_filing', 'fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund', 'fund_reported_holding.asset_cat'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and then limit the results to the top 20. This operation does not require any JOINs or nested queries, as it involves a single table and straightforward sorting and limiting operations. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='Maximum retries exceeded', helpful=False)]
+================================================================================
+SQL: SELECT 1
+================================================================================
+final_output: 
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+================================================================================
+Column Mappings: 
+```
+Here are the two sql statements that are to be compared:
+```
+
+```
+SQL Query 1:
+```
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+```
+
+```
+SQL Query 2:
+```
+
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+```
+
+```
+Generate a column mapping corresponding to the given input sql queries
+and the description of the table provided below.
+```
+{'table_columns': ['submission.is_last_filing', 'fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund', 'fund_reported_holding.asset_cat'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+```
+
+```
+Here's a more detailed set of instructions:
+```
+
+```
+Task Overview
+```
+Given two sql queries which are supposed to be equivalent, as inputs, 
+the task is to give a column mapping between the output columns in one sql query
+to the other sql query.
+```
+
+```
+The mapping is to be generated as a list of tuples.
+```
+
+```
+For each element of the list which would be a tuple, 
+the first entry in the tuple would be the column name used in sql query 1,
+and the second entry in the tuple would be the corresponding column name in the sql query 2.
+```
+
+```
+
+```
+Reasoning as to why the query is correct:
+```
+
+```
+1. Reasoning you provide should first focus on whether the input sql queries contain 
+a nested query or not.
+2. It should give a plan on how to solve this question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+
+
+
+
+```
+Use the following JSON Schema as the grammar to create the structure 
+for the step by step reasoning, and then to 
+create the final SQL query.
+```
+
+```
+Schema for Reasoning:
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'description': "Returns a detailed reasoning to the user's question.", 'properties': {'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}}, 'required': ['reasonings'], 'title': 'CMReasonings', 'type': 'object'}
+```
+
+```
+The instructions on how to structure the reasoning is provided below:
+```
+
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+Generate two separate thoughts, one each for the two input sql queries, 
+to figure out the list of output columns in each of the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are present in both the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1 
+which are in sql query 1 but 
+which are not present in sql query 2.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are in sql query 2 but 
+which are not present in sql query 1.
+```
+
+```
+If the query uses common table expressions or nested queries, 
+the above thoughts should be generated for each of the CTE separately.
+```
+
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of why the mapping is correct.
+
+```
+
+```
+Schema for Overall Output:
+(This includes the reasonings schema above as an element)
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'properties': {'input_sql_query_1': {'description': 'Returns the exact same first query that the user gave as input.', 'title': 'Input Sql Query 1', 'type': 'string'}, 'input_sql_query_2': {'description': 'Returns the exact same second query that the user gave as input.', 'title': 'Input Sql Query 2', 'type': 'string'}, 'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}, 'column_mapping_list': {'description': 'Returns the list of the corresponding column names in first sql query, sql 1, which\n        corresponds to the column name in the other sql query, sql 2, as a list of tuple entries', 'items': {'maxItems': 2, 'minItems': 2, 'prefixItems': [{'type': 'string'}, {'type': 'string'}], 'type': 'array'}, 'title': 'Column Mapping List', 'type': 'array'}}, 'required': ['input_sql_query_1', 'input_sql_query_2', 'reasonings', 'column_mapping_list'], 'title': 'FinalQueryOutput', 'type': 'object'}
+```
+
+```
+The final response should be a json with `names` as 
+    `input_sql_query_1`,
+    `input_sql_query_2`,
+    `reasonings`,
+    `column_mapping_list`.
+```
+
+
+```
+Response for Column Mapping Generation:
+```
+
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_holding.asset_cat', 'submission.is_last_filing', 'fund_reported_info.total_assets', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and then limit the results to the top 20. This operation can be performed using a single table without requiring any JOINs or nested queries. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_info.total_assets', 'fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund', 'fund_reported_holding.asset_cat', 'submission.is_last_filing'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and limit the results to 20. This operation does not require any JOINs or nested queries, as it involves a single table and straightforward sorting and limiting operations. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table that contains the total assets information. From the schema, 'fund_reported_info' contains 'total_assets'.", helpful=True), Thought(thought="Next, we need to determine if any filtering or conditions are necessary. Since we are interested in the largest funds, we need to sort the results by 'total_assets' in descending order.", helpful=True), Thought(thought="We need to limit the results to the top 20 entries. This can be achieved using the 'LIMIT' clause in SQL.", helpful=True), Thought(thought="There is no need for joins or additional tables since all required information is contained within the 'fund_reported_info' table.", helpful=True), Thought(thought='Finally, ensure the query is structured correctly with the SELECT, FROM, ORDER BY, and LIMIT clauses to retrieve the desired data.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    total_assets 
+FROM 
+    fund_reported_info 
+ORDER BY 
+    total_assets DESC 
+LIMIT 20;
+================================================================================
+final_output: 
+SELECT 
+    SERIES_NAME, 
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    TOTAL_ASSETS DESC 
+LIMIT 20
+================================================================================
+Column Mappings: 
+```
+Here are the two sql statements that are to be compared:
+```
+
+```
+SQL Query 1:
+```
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+```
+
+```
+SQL Query 2:
+```
+
+SELECT 
+    SERIES_NAME, 
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    TOTAL_ASSETS DESC 
+LIMIT 20
+```
+
+```
+Generate a column mapping corresponding to the given input sql queries
+and the description of the table provided below.
+```
+{'table_columns': ['fund_reported_info.total_assets', 'fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund', 'fund_reported_holding.asset_cat', 'submission.is_last_filing'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+```
+
+```
+Here's a more detailed set of instructions:
+```
+
+```
+Task Overview
+```
+Given two sql queries which are supposed to be equivalent, as inputs, 
+the task is to give a column mapping between the output columns in one sql query
+to the other sql query.
+```
+
+```
+The mapping is to be generated as a list of tuples.
+```
+
+```
+For each element of the list which would be a tuple, 
+the first entry in the tuple would be the column name used in sql query 1,
+and the second entry in the tuple would be the corresponding column name in the sql query 2.
+```
+
+```
+
+```
+Reasoning as to why the query is correct:
+```
+
+```
+1. Reasoning you provide should first focus on whether the input sql queries contain 
+a nested query or not.
+2. It should give a plan on how to solve this question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+
+
+
+
+```
+Use the following JSON Schema as the grammar to create the structure 
+for the step by step reasoning, and then to 
+create the final SQL query.
+```
+
+```
+Schema for Reasoning:
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'description': "Returns a detailed reasoning to the user's question.", 'properties': {'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}}, 'required': ['reasonings'], 'title': 'CMReasonings', 'type': 'object'}
+```
+
+```
+The instructions on how to structure the reasoning is provided below:
+```
+
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+Generate two separate thoughts, one each for the two input sql queries, 
+to figure out the list of output columns in each of the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are present in both the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1 
+which are in sql query 1 but 
+which are not present in sql query 2.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are in sql query 2 but 
+which are not present in sql query 1.
+```
+
+```
+If the query uses common table expressions or nested queries, 
+the above thoughts should be generated for each of the CTE separately.
+```
+
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of why the mapping is correct.
+
+```
+
+```
+Schema for Overall Output:
+(This includes the reasonings schema above as an element)
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'properties': {'input_sql_query_1': {'description': 'Returns the exact same first query that the user gave as input.', 'title': 'Input Sql Query 1', 'type': 'string'}, 'input_sql_query_2': {'description': 'Returns the exact same second query that the user gave as input.', 'title': 'Input Sql Query 2', 'type': 'string'}, 'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}, 'column_mapping_list': {'description': 'Returns the list of the corresponding column names in first sql query, sql 1, which\n        corresponds to the column name in the other sql query, sql 2, as a list of tuple entries', 'items': {'maxItems': 2, 'minItems': 2, 'prefixItems': [{'type': 'string'}, {'type': 'string'}], 'type': 'array'}, 'title': 'Column Mapping List', 'type': 'array'}}, 'required': ['input_sql_query_1', 'input_sql_query_2', 'reasonings', 'column_mapping_list'], 'title': 'FinalQueryOutput', 'type': 'object'}
+```
+
+```
+The final response should be a json with `names` as 
+    `input_sql_query_1`,
+    `input_sql_query_2`,
+    `reasonings`,
+    `column_mapping_list`.
+```
+
+
+```
+Response for Column Mapping Generation:
+```
+
+================================================================================
+Error Executing LLM-Generated SQL: no such table: FUND_REPORTED_INFO
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund', 'fund_reported_info.total_assets', 'submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and then limit the results to the top 20. This operation does not require any JOINs or nested queries, as it involves a single table and straightforward sorting and limiting operations. Therefore, the SQL query can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table that contains the total assets information. From the schema, 'fund_reported_info.total_assets' is the column of interest.", helpful=True), Thought(thought="Next, we need to ensure that we are only considering the most recent filings. The 'submission.is_last_filing' column can help filter for the latest data.", helpful=True), Thought(thought="We should order the results by 'total_assets' in descending order to get the largest funds at the top.", helpful=True), Thought(thought='Finally, we need to limit the results to the top 20 entries to satisfy the query requirement.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    fund_reported_info.total_assets 
+FROM 
+    fund_reported_info 
+JOIN 
+    submission ON submission.accession_number = fund_reported_info.accession_number 
+WHERE 
+    submission.is_last_filing = 1 
+ORDER BY 
+    fund_reported_info.total_assets DESC 
+LIMIT 20;
+================================================================================
+final_output: 
+SELECT 
+    fund_reported_info.total_assets 
+FROM 
+    fund_reported_info 
+JOIN 
+    submission ON submission.accession_number = fund_reported_info.accession_number 
+WHERE 
+    submission.is_last_filing = 'Y' 
+ORDER BY 
+    fund_reported_info.total_assets DESC 
+LIMIT 20
+================================================================================
+Column Mappings: 
+```
+Here are the two sql statements that are to be compared:
+```
+
+```
+SQL Query 1:
+```
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+```
+
+```
+SQL Query 2:
+```
+
+SELECT 
+    fund_reported_info.total_assets 
+FROM 
+    fund_reported_info 
+JOIN 
+    submission ON submission.accession_number = fund_reported_info.accession_number 
+WHERE 
+    submission.is_last_filing = 'Y' 
+ORDER BY 
+    fund_reported_info.total_assets DESC 
+LIMIT 20
+```
+
+```
+Generate a column mapping corresponding to the given input sql queries
+and the description of the table provided below.
+```
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund', 'fund_reported_info.total_assets', 'submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+```
+
+```
+Here's a more detailed set of instructions:
+```
+
+```
+Task Overview
+```
+Given two sql queries which are supposed to be equivalent, as inputs, 
+the task is to give a column mapping between the output columns in one sql query
+to the other sql query.
+```
+
+```
+The mapping is to be generated as a list of tuples.
+```
+
+```
+For each element of the list which would be a tuple, 
+the first entry in the tuple would be the column name used in sql query 1,
+and the second entry in the tuple would be the corresponding column name in the sql query 2.
+```
+
+```
+
+```
+Reasoning as to why the query is correct:
+```
+
+```
+1. Reasoning you provide should first focus on whether the input sql queries contain 
+a nested query or not.
+2. It should give a plan on how to solve this question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+
+
+
+
+```
+Use the following JSON Schema as the grammar to create the structure 
+for the step by step reasoning, and then to 
+create the final SQL query.
+```
+
+```
+Schema for Reasoning:
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'description': "Returns a detailed reasoning to the user's question.", 'properties': {'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}}, 'required': ['reasonings'], 'title': 'CMReasonings', 'type': 'object'}
+```
+
+```
+The instructions on how to structure the reasoning is provided below:
+```
+
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+Generate two separate thoughts, one each for the two input sql queries, 
+to figure out the list of output columns in each of the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are present in both the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1 
+which are in sql query 1 but 
+which are not present in sql query 2.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are in sql query 2 but 
+which are not present in sql query 1.
+```
+
+```
+If the query uses common table expressions or nested queries, 
+the above thoughts should be generated for each of the CTE separately.
+```
+
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of why the mapping is correct.
+
+```
+
+```
+Schema for Overall Output:
+(This includes the reasonings schema above as an element)
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'properties': {'input_sql_query_1': {'description': 'Returns the exact same first query that the user gave as input.', 'title': 'Input Sql Query 1', 'type': 'string'}, 'input_sql_query_2': {'description': 'Returns the exact same second query that the user gave as input.', 'title': 'Input Sql Query 2', 'type': 'string'}, 'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}, 'column_mapping_list': {'description': 'Returns the list of the corresponding column names in first sql query, sql 1, which\n        corresponds to the column name in the other sql query, sql 2, as a list of tuple entries', 'items': {'maxItems': 2, 'minItems': 2, 'prefixItems': [{'type': 'string'}, {'type': 'string'}], 'type': 'array'}, 'title': 'Column Mapping List', 'type': 'array'}}, 'required': ['input_sql_query_1', 'input_sql_query_2', 'reasonings', 'column_mapping_list'], 'title': 'FinalQueryOutput', 'type': 'object'}
+```
+
+```
+The final response should be a json with `names` as 
+    `input_sql_query_1`,
+    `input_sql_query_2`,
+    `reasonings`,
+    `column_mapping_list`.
+```
+
+
+```
+Response for Column Mapping Generation:
+```
+
+================================================================================
+Error Executing LLM-Generated SQL: no such table: fund_reported_info
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Schema Links for Question: Show me the top 20 largest funds by total assets
+{'table_columns': ['securities_lending.is_loan_by_fund', 'fund_reported_info.total_assets', 'fund_reported_holding.asset_cat', 'submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the top 20 largest funds by total assets" needs data from the "fund_reported_info" table, specifically the "total_assets" column. To find the top 20 largest funds, we need to sort the funds by "total_assets" in descending order and limit the results to 20. This operation does not require any JOINs or nested queries, as it involves a single table and a straightforward sorting and limiting operation. Therefore, the SQL query can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='Maximum retries exceeded', helpful=False)]
+================================================================================
+SQL: SELECT 1
+================================================================================
+final_output: 
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+================================================================================
+Column Mappings: 
+```
+Here are the two sql statements that are to be compared:
+```
+
+```
+SQL Query 1:
+```
+SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+```
+
+```
+SQL Query 2:
+```
+
+SELECT SERIES_NAME, TOTAL_ASSETS
+FROM FUND_REPORTED_INFO
+ORDER BY TOTAL_ASSETS DESC
+LIMIT 20
+```
+
+```
+Generate a column mapping corresponding to the given input sql queries
+and the description of the table provided below.
+```
+{'table_columns': ['securities_lending.is_loan_by_fund', 'fund_reported_info.total_assets', 'fund_reported_holding.asset_cat', 'submission.is_last_filing', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+```
+
+```
+Here's a more detailed set of instructions:
+```
+
+```
+Task Overview
+```
+Given two sql queries which are supposed to be equivalent, as inputs, 
+the task is to give a column mapping between the output columns in one sql query
+to the other sql query.
+```
+
+```
+The mapping is to be generated as a list of tuples.
+```
+
+```
+For each element of the list which would be a tuple, 
+the first entry in the tuple would be the column name used in sql query 1,
+and the second entry in the tuple would be the corresponding column name in the sql query 2.
+```
+
+```
+
+```
+Reasoning as to why the query is correct:
+```
+
+```
+1. Reasoning you provide should first focus on whether the input sql queries contain 
+a nested query or not.
+2. It should give a plan on how to solve this question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+
+
+
+
+```
+Use the following JSON Schema as the grammar to create the structure 
+for the step by step reasoning, and then to 
+create the final SQL query.
+```
+
+```
+Schema for Reasoning:
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'description': "Returns a detailed reasoning to the user's question.", 'properties': {'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}}, 'required': ['reasonings'], 'title': 'CMReasonings', 'type': 'object'}
+```
+
+```
+The instructions on how to structure the reasoning is provided below:
+```
+
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+Generate two separate thoughts, one each for the two input sql queries, 
+to figure out the list of output columns in each of the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are present in both the sql queries.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1 
+which are in sql query 1 but 
+which are not present in sql query 2.
+```
+
+```
+Generate a thought to figure out the list of columns in sql query 1
+which are in sql query 2 but 
+which are not present in sql query 1.
+```
+
+```
+If the query uses common table expressions or nested queries, 
+the above thoughts should be generated for each of the CTE separately.
+```
+
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of why the mapping is correct.
+
+```
+
+```
+Schema for Overall Output:
+(This includes the reasonings schema above as an element)
+```
+{'$defs': {'CMBackground': {'description': 'A setup to the background for the user.', 'properties': {'background': {'description': "Background for the user's question", 'minLength': 10, 'title': 'Background', 'type': 'string'}}, 'required': ['background'], 'title': 'CMBackground', 'type': 'object'}, 'CMObservation': {'description': 'An observation on the sequence of thoughts and observations generated so far.', 'properties': {'observation': {'description': 'An insightful observation on the sequence of thoughts and observations generated so far.', 'title': 'Observation', 'type': 'string'}}, 'required': ['observation'], 'title': 'CMObservation', 'type': 'object'}, 'CMThought': {'description': "A thought about the user's question.", 'properties': {'thought': {'description': 'Text of the thought.', 'title': 'Thought', 'type': 'string'}}, 'required': ['thought'], 'title': 'CMThought', 'type': 'object'}}, 'properties': {'input_sql_query_1': {'description': 'Returns the exact same first query that the user gave as input.', 'title': 'Input Sql Query 1', 'type': 'string'}, 'input_sql_query_2': {'description': 'Returns the exact same second query that the user gave as input.', 'title': 'Input Sql Query 2', 'type': 'string'}, 'reasonings': {'description': 'Reasonings to solve the users questions.', 'items': {'anyOf': [{'$ref': '#/$defs/CMBackground'}, {'$ref': '#/$defs/CMThought'}, {'$ref': '#/$defs/CMObservation'}]}, 'title': 'Reasonings', 'type': 'array'}, 'column_mapping_list': {'description': 'Returns the list of the corresponding column names in first sql query, sql 1, which\n        corresponds to the column name in the other sql query, sql 2, as a list of tuple entries', 'items': {'maxItems': 2, 'minItems': 2, 'prefixItems': [{'type': 'string'}, {'type': 'string'}], 'type': 'array'}, 'title': 'Column Mapping List', 'type': 'array'}}, 'required': ['input_sql_query_1', 'input_sql_query_2', 'reasonings', 'column_mapping_list'], 'title': 'FinalQueryOutput', 'type': 'object'}
+```
+
+```
+The final response should be a json with `names` as 
+    `input_sql_query_1`,
+    `input_sql_query_2`,
+    `reasonings`,
+    `column_mapping_list`.
+```
+
+
+```
+Response for Column Mapping Generation:
+```
+
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

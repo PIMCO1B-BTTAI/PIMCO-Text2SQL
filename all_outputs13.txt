@@ -1,0 +1,15 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    CASH_NOT_RPTD_IN_C_OR_D
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+ORDER BY 
+    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) DESC
+LIMIT 1;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

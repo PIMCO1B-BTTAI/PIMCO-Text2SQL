@@ -73,3 +73,91 @@ SELECT registrant.phone FROM registrant WHERE registrant.registrant_name = 'Vang
 ================================================================================
 Error Executing LLM-Generated SQL: no such table: registrant
 ================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================
+Schema Links for Question: Show me the phone numbers of all Vanguard registrants
+{'table_columns': ['registrant.phone', 'registrant.registrant_name', 'registrant.accession_number'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the phone numbers of all Vanguard registrants" needs data from the "registrant" table, specifically the phone numbers and registrant names. Since we are only interested in registrants with the name "Vanguard," we can filter the results using a simple WHERE clause. This query does not require any JOINs or nested queries, as it only involves a single table and a straightforward condition.
+
+Therefore, the SQL query can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================
+Schema Links for Question: Show me the phone numbers of all Vanguard registrants
+{'table_columns': ['registrant.accession_number', 'registrant.phone', 'registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the phone numbers of all Vanguard registrants" needs these tables = [registrant], so we don't need JOIN. The query involves filtering registrants based on their name containing "Vanguard" and retrieving their phone numbers. This can be done with a simple SELECT statement with a WHERE clause. It doesn't require nested queries with (INTERSECT, UNION, EXCEPT, IN, NOT IN). So, we don't need JOIN and don't need nested queries, then the SQL query can be classified as "EASY". 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================
+Schema Links for Question: Show me the phone numbers of all Vanguard registrants
+{'table_columns': ['registrant.accession_number', 'registrant.phone', 'registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me the phone numbers of all Vanguard registrants" needs these tables = [registrant], so we don't need JOIN. Plus, it doesn't require nested queries with (INTERSECT, UNION, EXCEPT, IN, NOT IN), and we need the answer to the questions = [registrant.phone]. So, we don't need JOIN and don't need nested queries, then the SQL query can be classified as "EASY". 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table required for this query, which is the 'registrant' table, as it contains the phone numbers.", helpful=True), Thought(thought="Next, we need to determine if any joins or additional tables are necessary. Since the question specifies 'Vanguard registrants', we need to ensure that we filter for registrants associated with Vanguard.", helpful=True), Thought(thought="We should check if there is a need for a WHERE clause to filter the registrants by a specific condition, such as the registrant name being 'Vanguard'.", helpful=True), Thought(thought="Since the schema does not provide a direct link to identify 'Vanguard' registrants, we assume 'registrant_name' can be used to filter for 'Vanguard'.", helpful=True), Thought(thought="Finally, we structure the SQL query to select the 'phone' column from the 'registrant' table where the 'registrant_name' is 'Vanguard'.", helpful=True)]
+================================================================================
+SQL: SELECT registrant.phone FROM registrant WHERE registrant.registrant_name = 'Vanguard';
+================================================================================
+final_output: 
+SELECT phone FROM REGISTRANT WHERE REGISTRANT_NAME = 'Vanguard'
+================================================================================
+Error Executing LLM-Generated SQL: no such table: REGISTRANT
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';
+================================================================================

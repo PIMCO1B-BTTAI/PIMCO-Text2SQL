@@ -1,0 +1,34 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+================================================================================
+Schema Links for Question: Show me all funds with 'Growth' in their name
+{'table_columns': ['securities_lending.is_loan_by_fund', 'registrant.registrant_name'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me all funds with 'Growth' in their name" needs to access the "fund_reported_info" table to find funds with 'Growth' in their series name. This can be done by filtering the "series_name" column for entries containing 'Growth'. Since this query only involves a single table and does not require any joins or nested queries, it can be classified as "EASY". 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

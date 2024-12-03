@@ -1,0 +1,12 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    COUNT(DISTINCT PHONE)
+FROM 
+    REGISTRANT
+GROUP BY 
+    REGISTRANT_NAME
+HAVING 
+    COUNT(DISTINCT PHONE) > 1;
+================================================================================
