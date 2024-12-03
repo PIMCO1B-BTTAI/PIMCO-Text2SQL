@@ -296,3 +296,49 @@ LIMIT 5
 ================================================================================
 Error Executing LLM-Generated SQL: no such table: FUND_REPORTED_INFO
 ================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%EQUITY%'
+    OR SERIES_NAME LIKE '%STOCK%'
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC;
+================================================================================
+Schema Links for Question: Show me all equity-focused funds
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund', 'fund_reported_info.series_name'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    COUNTRY
+FROM 
+    REGISTRANT;
+================================================================================
+Schema Links for Question: List all registrants with their country
+{'table_columns': ['registrant.registrant_name', 'registrant.country'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "List all registrants with their country" needs data from the "registrant" table, specifically the columns "registrant_name" and "country." Since this query only involves a single table and does not require any JOIN or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="The question asks for a list of registrants along with their country, which suggests we need to select data from the 'registrant' table.", helpful=True), Thought(thought="The schema information indicates that the 'registrant' table contains the columns 'registrant_name' and 'country', which are exactly the columns we need to retrieve.", helpful=True), Thought(thought='There is no indication of needing to filter or aggregate data, so a simple SELECT statement should suffice.', helpful=True), Thought(thought='Since the query does not require any conditions or joins with other tables, there is no need for a WHERE clause or any complex query structure.', helpful=True), Thought(thought='The query is straightforward and does not require any Common Table Expressions (CTEs) or nested queries.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    registrant_name, 
+    country 
+FROM 
+    registrant;
+================================================================================
+final_output: 
+SELECT 
+    registrant_name, 
+    country 
+FROM 
+    registrant
+================================================================================
+Error Executing LLM-Generated SQL: no such table: registrant
+================================================================================

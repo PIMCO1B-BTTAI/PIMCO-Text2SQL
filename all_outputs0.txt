@@ -827,3 +827,64 @@ ORDER BY CAST(cash_not_rptd_in_c_or_d AS FLOAT) DESC
 ================================================================================
 Error Executing LLM-Generated SQL: no such table: fund_reported_info
 ================================================================================
+Ground Truth Query: SELECT 
+    REGISTRANT_NAME,
+    ZIP
+FROM 
+    REGISTRANT;
+================================================================================
+Schema Links for Question: List all registrants with their ZIP codes
+{'table_columns': ['registrant.zip', 'registrant.registrant_name', 'interest_rate_risk.currency_code'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "List all registrants with their ZIP codes" needs data from the "registrant" table, specifically the columns "registrant_name" and "zip." Since this query only involves a single table and does not require any JOINs or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="The main table required for this query is the 'registrant' table because it contains both the registrant names and their ZIP codes.", helpful=True), Thought(thought='There is no need for a JOIN or any complex operations like aggregations or subqueries since all required information is contained within a single table.', helpful=True), Thought(thought="The SELECT clause should include 'registrant_name' and 'zip' to fulfill the requirement of listing registrants with their ZIP codes.", helpful=True), Thought(thought='No WHERE clause is necessary as the query does not specify any conditions or filters.', helpful=True), Thought(thought='The query is straightforward and does not require a GROUP BY clause since we are not aggregating data.', helpful=True)]
+================================================================================
+SQL: SELECT registrant.registrant_name, registrant.zip FROM registrant;
+================================================================================
+final_output: 
+SELECT registrant.registrant_name, registrant.zip FROM registrant
+================================================================================
+Error Executing LLM-Generated SQL: no such table: registrant
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%EQUITY%'
+    OR SERIES_NAME LIKE '%STOCK%'
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC;
+================================================================================
+Schema Links for Question: Show me all equity-focused funds
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'securities_lending.is_loan_by_fund', 'fund_reported_info.series_name'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To determine the classification of the query "Show me all equity-focused funds," we need to consider the following:
+
+1. **Identify Relevant Tables and Columns**: The query is asking for equity-focused funds. This likely involves identifying funds based on their asset category or investment focus. The relevant table for this information would be `FUND_REPORTED_HOLDING`, specifically the `ASSET_CAT` column, which categorizes the asset type of the holding.
+
+2. **Determine the Need for JOINs**: Since the query is focused on identifying funds based on their asset category, it primarily involves a single table (`FUND_REPORTED_HOLDING`). There is no indication that information from multiple tables needs to be combined, so a JOIN is not necessary.
+
+3. **Determine the Need for Nested Queries**: The query does not require any complex filtering or aggregation that would necessitate a nested query. It is a straightforward selection based on a specific condition (asset category being equity).
+
+Given these considerations, the query does not require JOINs or nested queries. Therefore, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required. The table 'fund_reported_info' seems relevant as it contains 'series_name', which could indicate the type of fund.", helpful=True), Thought(thought="Next, determine if any joins or aggregations are needed. Since we are only interested in equity-focused funds, we should focus on filtering the 'series_name' column for relevant keywords like 'equity'.", helpful=True), Thought(thought="Consider how to structure the WHERE clause. We should use a condition that checks if 'series_name' contains the word 'equity', which is a common identifier for equity-focused funds.", helpful=True), Thought(thought='Since the query is straightforward and does not require complex calculations or aggregations, a simple SELECT statement with a WHERE clause should suffice.', helpful=True)]
+================================================================================
+SQL: SELECT series_name FROM fund_reported_info WHERE series_name LIKE '%equity%';
+================================================================================
+final_output: 
+SELECT series_name FROM fund_reported_info WHERE series_name LIKE '%equity%'
+================================================================================
+Error Executing LLM-Generated SQL: no such table: fund_reported_info
+================================================================================

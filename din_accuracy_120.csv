@@ -153,3 +153,23 @@ FROM
     FUND_REPORTED_INFO 
 WHERE 
     SERIES_NAME LIKE '%INDEX%';",List all funds with 'Index' in their name,Error
+"SELECT 
+    REGISTRANT_NAME,
+    ZIP
+FROM 
+    REGISTRANT;",List all registrants with their ZIP codes,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%EQUITY%'
+    OR SERIES_NAME LIKE '%STOCK%'
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC;",Show me all equity-focused funds,Error
+"SELECT 
+    REGISTRANT_NAME,
+    COUNTRY
+FROM 
+    REGISTRANT;",List all registrants with their country,Error

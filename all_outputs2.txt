@@ -223,3 +223,29 @@ HAVING
 ================================================================================
 Error Executing LLM-Generated SQL: no such table: registrant
 ================================================================================
+Ground Truth Query: SELECT 
+    COUNT(*),
+    SUM(CAST(TOTAL_ASSETS AS FLOAT))
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%SUSTAINABLE%'
+    OR SERIES_NAME LIKE '%ESG%';
+================================================================================
+Schema Links for Question: I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?
+{'table_columns': ['fund_reported_info.total_assets', 'registrant.registrant_name', 'fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The query involves searching for funds with specific keywords ('sustainable' or 'ESG') in their names and retrieving their total assets under management (AUM). This requires data from the "fund_reported_info" table for total assets and potentially the "registrant" or "fund_reported_info" table for the fund names. 
+
+1. **Identify Tables**: We need to identify which table contains the fund names. Based on the schema, the "fund_reported_info" table contains the "SERIES_NAME" which likely includes the fund names.
+
+2. **Filter Condition**: We need to filter the "SERIES_NAME" for the presence of 'sustainable' or 'ESG'. This can be done using a simple `LIKE` condition in SQL.
+
+3. **Retrieve Total AUM**: The total assets under management (AUM) can be retrieved from the "TOTAL_ASSETS" column in the "fund_reported_info" table.
+
+Since the query involves filtering and retrieving data from a single table without requiring any joins or nested queries, it can be classified as "EASY".
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
