@@ -31,3 +31,91 @@ False, not all ground truth columns are in generated csv
 ================================================================================
 Result: False
 ================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;
+================================================================================
+Schema Links for Question: Which funds have assets between 100M and 500M?
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To answer the question "Which funds have assets between 100M and 500M?", we need to identify the relevant tables and columns. The table "FUND_REPORTED_INFO" contains information about the funds, including their total assets. We need to filter the funds based on the "TOTAL_ASSETS" column to find those with assets between 100 million and 500 million.
+
+Since the question only involves filtering data from a single table ("FUND_REPORTED_INFO") based on a condition, there is no need for a JOIN or a nested query. We can directly query the "FUND_REPORTED_INFO" table to get the desired results.
+
+Therefore, the SQL query can be classified as "EASY" because it does not require JOINs or nested queries.
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;
+================================================================================
+Schema Links for Question: Which funds have assets between 100M and 500M?
+{'table_columns': ['securities_lending.is_loan_by_fund', 'fund_reported_holding.asset_cat'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The question "Which funds have assets between 100M and 500M?" requires us to identify funds based on their asset values. The relevant table for this query is "FUND_REPORTED_INFO," which contains the "TOTAL_ASSETS" column. 
+
+To answer this question, we need to filter the records in the "FUND_REPORTED_INFO" table where the "TOTAL_ASSETS" value is between 100 million and 500 million. This operation involves a simple filtering condition on a single table and does not require any joins or nested queries.
+
+Therefore, the SQL query for this question can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+Error in process_question_sql of SQL Generation: 1 validation error for FinalOutput
+reasonings.0
+  Input should be a valid dictionary or instance of Thought [type=model_type, input_value=Thought(thought='Maximum retries exceeded'), input_type=Thought]
+    For further information visit https://errors.pydantic.dev/2.10/v/model_type
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;
+================================================================================
+Schema Links for Question: Which funds have assets between 100M and 500M?
+{'table_columns': ['fund_reported_holding.asset_cat', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To answer the question "Which funds have assets between 100M and 500M?", we need to identify the relevant tables and columns. The table "FUND_REPORTED_INFO" contains information about the funds, including their total assets. We need to filter the funds based on the "TOTAL_ASSETS" column to find those with assets between 100 million and 500 million.
+
+Since this query only involves a single table ("FUND_REPORTED_INFO") and does not require any joins or nested queries, it can be classified as "EASY". The query will simply filter the rows based on the "TOTAL_ASSETS" column.
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table that contains information about fund assets. Based on the schema, it seems likely that the 'FUND_REPORTED_HOLDING' table contains relevant asset information.", helpful=True), Thought(thought="Next, we need to determine the specific column that represents the asset value. The schema does not explicitly list a column for asset values, so we will assume there is a column like 'asset_value' or similar in the 'FUND_REPORTED_HOLDING' table.", helpful=True), Thought(thought="We need to construct a WHERE clause to filter funds with assets between 100M and 500M. This will involve using a condition like 'WHERE asset_value BETWEEN 100000000 AND 500000000'.", helpful=True), Thought(thought='Since the question does not specify any additional conditions or require aggregation, a simple SELECT statement with a WHERE clause should suffice.', helpful=True), Thought(thought="Finally, we should ensure that the query is formatted correctly and returns the fund identifiers or names, assuming there is a column like 'fund_name' or 'fund_id' in the 'FUND_REPORTED_HOLDING' table.", helpful=True)]
+================================================================================
+SQL: SELECT fund_id FROM FUND_REPORTED_HOLDING WHERE asset_value BETWEEN 100000000 AND 500000000;
+================================================================================
+final_output: 
+SELECT SERIES_NAME 
+FROM FUND_REPORTED_INFO 
+WHERE TOTAL_ASSETS BETWEEN 100000000 AND 500000000
+================================================================================
+Error Executing LLM-Generated SQL: no such table: FUND_REPORTED_INFO
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;
+================================================================================
+Error in process_schema of Value Retrieval: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+================================================================================

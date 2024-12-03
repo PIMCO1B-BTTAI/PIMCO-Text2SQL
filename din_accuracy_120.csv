@@ -6,14 +6,22 @@ FROM
     FUND_REPORTED_INFO
 ORDER BY 
     CAST(TOTAL_ASSETS AS FLOAT) DESC
+<<<<<<< HEAD
 LIMIT 20;",Show me the top 20 largest funds by total assets,False
+=======
+LIMIT 20;",Show me the top 20 largest funds by total assets,Error
+>>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
 "SELECT 
     SERIES_NAME,
     NET_ASSETS 
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
+<<<<<<< HEAD
     CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,False
+=======
+    CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,Error
+>>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
 "SELECT 
     ASSET_CAT,
     SUM(CAST(CURRENCY_VALUE AS FLOAT))
@@ -23,7 +31,11 @@ GROUP BY
     ASSET_CAT
 ORDER BY 
     SUM(CAST(CURRENCY_VALUE AS FLOAT)) DESC
+<<<<<<< HEAD
 LIMIT 1;",Which asset categories have the highest total investment value?,False
+=======
+LIMIT 1;",Which asset categories have the highest total investment value?,Error
+>>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
 "SELECT 
     SERIES_NAME,
     TOTAL_ASSETS
@@ -33,6 +45,7 @@ WHERE
     SERIES_NAME LIKE '%BOND%'
 ORDER BY 
     CAST(TOTAL_ASSETS AS FLOAT) DESC
+<<<<<<< HEAD
 LIMIT 1;",Show me the largest bond funds,False
 "SELECT 
     REGISTRANT_NAME,
@@ -1105,3 +1118,6 @@ WHERE (CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT)
 SELECT STATE, AVG_NET_ASSETS
 FROM StateAvgNetAssets
 WHERE AVG_NET_ASSETS = (SELECT MAX(AVG_NET_ASSETS) FROM StateAvgNetAssets);",List states with the highest average net assets per fund.,Error
+=======
+LIMIT 1;",Show me the largest bond funds,Error
+>>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
