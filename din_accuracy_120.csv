@@ -1,0 +1,155 @@
+Ground_Truth_Query,LLM_Query,Comparison_Result
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 20;",Show me the top 20 largest funds by total assets,Error
+"SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,Error
+"SELECT 
+    ASSET_CAT,
+    SUM(CAST(CURRENCY_VALUE AS FLOAT))
+FROM 
+    FUND_REPORTED_HOLDING
+GROUP BY 
+    ASSET_CAT
+ORDER BY 
+    SUM(CAST(CURRENCY_VALUE AS FLOAT)) DESC
+LIMIT 1;",Which asset categories have the highest total investment value?,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%BOND%'
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 1;",Show me the largest bond funds,Error
+"SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';",Show me the phone numbers of all Vanguard registrants,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;",Which funds have assets between 100M and 500M?,Error
+"SELECT 
+    REGISTRANT_NAME,
+    CITY
+FROM 
+    REGISTRANT;",List all registrants and their cities,Error
+"SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS = NET_ASSETS;",Which funds have total assets equal to net assets?,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';",List all funds with 'Income' in their name,Error
+"SELECT 
+    SERIES_NAME,
+    CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    TOTAL_ASSETS != '0'
+ORDER BY 
+    CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 1;",Which funds have the highest liabilities to assets ratio?,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';",Show me all funds with 'Growth' in their name,Error
+"SELECT 
+    SERIES_NAME,
+    NET_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    CAST(NET_ASSETS AS FLOAT) DESC 
+LIMIT 10;",List the top 10 funds by net assets,Error
+"SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_LIABILITIES = '0' 
+    OR TOTAL_LIABILITIES IS NULL;",Which funds have zero liabilities?,Error
+"SELECT 
+    SERIES_NAME,
+    CASH_NOT_RPTD_IN_C_OR_D
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+ORDER BY 
+    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) DESC
+LIMIT 1;",Which funds have the most cash on hand?,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS IS NOT NULL
+ORDER BY 
+    CAST(TOTAL_ASSETS AS FLOAT) ASC 
+LIMIT 5;",Show me the smallest 5 funds by total assets,Error
+"SELECT 
+    REGISTRANT_NAME,
+    COUNT(DISTINCT PHONE)
+FROM 
+    REGISTRANT
+GROUP BY 
+    REGISTRANT_NAME
+HAVING 
+    COUNT(DISTINCT PHONE) > 1;",Which registrants have multiple phone numbers?,Error
+"SELECT 
+    REGISTRANT_NAME,
+    CITY,
+    ADDRESS1 
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'FL';",Show me all registrants from Florida,Error
+"SELECT 
+    SERIES_NAME,
+    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL 
+    AND TOTAL_ASSETS > 0
+ORDER BY 
+    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) DESC
+LIMIT 1;",Show me funds with the highest ratio of cash to total assets,Error
+"SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INDEX%';",List all funds with 'Index' in their name,Error
