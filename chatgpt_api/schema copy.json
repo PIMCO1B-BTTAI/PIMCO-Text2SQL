@@ -1,0 +1,411 @@
+
+{
+"type": "database",
+"schema": {
+    "tables": [
+        {
+            "name": "REGISTRANT",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "CIK", "type": "VARCHAR2(10)" },
+                { "name": "REGISTRANT_NAME", "type": "VARCHAR2(150)" },
+                { "name": "FILE_NUM", "type": "VARCHAR2(30)" },
+                { "name": "LEI", "type": "VARCHAR2(20)" },
+                { "name": "ADDRESS1", "type": "VARCHAR2(40)" },
+                { "name": "ADDRESS2", "type": "VARCHAR2(40)" },
+                { "name": "CITY", "type": "VARCHAR2(30)" },
+                { "name": "STATE", "type": "VARCHAR2(5)" },
+                { "name": "COUNTRY", "type": "VARCHAR2(10)" },
+                { "name": "ZIP", "type": "VARCHAR2(10)" },
+                { "name": "PHONE", "type": "VARCHAR2(20)" }
+            ]
+        },
+        {
+            "name": "FUND_REPORTED_INFO",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "SERIES_NAME", "type": "VARCHAR2(150)" },
+                { "name": "SERIES_ID", "type": "VARCHAR2(10)" },
+                { "name": "SERIES_LEI", "type": "VARCHAR2(20)" },
+                { "name": "TOTAL_ASSETS", "type": "NUMBER(36,12)" },
+                { "name": "TOTAL_LIABILITIES", "type": "NUMBER(36,12)" },
+                { "name": "NET_ASSETS", "type": "NUMBER(36,12)" },
+                { "name": "ASSETS_ATTRBT_TO_MISC_SECURITY", "type": "NUMBER(36,12)" },
+                { "name": "ASSETS_INVESTED", "type": "NUMBER(36,12)T" },
+                { "name": "BORROWING_PAY_WITHIN_1YR", "type": "NUMBER(36,12)" },
+                { "name": "CTRLD_COMPANIES_PAY_WITHIN_1YR", "type": "NUMBER(36,12)" },
+                { "name": "OTHER_AFFILIA_PAY_WITHIN_1YR", "type": "NUMBER(36,12)" },
+                { "name": "OTHER_PAY_WITHIN_1YR", "type": "NUMBER(36,12)" },
+                { "name": "BORROWING_PAY_AFTER_1YR", "type": "NUMBER(36,12)" },
+                { "name": "CTRLD_COMPANIES_PAY_AFTER_1YR", "type": "NUMBER(36,12)" },
+                { "name": "OTHER_AFFILIA_PAY_AFTER_1YR", "type": "NUMBER(36,12)" },
+                { "name": "OTHER_PAY_AFTER_1YR", "type": "NUMBER(36,12)" },
+                { "name": "DELAYED_DELIVERY", "type": "NUMBER(36,12)" },
+                { "name": "STANDBY_COMMITMENT", "type": "NUMBER(36,12)" },
+                { "name": "LIQUIDATION_PREFERENCE", "type": "NUMBER(36,12)" },
+                { "name": "CASH_NOT_RPTD_IN_C_OR_D", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_3MON_INVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_1YR_INVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_5YR_INVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_10YR_INVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_30YR_INVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_3MON_NONINVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_1YR_NONINVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_5YR_NONINVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_10YR_NONINVEST", "type": "NUMBER(36,12)" },
+                { "name": "CREDIT_SPREAD_30YR_NONINVEST", "type": "NUMBER(36,12)" },
+                { "name": "IS_NON_CASH_COLLATERAL", "type": "CHAR(1)" },
+                { "name": "NET_REALIZE_GAIN_NONDERIV_MON1", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZE_AP_NONDERIV_MON1", "type": "NUMBER(36,12)" },
+                { "name": "NET_REALIZE_GAIN_NONDERIV_MON2", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZE_AP_NONDERIV_MON2", "type": "NUMBER(36,12)" },
+                { "name": "NET_REALIZE_GAIN_NONDERIV_MON3", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZE_AP_NONDERIV_MON3", "type": "NUMBER(36,12)" },
+                { "name": "SALES_FLOW_MON1", "type": "NUMBER(36,12)" },
+                { "name": "REINVESTMENT_FLOW_MON1", "type": "NUMBER(36,12)" },
+                { "name": "REDEMPTION_FLOW_MON1", "type": "NUMBER(36,12)" },
+                { "name": "SALES_FLOW_MON2", "type": "NUMBER(36,12)" },
+                { "name": "REINVESTMENT_FLOW_MON2", "type": "NUMBER(36,12)" },
+                { "name": "REDEMPTION_FLOW_MON2", "type": "NUMBER(36,12)" },
+                { "name": "SALES_FLOW_MON3", "type": "NUMBER(36,12)" },
+                { "name": "REINVESTMENT_FLOW_MON3", "type": "NUMBER(36,12)" },
+                { "name": "REDEMPTION_FLOW_MON3", "type": "NUMBER(36,12)" }
+            ]
+        },
+        {
+            "name": "INTEREST_RATE_RISK",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "INTEREST_RATE_RISK_ID", "type": "NUMBER(38)" },
+                { "name": "CURRENCY_CODE", "type": "VARCHAR2(3)" },
+                { "name": "INTRST_RATE_CHANGE_3MON_DV01", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_1YR_DV01", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_5YR_DV01", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_10YR_DV01", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_30YR_DV01", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_3MON_DV100", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_1YR_DV100", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_5YR_DV100", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_10YR_DV100", "type": "NUMBER(36,12)" },
+                { "name": "INTRST_RATE_CHANGE_30YR_DV100", "type": "NUMBER(36,12)" }
+            ]
+        },
+        {
+            "name": "BORROWER",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "BORROWER_ID", "type": "NUMBER(38)" },
+                { "name": "NAME", "type": "VARCHAR2(150)" },
+                { "name": "LEI", "type": "VARCHAR2(20)" },
+                { "name": "AGGREGATE_VALUE", "type": "NUMBER(36,12)" }
+            ]
+        },
+        {
+            "name": "FUND_REPORTED_HOLDING",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "HOLDING_ID", "type": "NUMBER(38)" },
+                { "name": "ISSUER_NAME", "type": "VARCHAR2(150)" },
+                { "name": "ISSUER_LEI", "type": "VARCHAR2(20)" },
+                { "name": "ISSUER_TITLE", "type": "VARCHAR2(150)" },
+                { "name": "ISSUER_CUSIP", "type": "VARCHAR2(9)" },
+                { "name": "BALANCE", "type": "NUMBER(36,12)" },
+                { "name": "UNIT", "type": "VARCHAR2(5)" },
+                { "name": "CURRENCY_CODE", "type": "VARCHAR2(3)" },
+                { "name": "CURRENCY_VALUE", "type": "NUMBER(36,12)" },
+                { "name": "PERCENTAGE", "type": "NUMBER(36,12)" },
+                { "name": "PAYOFF_PROFILE", "type": "VARCHAR2(10)" },
+                { "name": "ASSET_CAT", "type": "VARCHAR2(10)" },
+                { "name": "ISSUER_TYPE", "type": "VARCHAR2(20)" },
+                { "name": "INVESTMENT_COUNTRY", "type": "VARCHAR2(10)" },
+                { "name": "IS_RESTRICTED_SECURITY", "type": "CHAR(1)" },
+                { "name": "FAIR_VALUE_LEVEL", "type": "VARCHAR2(10)" }
+            ]
+        },
+        {
+            "name": "SUBMISSION",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "FILING_DATE", "type": "DATE" },
+                { "name": "SUB_TYPE", "type": "VARCHAR2(15)" },
+                { "name": "REPORT_ENDING_PERIOD", "type": "DATE" },
+                { "name": "REPORT_DATE", "type": "DATE" },
+                { "name": "IS_LAST_FILING", "type": "CHAR(1)" }
+            ]
+        },
+        {
+            "name": "BORROW_AGGREGATE",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "BORROW_AGGREGATE_ID", "type": "NUMBER(38)" },
+                { "name": "AMOUNT", "type": "NUMBER(36,12)" },
+                { "name": "COLLATERAL", "type": "NUMBER(36,12)" },
+                { "name": "INVESTMENT_CAT", "type": "VARCHAR2(20)" }
+            ]
+        },
+        {
+            "name": "IDENTIFIERS",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "NUMBER(38)" },
+                { "name": "IDENTIFIERS_ID", "type": "NUMBER(38)" },
+                { "name": "IDENTIFIER_ISIN", "type": "VARCHAR2(12)" }
+            ]
+        },
+        {
+            "name": "MONTHLY_TOTAL_RETURN",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "MONTHLY_TOTAL_RETURN_ID", "type": "NUMBER(38)" },
+                { "name": "CLASS_ID", "type": "VARCHAR2(10)" },
+                { "name": "MONTHLY_TOTAL_RETURN1", "type": "NUMBER(36,12)" },
+                { "name": "MONTHLY_TOTAL_RETURN2", "type": "NUMBER(36,12)" },
+                { "name": "MONTHLY_TOTAL_RETURN3", "type": "NUMBER(36,12)" }
+            ]
+        },
+        {
+            "name": "MONTHLY_RETURN_CAT_INSTRUMENT",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "ASSET_CAT", "type": "VARCHAR2(30)" },
+                { "name": "INSTRUMENT_KIND", "type": "VARCHAR2(30)" },
+                { "name": "NET_REALIZED_GAIN_MON1", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZED_AP_MON1", "type": "NUMBER(36,12)" },
+                { "name": "NET_REALIZED_GAIN_MON2", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZED_AP_MON2", "type": "NUMBER(36,12)" },
+                { "name": "NET_REALIZED_GAIN_MON3", "type": "NUMBER(36,12)" },
+                { "name": "NET_UNREALIZED_AP_MON3", "type": "NUMBER(36,12)" }
+            ]
+        },
+        {
+            "name": "FUND_VAR_INFO",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "DESIGNATED_INDEX_NAME", "type": "VARCHAR2(250)" },
+                { "name": "DESIGNATED_INDEX_IDENTIFIER", "type": "VARCHAR2(150)" },
+            ]
+        },
+        {
+            "name": "EXPLANATORY_NOTE",
+            "columns": [
+                { "name": "ACCESSION_NUMBER", "type": "VARCHAR2(20)" },
+                { "name": "EXPLANATORY_NOTE_ID", "type": "NUMBER(38)" },
+                { "name": "ITEM_NO", "type": "VARCHAR2(15)" },
+                { "name": "EXPLANATORY_NOTE", "type": "CLOB" }
+            ]
+        },
+        {
+            "name": "DEBT_SECURITY",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "NUMBER(38)" },
+                { "name": "MATURITY_DATE", "type": "DATE" },
+                { "name": "COUPON_TYPE", "type": "VARCHAR2(10)" },
+                { "name": "ANNUALIZED_RATE", "type": "NUMBER(36,12)" },
+                { "name": "IS_DEFAULT", "type": "CHAR(1)" },
+                { "name": "ARE_ANY_INTEREST_PAYMENT", "type": "CHAR(1)" },
+                { "name": "IS_ANY_PORTION_INTEREST_PAID", "type": "CHAR(1)" },
+                { "name": "IS_CONVTIBLE_MANDATORY", "type": "CHAR(1)" },
+                { "name": "IS_CONVTIBLE_CONTINGENT", "type": "CHAR(1)" }
+            ]
+        },
+        {
+            "name": "CONVERTIBLE_SECURITY_CURRENCY",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "CONVERTIBLE_SECURITY_ID", "type": "TEXT" },
+                { "name": "CONVERSION_RATIO", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "REPURCHASE_AGREEMENT",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "TRANSACTION_TYPE", "type": "TEXT" },
+                { "name": "IS_CLEARED", "type": "TEXT" },
+                { "name": "CENTRAL_COUNTER_PARTY", "type": "TEXT" },
+                { "name": "IS_TRIPARTY", "type": "TEXT" },
+                { "name": "REPURCHASE_RATE", "type": "TEXT" },
+                { "name": "MATURITY_DATE", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "REPURCHASE_COUNTERPARTY",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "REPURCHASE_COUNTERPARTY_ID", "type": "TEXT" },
+                { "name": "NAME", "type": "TEXT" },
+                { "name": "LEI", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "DERIVATIVE_COUNTERPARTY",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "DERIVATIVE_COUNTERPARTY_ID", "type": "TEXT" },
+                { "name": "DERIVATIVE_COUNTERPARTY_NAME", "type": "TEXT" },
+                { "name": "DERIVATIVE_COUNTERPARTY_LEI", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "DESC_REF_INDEX_COMPONENT",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "DESC_REF_INDEX_COMPONENT_ID", "type": "TEXT" },
+                { "name": "NAME", "type": "TEXT" },
+                { "name": "CUSIP", "type": "TEXT" },
+                { "name": "ISIN", "type": "TEXT" },
+                { "name": "TICKER", "type": "TEXT" },
+                { "name": "OTHER_IDENTIFIER", "type": "TEXT" },
+                { "name": "OTHER_DESC", "type": "TEXT" },
+                { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" },
+                { "name": "VALUE", "type": "TEXT" },
+                { "name": "ISSUER_CURRENCY_CODE", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "FUT_FWD_NONFOREIGNCUR_CONTRACT",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "PAYOFF_PROFILE", "type": "TEXT" },
+                { "name": "EXPIRATION_DATE", "type": "TEXT" },
+                { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" },
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "FWD_FOREIGNCUR_CONTRACT_SWAP",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "CURRENCY_SOLD_AMOUNT", "type": "TEXT" },
+                { "name": "DESC_CURRENCY_SOLD", "type": "TEXT" },
+                { "name": "CURRENCY_PURCHASED_AMOUNT", "type": "TEXT" },
+                { "name": "DESC_CURRENCY_PURCHASED", "type": "TEXT" },
+                { "name": "SETTLEMENT_DATE", "type": "TEXT" },
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "NONFOREIGN_EXCHANGE_SWAP",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "SWAP_FLAG", "type": "TEXT" },
+                { "name": "TERMINATION_DATE", "type": "TEXT" },
+                { "name": "UPFRONT_PAYMENT", "type": "TEXT" },
+                { "name": "PMNT_CURRENCY_CODE", "type": "TEXT" },
+                { "name": "UPFRONT_RECEIPT", "type": "TEXT" },
+                { "name": "RCPT_CURRENCY_CODE", "type": "TEXT" },
+                { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" },
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" },
+                { "name": "FIXED_OR_FLOATING_RECEIPT", "type": "TEXT" },
+                { "name": "FIXED_RATE_RECEIPT", "type": "TEXT" },
+                { "name": "FLOATING_RATE_INDEX_RECEIPT", "type": "TEXT" },
+                { "name": "FLOATING_RATE_SPREAD_RECEIPT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE_RECEIPT", "type": "TEXT" },
+                { "name": "AMOUNT_RECEIPT", "type": "TEXT" },
+                { "name": "FIXED_OR_FLOATING_PAYMENT", "type": "TEXT" },
+                { "name": "FIXED_RATE_PAYMENT", "type": "TEXT" },
+                { "name": "FLOATING_RATE_INDEX_PAYMENT", "type": "TEXT" },
+                { "name": "FLOATING_RATE_SPREAD_PAYMENT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE_PAYMENT", "type": "TEXT" },
+                { "name": "AMOUNT_PAYMENT", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "FLOATING_RATE_RESET_TENOR",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "RATE_RESET_TENOR_ID", "type": "TEXT" },
+                { "name": "RECEIPT_OR_PAYMENT", "type": "TEXT" },
+                { "name": "RESET_DATE", "type": "TEXT" },
+                { "name": "RESET_DATE_UNIT", "type": "TEXT" },
+                { "name": "RATE_TENOR", "type": "TEXT" },
+                { "name": "RATE_TENOR_UNIT", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "OTHER_DERIV",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "OTHER_DESC", "type": "TEXT" },
+                { "name": "TERMINATION_DATE", "type": "TEXT" },
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "OTHER_DERIV_NOTIONAL_AMOUNT",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "OTHER_DERIV_NOTIONAL_AMOUNT_ID", "type": "TEXT" },
+                { "name": "NOTIONAL_AMOUNT", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "DEBT_SECURITY_REF_INSTRUMENT",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "DEBT_SECURITY_REF_ID", "type": "TEXT" },
+                { "name": "ISSUER_NAME", "type": "TEXT" },
+                { "name": "ISSUE_TITLE", "type": "TEXT" },
+                { "name": "CURRENCY_CODE", "type": "TEXT" },
+                { "name": "CUSIP", "type": "TEXT" },
+                { "name": "ISIN", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "REPURCHASE_COLLATERAL",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "REPURCHASE_COLLATERAL_ID", "type": "TEXT" },
+                { "name": "PRINCIPAL_AMOUNT", "type": "TEXT" },
+                { "name": "PRINCIPAL_CURRENCY_CODE", "type": "TEXT" },
+                { "name": "COLLATERAL_AMOUNT", "type": "TEXT" },
+                { "name": "COLLATERAL_CURRENCY_CODE", "type": "TEXT" },
+                { "name": "INVESTMENT_CAT", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "SWAPTION_OPTION_WARNT_DERIV",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "PUT_OR_CALL", "type": "TEXT" },
+                { "name": "WRITTEN_OR_PURCHASED", "type": "TEXT" },
+                { "name": "SHARES_CNT", "type": "TEXT" },
+                { "name": "EXERCISE_PRICE", "type": "TEXT" },
+                { "name": "EXPIRATION_DATE", "type": "TEXT" },
+                { "name": "UNREALIZED_APPRECIATION", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "DESC_REF_INDEX_BASKET",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "INDEX_NAME", "type": "TEXT" },
+                { "name": "INDEX_IDENTIFIER", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "DESC_REF_OTHER",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "DESC_REF_OTHER_ID", "type": "TEXT" },
+                { "name": "ISSUER_NAME", "type": "TEXT" },
+                { "name": "ISSUE_TITLE", "type": "TEXT" },
+                { "name": "TICKER", "type": "TEXT" }
+            ]
+        },
+        {
+            "name": "SECURITIES_LENDING",
+            "columns": [
+                { "name": "HOLDING_ID", "type": "TEXT" },
+                { "name": "IS_CASH_COLLATERAL", "type": "TEXT" },
+                { "name": "IS_NON_CASH_COLLATERAL", "type": "TEXT" },
+                { "name": "IS_LOAN_BY_FUND", "type": "TEXT" }
+            ]
+        }
+    ]
+}
+}
