@@ -1,0 +1,1058 @@
+"Question","SQL","Result_Count","Status"
+"Show me the top 20 largest funds by total assets","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+ORDER BY 
+    TOTAL_ASSETS DESC
+LIMIT 20;","20","Success"
+"List all funds with net assets over 1 billion dollars","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    NET_ASSETS > 1000000000;","3463","Success"
+"Which asset categories have the highest total investment value?","SELECT 
+    ASSET_CAT
+FROM 
+    FUND_REPORTED_HOLDING
+GROUP BY 
+    ASSET_CAT
+ORDER BY 
+    SUM(CURRENCY_VALUE) DESC
+LIMIT 1;","1","Success"
+"Show me the largest bond funds","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%BOND%'
+ORDER BY 
+    TOTAL_ASSETS DESC
+LIMIT 1;","1","Success"
+"Show me the phone numbers of all Vanguard registrants","SELECT 
+    REGISTRANT_NAME,
+    PHONE 
+FROM 
+    REGISTRANT 
+WHERE 
+    REGISTRANT_NAME LIKE '%VANGUARD%';","201","Success"
+"Which funds have assets between 100M and 500M?","SELECT 
+    SERIES_NAME,
+    TOTAL_ASSETS 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS BETWEEN 100000000 AND 500000000;","3808","Success"
+"List all registrants and their cities","SELECT 
+    REGISTRANT_NAME,
+    CITY
+FROM 
+    REGISTRANT;","13191","Success"
+"Which funds have total assets equal to net assets?","SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS = NET_ASSETS;","78","Success"
+"List all funds with 'Income' in their name","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';","1519","Success"
+"Which funds have the highest liabilities to assets ratio?","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    TOTAL_ASSETS != '0'
+ORDER BY 
+    TOTAL_LIABILITIES / TOTAL_ASSETS DESC
+LIMIT 1;","1","Success"
+"Show me all funds with 'Growth' in their name","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';","1138","Success"
+"List the top 10 funds by net assets","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+ORDER BY 
+    NET_ASSETS DESC 
+LIMIT 10;","10","Success"
+"Which funds have zero liabilities?","SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_LIABILITIES = '0' 
+    OR TOTAL_LIABILITIES IS NULL;","78","Success"
+"Which funds have the most cash on hand?","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
+ORDER BY 
+    CASH_NOT_RPTD_IN_C_OR_D DESC
+LIMIT 1;","1","Success"
+"Show me the smallest 5 funds by total assets","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_ASSETS IS NOT NULL
+ORDER BY 
+    TOTAL_ASSETS ASC 
+LIMIT 5;","5","Success"
+"Which registrants have multiple phone numbers?","SELECT 
+    REGISTRANT_NAME
+FROM 
+    REGISTRANT
+GROUP BY 
+    REGISTRANT_NAME
+HAVING 
+    COUNT(DISTINCT PHONE) > 1;","10","Success"
+"Show me all registrants from Florida","SELECT 
+    REGISTRANT_NAME
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'FL';","0","Success"
+"Show me funds with the highest ratio of cash to total assets","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL 
+    AND TOTAL_ASSETS > 0
+ORDER BY 
+    CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS DESC
+LIMIT 1;","1","Success"
+"List all funds with 'Index' in their name","SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INDEX%';","718","Success"
+"List all registrants with their ZIP codes","SELECT 
+    REGISTRANT_NAME,
+    ZIP
+FROM 
+    REGISTRANT;","13191","Success"
+"Show me all equity-focused funds","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%EQUITY%'
+    OR SERIES_NAME LIKE '%STOCK%'
+ORDER BY 
+    TOTAL_ASSETS DESC;","1468","Success"
+"List all registrants with their country","SELECT 
+    REGISTRANT_NAME,
+    COUNTRY
+FROM 
+    REGISTRANT;","13191","Success"
+"I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?","SELECT
+    SUM(TOTAL_ASSETS)
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SERIES_NAME LIKE '%SUSTAINABLE%'
+    OR SERIES_NAME LIKE '%ESG%';","1","Success"
+"Could you check which states have the most fund registrants? Top 5 is fine.","SELECT 
+    STATE
+FROM 
+    REGISTRANT
+GROUP BY 
+    STATE
+ORDER BY 
+    COUNT(DISTINCT REGISTRANT_NAME) DESC
+LIMIT 5;","5","Success"
+"Which registrants are based in California?","SELECT 
+    DISTINCT REGISTRANT_NAME
+FROM 
+    REGISTRANT 
+WHERE 
+    STATE = 'US-CA';","158","Success"
+"List all funds with no reported liabilities.","SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    TOTAL_LIABILITIES = '0' 
+    OR TOTAL_LIABILITIES IS NULL;","78","Success"
+"Show me all interest rate risks with a 3-month DV01 value exceeding 1 million","SELECT 
+    ACCESSION_NUMBER,
+    INTRST_RATE_CHANGE_3MON_DV01 
+FROM 
+    INTEREST_RATE_RISK 
+WHERE 
+    INTRST_RATE_CHANGE_3MON_DV01 > 1000000;","3","Success"
+"Show the total investment values grouped by currency code.","SELECT 
+    CURRENCY_CODE,
+    SUM(CURRENCY_VALUE)
+FROM 
+    FUND_REPORTED_HOLDING 
+GROUP BY 
+    CURRENCY_CODE;","80","Success"
+"List all borrowers with an aggregate value over 200 million.","SELECT 
+    NAME 
+FROM 
+    BORROWER 
+WHERE 
+    AGGREGATE_VALUE > 200000000;","158","Success"
+"Which funds have unrealized appreciation in nonforeign currency swaps exceeding $10 million?","SELECT 
+    HOLDING_ID 
+FROM 
+    NONFOREIGN_EXCHANGE_SWAP 
+WHERE 
+    UNREALIZED_APPRECIATION > 10000000;","6075","Success"
+"List all funds with a liquidation preference exceeding $1 billion.","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    LIQUIDATION_PREFERENCE > 1000000000;","5","Success"
+"Show me all debt securities with an annualized rate above 5%.","SELECT 
+    HOLDING_ID 
+FROM 
+    DEBT_SECURITY 
+WHERE 
+    ANNUALIZED_RATE > 5.0;","2608528","Success"
+"Show all holding records with a balance over 1,000.","SELECT 
+    ISSUER_NAME
+FROM 
+    FUND_REPORTED_HOLDING 
+WHERE 
+    BALANCE > 1000;","5134329","Success"
+"Show all funds with non-cash collateral flagged as true.","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    IS_NON_CASH_COLLATERAL = 'Y';","1276","Success"
+"List all registrants reporting from countries other than the United States.","SELECT 
+    REGISTRANT_NAME
+FROM 
+    REGISTRANT 
+WHERE 
+    COUNTRY != 'United States';","13191","Success"
+"Show all issuers categorized as DBT securities.","SELECT 
+    ISSUER_NAME
+FROM 
+    FUND_REPORTED_HOLDING 
+WHERE 
+    ASSET_CAT = 'DBT';","1432472","Success"
+"Find all funds where redemption flows in the second month are zero.","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    REDEMPTION_FLOW_MON2 = 0;","2713","Success"
+"Show all funds with cash not reported exceeding total liabilities.","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    CASH_NOT_RPTD_IN_C_OR_D > TOTAL_LIABILITIES;","3251","Success"
+"Show all issuers with restricted securities.","SELECT 
+    ISSUER_NAME
+FROM 
+    FUND_REPORTED_HOLDING 
+WHERE 
+    IS_RESTRICTED_SECURITY = 'Y';","2017171","Success"
+"Find all funds where monthly sales flow for the second month is positive.","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO
+WHERE 
+    SALES_FLOW_MON2 > 0;","11066","Success"
+"How many funds does each registrant have?","SELECT 
+    REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    REGISTRANT_NAME;","1952","Success"
+"What are the total assets of BlackRock funds?","SELECT 
+    SUM(TOTAL_ASSETS)
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%BLACKROCK%';","1","Success"
+"List all funds with their registrant names","SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;","13191","Success"
+"What's the latest filing date for each fund?","SELECT 
+    F.SERIES_NAME,
+    MAX(S.FILING_DATE)
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME;","12476","Success"
+"Show me the earliest filing date for each registrant.","SELECT 
+    R.REGISTRANT_NAME,
+    MIN(S.FILING_DATE)
+FROM 
+    REGISTRANT R
+    JOIN SUBMISSION S 
+        ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;","1952","Success"
+"List all registrants with their fund count and total assets.","SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME),
+    SUM(F.TOTAL_ASSETS)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;","1952","Success"
+"Show me all Fidelity funds.","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R 
+        ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%FIDELITY%';","576","Success"
+"List all registrants with their latest fund's assets.","SELECT 
+    R.REGISTRANT_NAME,
+    F.TOTAL_ASSETS
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;","13191","Success"
+"List all funds with their submission dates","SELECT 
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN SUBMISSION S 
+        ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER;","13191","Success"
+"Show me the registrants with the most recent filings","SELECT 
+    R.REGISTRANT_NAME,
+    MAX(S.FILING_DATE)
+FROM 
+    REGISTRANT R
+    JOIN SUBMISSION S 
+        ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    MAX(S.FILING_DATE) DESC
+LIMIT 1;","1","Success"
+"Find out which investment firms manage the most diverse portfolio of fund types?","SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(DISTINCT 
+        CASE 
+            WHEN F.SERIES_NAME LIKE '%BOND%' THEN 'BOND'
+            WHEN F.SERIES_NAME LIKE '%EQUITY%' THEN 'EQUITY'
+            WHEN F.SERIES_NAME LIKE '%MONEY MARKET%' THEN 'MONEY MARKET'
+            WHEN F.SERIES_NAME LIKE '%INDEX%' THEN 'INDEX'
+            WHEN F.SERIES_NAME LIKE '%ETF%' THEN 'ETF'
+            ELSE 'OTHER'
+        END
+    ) AS Fund_Type_Count
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    Fund_Type_Count DESC
+LIMIT 1;","1","Success"
+"I need to check which funds may be too concentrated - find ones where a single holding is more than 10% of their portfolio?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H 
+        ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+WHERE 
+    H.PERCENTAGE > 10.0;","11597","Success"
+"Check which investment firms have the most diverse geographic exposure in their holdings","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN FUND_REPORTED_HOLDING H 
+        ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+WHERE 
+    H.INVESTMENT_COUNTRY IS NOT NULL
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    COUNT(DISTINCT H.INVESTMENT_COUNTRY) DESC
+LIMIT 1;","1","Success"
+"Find me funds that might be too exposed to interest rate changes - check their duration risk","SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN INTEREST_RATE_RISK IR 
+        ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+WHERE 
+    INTRST_RATE_CHANGE_10YR_DV01 > 1.0
+    OR INTRST_RATE_CHANGE_30YR_DV01 > 1.0;","3541","Success"
+"I need to find funds with strong and consistent returns over all three months","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN MONTHLY_TOTAL_RETURN M 
+        ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+WHERE 
+    M.MONTHLY_TOTAL_RETURN1 > 0
+    AND M.MONTHLY_TOTAL_RETURN2 > 0
+    AND M.MONTHLY_TOTAL_RETURN3 > 0
+ORDER BY 
+    (M.MONTHLY_TOTAL_RETURN1 + 
+     M.MONTHLY_TOTAL_RETURN2 + 
+     M.MONTHLY_TOTAL_RETURN3) / 3 DESC;","6512","Success"
+"Show me which asset categories had the best returns last month?","SELECT 
+    H.ASSET_CAT
+FROM 
+    FUND_REPORTED_HOLDING H
+    JOIN FUND_REPORTED_INFO F 
+        ON H.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN MONTHLY_TOTAL_RETURN M 
+        ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
+WHERE 
+    H.ASSET_CAT IS NOT NULL
+GROUP BY 
+    H.ASSET_CAT
+ORDER BY 
+    AVG(M.MONTHLY_TOTAL_RETURN1) DESC
+LIMIT 1;","1","Success"
+"Which investment companies are most exposed to international markets?","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN FUND_REPORTED_HOLDING H 
+        ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME
+HAVING 
+    COUNT(*) > 10
+ORDER BY 
+    COUNT(CASE WHEN H.INVESTMENT_COUNTRY != 'US' THEN 1 END) DESC
+LIMIT 1;","1","Success"
+"Help me find funds that might be too concentrated in specific sectors","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H 
+        ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+WHERE 
+    H.ASSET_CAT IS NOT NULL
+GROUP BY 
+    F.SERIES_NAME, H.ASSET_CAT, F.TOTAL_ASSETS
+ORDER BY 
+    SUM(H.CURRENCY_VALUE) / F.TOTAL_ASSETS * 100 DESC;","43374","Success"
+"Which funds are taking on the most interest rate risk?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN INTEREST_RATE_RISK IR 
+        ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+ORDER BY 
+    IR.INTRST_RATE_CHANGE_10YR_DV01 + IR.INTRST_RATE_CHANGE_30YR_DV01 DESC
+LIMIT 1;","1","Success"
+"Identify funds with highest portfolio turnover based on their trading activity?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+WHERE 
+    F.SALES_FLOW_MON1 IS NOT NULL 
+    AND F.SALES_FLOW_MON2 IS NOT NULL 
+    AND F.SALES_FLOW_MON3 IS NOT NULL
+GROUP BY 
+    F.SERIES_NAME, F.TOTAL_ASSETS
+HAVING 
+    F.TOTAL_ASSETS > 0
+ORDER BY 
+    (SUM(F.SALES_FLOW_MON1 + 
+         F.SALES_FLOW_MON2 + 
+         F.SALES_FLOW_MON3) / NULLIF(F.TOTAL_ASSETS, 0)) * 100 DESC
+LIMIT 1;","1","Success"
+"See which fund families are most active in securities lending","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    LEFT JOIN SECURITIES_LENDING SL 
+        ON F.ACCESSION_NUMBER = SL.HOLDING_ID
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    (COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN F.SERIES_NAME END) * 100.0 / COUNT(DISTINCT F.SERIES_NAME)) DESC
+LIMIT 1;","1","Success"
+"How many funds does each investment company manage?","SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(DISTINCT F.SERIES_ID)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    REGISTRANT_NAME;","1952","Success"
+"Which USD funds are most exposed to interest rate changes in 10 years?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN INTEREST_RATE_RISK IR 
+        ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
+WHERE 
+    IR.CURRENCY_CODE = 'USD'
+ORDER BY 
+    IR.INTRST_RATE_CHANGE_10YR_DV01 DESC
+LIMIT 1;","1","Success"
+"What's our exposure by state? Need to check geographic concentration.","SELECT 
+    R.STATE,
+    SUM(F.TOTAL_ASSETS)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.STATE IS NOT NULL
+GROUP BY 
+    R.STATE;","44","Success"
+"Which securities are most actively lent out?","SELECT 
+    H.ISSUER_NAME
+FROM 
+    FUND_REPORTED_HOLDING H
+    JOIN SECURITIES_LENDING SL ON H.HOLDING_ID = SL.HOLDING_ID
+WHERE 
+    SL.IS_LOAN_BY_FUND = 'Y'
+GROUP BY 
+    H.ISSUER_NAME
+HAVING 
+    COUNT(*) > 1
+ORDER BY 
+    COUNT(*) DESC,
+    SUM(H.CURRENCY_VALUE) DESC
+LIMIT 1;","1","Success"
+"Let's look at convertible securities with high conversion ratios - could be significant upside.","SELECT 
+    F.SERIES_NAME,
+    CSC.CONVERSION_RATIO
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+    JOIN CONVERTIBLE_SECURITY_CURRENCY CSC ON H.HOLDING_ID = CSC.HOLDING_ID
+WHERE 
+    CSC.CONVERSION_RATIO > 1
+ORDER BY 
+    CSC.CONVERSION_RATIO DESC;","13123","Success"
+"What percentage of bonds have missed interest payments by sector?","SELECT
+    h.ISSUER_TYPE,
+    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*))
+FROM 
+    FUND_REPORTED_HOLDING h
+    JOIN DEBT_SECURITY d ON h.HOLDING_ID = d.HOLDING_ID
+WHERE 
+    h.ISSUER_TYPE IS NOT NULL
+GROUP BY 
+    h.ISSUER_TYPE;","9","Success"
+"Find the total number of registrants and their average assets per state.","SELECT 
+    R.STATE,
+    COUNT(DISTINCT R.REGISTRANT_NAME),
+    AVG(F.TOTAL_ASSETS)
+FROM 
+    REGISTRANT R
+LEFT JOIN 
+    FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.STATE IS NOT NULL
+GROUP BY 
+    R.STATE;","44","Success"
+"List all funds and their associated registrants, sorted by filing date","SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+    JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+ORDER BY 
+    S.FILING_DATE DESC;","13191","Success"
+"What are the average total assets per state?","SELECT 
+    R.STATE,
+    AVG(F.TOTAL_ASSETS)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.STATE IS NOT NULL
+GROUP BY 
+    R.STATE;","44","Success"
+"List all funds managed by registrants in California.","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    R.STATE = 'US-CA';","1427","Success"
+"Which registrants are most active in convertible securities?","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_HOLDING F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN CONVERTIBLE_SECURITY_CURRENCY CSC ON F.HOLDING_ID = CSC.HOLDING_ID
+GROUP BY 
+    R.REGISTRANT_NAME
+ORDER BY 
+    COUNT(CSC.CONVERTIBLE_SECURITY_ID) DESC
+LIMIT 1;","1","Success"
+"Show funds exposed to non-cash collateral.","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    F.IS_NON_CASH_COLLATERAL = 'Y';","1276","Success"
+"Which funds have the highest number of holdings?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME
+ORDER BY 
+    COUNT(H.HOLDING_ID) DESC
+LIMIT 1;","1","Success"
+"List all funds managed by BlackRock and their total liabilities.","SELECT 
+    F.SERIES_NAME,
+    F.TOTAL_LIABILITIES
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.REGISTRANT_NAME LIKE '%BLACKROCK%';","243","Success"
+"Identify funds managed by multiple registrants.","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME
+HAVING 
+    COUNT(DISTINCT R.REGISTRANT_NAME) > 1;","147","Success"
+"Which funds reported the highest borrowing within one year?","SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+GROUP BY 
+    F.SERIES_NAME
+ORDER BY
+	MAX(F.BORROWING_PAY_WITHIN_1YR) DESC
+LIMIT 1;","1","Success"
+"Find registrants with securities in multiple countries.","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME
+HAVING 
+    COUNT(DISTINCT H.INVESTMENT_COUNTRY) > 1;","1620","Success"
+"Which registrants have zero liabilities but manage funds?","SELECT 
+    R.REGISTRANT_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    F.TOTAL_LIABILITIES = '0'
+GROUP BY 
+    R.REGISTRANT_NAME;","23","Success"
+"List all registrants along with the number of funds they manage.","SELECT 
+    R.REGISTRANT_NAME,
+    COUNT(F.SERIES_NAME)
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY 
+    R.REGISTRANT_NAME;","1952","Success"
+"Find funds whose total assets exceed the average total assets of all funds.","WITH AvgAssets AS (
+    SELECT AVG(TOTAL_ASSETS) AS AVG_TOTAL_ASSETS
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_ASSETS > (SELECT AVG_TOTAL_ASSETS FROM AvgAssets);","1776","Success"
+"List the top 5 registrants by fund count, excluding those with below-average counts.","WITH AvgFundCount AS (
+    SELECT AVG(FUND_COUNT) AS AVG_COUNT
+    FROM (SELECT REGISTRANT_NAME, COUNT(*) AS FUND_COUNT FROM REGISTRANT R
+          JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+          GROUP BY REGISTRANT_NAME) Subquery
+)
+SELECT REGISTRANT_NAME, COUNT(*)
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY REGISTRANT_NAME
+HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgFundCount)
+ORDER BY COUNT(*) DESC
+LIMIT 5;","5","Success"
+"Show funds whose liabilities are more than twice the average liability of all funds.","WITH AvgLiabilities AS (
+    SELECT AVG(TOTAL_LIABILITIES) AS AVG_LIABILITY
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES > 2 * (SELECT AVG_LIABILITY FROM AvgLiabilities);","792","Success"
+"Identify registrants whose states have the most funds.","WITH StateFundCount AS (
+    SELECT STATE, COUNT(*) AS FUND_COUNT
+    FROM REGISTRANT
+    GROUP BY STATE
+)
+SELECT REGISTRANT_NAME
+FROM REGISTRANT
+WHERE STATE = (SELECT STATE FROM StateFundCount ORDER BY FUND_COUNT DESC LIMIT 1);","2154","Success"
+"Find funds whose total assets match the maximum total assets of their registrant's state.","WITH StateMaxAssets AS (
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY STATE
+)
+SELECT SERIES_NAME, STATE
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE TOTAL_ASSETS = (SELECT MAX_ASSETS FROM StateMaxAssets WHERE STATE = R.STATE);","44","Success"
+"List the registrants whose funds account for more than 5% of total reported assets.","WITH TotalAssets AS (
+    SELECT SUM(TOTAL_ASSETS) AS GLOBAL_TOTAL
+    FROM FUND_REPORTED_INFO
+)
+SELECT REGISTRANT_NAME, SUM(F.TOTAL_ASSETS)
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+GROUP BY REGISTRANT_NAME
+HAVING SUM(F.TOTAL_ASSETS) > 0.05 * (SELECT GLOBAL_TOTAL FROM TotalAssets);","2","Success"
+"Find the largest fund for each registrant.","WITH LargestFunds AS (
+    SELECT REGISTRANT_NAME, MAX(TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT REGISTRANT_NAME, SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE TOTAL_ASSETS = (SELECT MAX_ASSETS FROM LargestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);","1964","Success"
+"Show funds with liabilities exceeding 90% of the largest liability among all funds.","WITH MaxLiability AS (
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_LIABILITY
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES > 0.9 * (SELECT MAX_LIABILITY FROM MaxLiability);","1","Success"
+"List funds whose net assets match their registrant's highest net asset fund.","WITH MaxNetAssets AS (
+    SELECT REGISTRANT_NAME, MAX(NET_ASSETS) AS MAX_NET_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE NET_ASSETS = (SELECT MAX_NET_ASSETS FROM MaxNetAssets WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);","1964","Success"
+"List registrants with above-average total assets in their state.","WITH StateAvgAssets AS (
+    SELECT STATE, AVG(TOTAL_ASSETS) AS AVG_STATE_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY STATE
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_ASSETS > (SELECT AVG_STATE_ASSETS FROM StateAvgAssets WHERE STATE = R.STATE);","2415","Success"
+"Identify funds whose liabilities exceed the largest liability for any bond fund.","WITH MaxBondLiability AS (
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_BOND_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES > (SELECT MAX_BOND_LIABILITY FROM MaxBondLiability);","2","Success"
+"Show registrants managing the largest fund in each state.","WITH LargestFundPerState AS (
+    SELECT R.STATE, MAX(F.TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY R.STATE
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_ASSETS = (SELECT MAX_ASSETS FROM LargestFundPerState WHERE STATE = R.STATE);","44","Success"
+"Find the smallest fund for each registrant.","WITH SmallestFunds AS (
+    SELECT REGISTRANT_NAME, MIN(TOTAL_ASSETS) AS MIN_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT R.REGISTRANT_NAME, F.SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE F.TOTAL_ASSETS = (SELECT MIN_ASSETS FROM SmallestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);","1972","Success"
+"List funds whose cash exceeds the average cash for their registrant.","WITH RegistrantAvgCash AS (
+    SELECT REGISTRANT_NAME, AVG(CASH_NOT_RPTD_IN_C_OR_D) AS AVG_CASH
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT F.SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE F.CASH_NOT_RPTD_IN_C_OR_D > (SELECT AVG_CASH FROM RegistrantAvgCash WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);","3050","Success"
+"Show states with above-average registrant counts.","WITH AvgRegistrantsPerState AS (
+    SELECT AVG(REG_COUNT) AS AVG_COUNT
+    FROM (SELECT STATE, COUNT(*) AS REG_COUNT FROM REGISTRANT GROUP BY STATE) Subquery
+)
+SELECT STATE
+FROM REGISTRANT
+GROUP BY STATE
+HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgRegistrantsPerState);","11","Success"
+"Find funds with net assets exceeding the maximum for equity funds.","WITH MaxEquityNetAssets AS (
+    SELECT MAX(NET_ASSETS) AS MAX_NET_ASSETS
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE NET_ASSETS > (SELECT MAX_NET_ASSETS FROM MaxEquityNetAssets);","81","Success"
+"List registrants managing the largest fund across all registrants.","WITH LargestFund AS (
+    SELECT MAX(TOTAL_ASSETS) AS MAX_TOTAL_ASSETS
+    FROM FUND_REPORTED_INFO
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_ASSETS = (SELECT MAX_TOTAL_ASSETS FROM LargestFund);","1","Success"
+"Identify funds with liabilities less than the smallest liability for bond funds.","WITH MinBondLiability AS (
+    SELECT MIN(TOTAL_LIABILITIES) AS MIN_BOND_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES < (SELECT MIN_BOND_LIABILITY FROM MinBondLiability);","145","Success"
+"Find the largest fund in each state.","WITH StateLargestFund AS (
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY STATE
+)
+SELECT R.STATE, F.SERIES_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_ASSETS = (SELECT MAX_ASSETS FROM StateLargestFund WHERE STATE = R.STATE);","44","Success"
+"Show funds with a percentage of their portfolio in cash exceeding 20%.","WITH CashPercentage AS (
+    SELECT SERIES_NAME, (CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL AND TOTAL_ASSETS > 0
+)
+SELECT SERIES_NAME
+FROM CashPercentage
+WHERE CASH_RATIO > 0.2;","164","Success"
+"Identify funds with above-average monthly redemption flows.","WITH AvgRedemptionFlow AS (
+    SELECT AVG(REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) AS AVG_FLOW
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) > (SELECT AVG_FLOW FROM AvgRedemptionFlow);","1637","Success"
+"Find registrants whose largest fund exceeds $1 billion in total assets.","WITH LargestFundPerRegistrant AS (
+    SELECT REGISTRANT_NAME, MAX(TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT REGISTRANT_NAME
+FROM LargestFundPerRegistrant
+WHERE MAX_ASSETS > 1000000000;","900","Success"
+"Show funds with liabilities smaller than the smallest liability of any bond fund.","WITH MinBondFundLiability AS (
+    SELECT MIN(TOTAL_LIABILITIES) AS MIN_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES < (SELECT MIN_LIABILITY FROM MinBondFundLiability);","145","Success"
+"Find the total cash held by registrants whose largest fund exceeds $500 million.","WITH RegistrantsWithLargeFunds AS (
+    SELECT REGISTRANT_NAME
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+    HAVING MAX(F.TOTAL_ASSETS) > 500000000
+)
+SELECT R.REGISTRANT_NAME, SUM(F.CASH_NOT_RPTD_IN_C_OR_D) AS TOTAL_CASH
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE R.REGISTRANT_NAME IN (SELECT REGISTRANT_NAME FROM RegistrantsWithLargeFunds)
+GROUP BY R.REGISTRANT_NAME;","1167","Success"
+"List funds that have a greater percentage of cash compared to any equity fund.","WITH MaxEquityCashRatio AS (
+    SELECT MAX(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS MAX_EQUITY_CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS > (SELECT MAX_EQUITY_CASH_RATIO FROM MaxEquityCashRatio);","8","Success"
+"Identify states with more than 10 registrants having net assets above the average.","WITH AvgNetAssets AS (
+    SELECT AVG(NET_ASSETS) AS AVG_NET_ASSETS
+    FROM FUND_REPORTED_INFO
+)
+SELECT R.STATE, COUNT(*) AS REGISTRANT_COUNT
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.NET_ASSETS > (SELECT AVG_NET_ASSETS FROM AvgNetAssets)
+GROUP BY R.STATE
+HAVING COUNT(*) > 10;","18","Success"
+"Show registrants with the largest portfolio turnover ratio.","WITH PortfolioTurnover AS (
+    SELECT REGISTRANT_NAME, 
+           MAX((F.SALES_FLOW_MON1 + F.SALES_FLOW_MON2 + F.SALES_FLOW_MON3) 
+               / F.TOTAL_ASSETS) AS TURNOVER_RATIO
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY REGISTRANT_NAME
+)
+SELECT REGISTRANT_NAME
+FROM PortfolioTurnover
+ORDER BY TURNOVER_RATIO DESC
+LIMIT 1;","1","Success"
+"Find funds whose liabilities are larger than the average liabilities of bond funds.","WITH AvgBondLiability AS (
+    SELECT AVG(TOTAL_LIABILITIES) AS AVG_BOND_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE TOTAL_LIABILITIES > (SELECT AVG_BOND_LIABILITY FROM AvgBondLiability);","679","Success"
+"Identify states where the largest fund is managed by Vanguard.","WITH VanguardLargestFund AS (
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE R.REGISTRANT_NAME LIKE '%VANGUARD%'
+    GROUP BY STATE
+)
+SELECT STATE
+FROM VanguardLargestFund;","1","Success"
+"Find exisiting funds with the highest proportion of liabilities to net assets.","WITH LiabilityToNetAssets AS (
+    SELECT SERIES_NAME, 
+           (TOTAL_LIABILITIES / NET_ASSETS) AS LIABILITY_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE NET_ASSETS > 0
+)
+SELECT SERIES_NAME, LIABILITY_RATIO
+FROM LiabilityToNetAssets
+WHERE SERIES_NAME != 'N/A'
+ORDER BY LIABILITY_RATIO DESC
+LIMIT 1;","1","Success"
+"Identify funds with monthly sales flows larger than any ETF.","WITH MaxETFSalesFlow AS (
+    SELECT MAX(SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) AS MAX_ETF_FLOW
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%ETF%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) > (SELECT MAX_ETF_FLOW FROM MaxETFSalesFlow);","2","Success"
+"Identify funds whose cash proportion is higher than the average cash proportion of equity funds.","WITH AvgEquityCashRatio AS (
+    SELECT AVG(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS AVG_CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%' AND TOTAL_ASSETS > 0
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) > (SELECT AVG_CASH_RATIO FROM AvgEquityCashRatio);","1900","Success"
+"Show registrants managing funds with liabilities higher than any convertible security fund.","WITH MaxConvertibleLiability AS (
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_CONVERTIBLE_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%CONVERTIBLE%'
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_LIABILITIES > (SELECT MAX_CONVERTIBLE_LIABILITY FROM MaxConvertibleLiability);","347","Success"
+"List funds with monthly sales flows higher than the average for all funds.","WITH AvgSalesFlow AS (
+    SELECT AVG(SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) AS AVG_SALES_FLOW
+    FROM FUND_REPORTED_INFO
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) > (SELECT AVG_SALES_FLOW FROM AvgSalesFlow);","1586","Success"
+"Find funds with liabilities less than the average liabilities of all funds in their state.","WITH AvgStateLiability AS (
+    SELECT R.STATE, AVG(F.TOTAL_LIABILITIES) AS AVG_LIABILITY
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY R.STATE
+)
+SELECT F.SERIES_NAME
+FROM FUND_REPORTED_INFO F
+JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE F.TOTAL_LIABILITIES < (SELECT AVG_LIABILITY FROM AvgStateLiability WHERE STATE = R.STATE);","11532","Success"
+"Identify registrants managing funds with the highest cash proportion in their state.","WITH StateMaxCash AS (
+    SELECT R.STATE, MAX(F.CASH_NOT_RPTD_IN_C_OR_D / F.TOTAL_ASSETS) AS MAX_CASH_RATIO
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE F.TOTAL_ASSETS > 0
+    GROUP BY R.STATE
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.CASH_NOT_RPTD_IN_C_OR_D / F.TOTAL_ASSETS = 
+      (SELECT MAX_CASH_RATIO FROM StateMaxCash WHERE STATE = R.STATE);","44","Success"
+"Find states with total liabilities higher than the average liabilities for all states.","WITH AvgStateLiability AS (
+    SELECT R.STATE, AVG(F.TOTAL_LIABILITIES) AS AVG_STATE_LIABILITY
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    GROUP BY R.STATE
+)
+SELECT STATE
+FROM AvgStateLiability
+WHERE AVG_STATE_LIABILITY > (SELECT AVG(AVG_STATE_LIABILITY) FROM AvgStateLiability);","15","Success"
+"Show registrants managing funds with liabilities larger than the maximum liabilities of any index fund.","WITH MaxIndexFundLiability AS (
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_INDEX_LIABILITY
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%INDEX%'
+)
+SELECT R.REGISTRANT_NAME
+FROM REGISTRANT R
+JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE F.TOTAL_LIABILITIES > (SELECT MAX_INDEX_LIABILITY FROM MaxIndexFundLiability);","16","Success"
+"Find funds whose redemption flows exceed the highest redemption flow for any bond fund.","WITH MaxBondRedemptionFlow AS (
+    SELECT MAX(REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) AS MAX_BOND_FLOW
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%BOND%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) > (SELECT MAX_BOND_FLOW FROM MaxBondRedemptionFlow);","8","Success"
+"List states with the highest average net assets per fund.","WITH StateAvgNetAssets AS (
+    SELECT R.STATE, AVG(F.NET_ASSETS) AS AVG_NET_ASSETS
+    FROM REGISTRANT R
+    JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+    WHERE F.NET_ASSETS IS NOT NULL
+    GROUP BY R.STATE
+)
+SELECT STATE
+FROM StateAvgNetAssets
+WHERE AVG_NET_ASSETS = (SELECT MAX(AVG_NET_ASSETS) FROM StateAvgNetAssets);","1","Success"
