@@ -1,0 +1,51 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH MaxEquityCashRatio AS (
+    SELECT MAX(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS MAX_EQUITY_CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%'
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS > (SELECT MAX_EQUITY_CASH_RATIO FROM MaxEquityCashRatio);
+================================================================================
+Schema Links for Question: List funds that have a greater percentage of cash compared to any equity fund.
+{'table_columns': ['fund_reported_holding.percentage', 'fund_reported_info.cash_not_rptd_in_c_or_d', 'securities_lending.is_loan_by_fund', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The query requires comparing the percentage of cash for funds against any equity fund. This involves:
+
+1. Identifying funds with their cash percentage from the `fund_reported_info` table.
+2. Identifying equity funds and their cash percentage.
+3. Comparing the cash percentage of each fund against all equity funds.
+
+This requires a subquery to find the maximum cash percentage among equity funds and then comparing it with other funds. Therefore, this query involves nested queries.
+
+Label: "NESTED"
+================================================================================
+classification: "NESTED"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required. The 'fund_reported_holding' table contains the 'percentage' column, which is crucial for comparing cash and equity percentages.", helpful=True), Thought(thought='Next, we need to determine how to identify cash and equity funds. This might involve checking specific columns or values that indicate whether a fund is cash or equity.', helpful=True), Thought(thought="We should use a subquery to find the maximum percentage of equity funds. This will allow us to compare each fund's cash percentage against this value.", helpful=True), Thought(thought='The main query will select funds where the cash percentage is greater than the maximum equity percentage found in the subquery.', helpful=True), Thought(thought='Finally, ensure that the query is structured to handle any necessary joins or conditions to accurately filter and compare the funds.', helpful=True)]
+================================================================================
+SQL: SELECT DISTINCT frh.accession_number
+FROM fund_reported_holding frh
+JOIN fund_reported_info fri ON frh.accession_number = fri.accession_number
+WHERE fri.cash_not_rptd_in_c_or_d = 'Y'
+AND frh.percentage > (
+    SELECT MAX(frh2.percentage)
+    FROM fund_reported_holding frh2
+    JOIN fund_reported_info fri2 ON frh2.accession_number = fri2.accession_number
+    WHERE fri2.assets_attrbt_to_misc_security = 'Equity'
+);
+================================================================================
+final_output: SELECT DISTINCT fri.series_name
+FROM fund_reported_info fri
+WHERE fri.cash_not_rptd_in_c_or_d > (
+    SELECT MAX(frh.percentage)
+    FROM fund_reported_holding frh
+    WHERE frh.asset_cat = 'Equity'
+)
+================================================================================
+Similar, all ground truth columns exist, but rows mismatch
+================================================================================
+Result: Similar
+================================================================================

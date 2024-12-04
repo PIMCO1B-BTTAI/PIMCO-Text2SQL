@@ -1,0 +1,28 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%GROWTH%';
+================================================================================
+Schema Links for Question: Show me all funds with 'Growth' in their name
+{'table_columns': ['registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me all funds with 'Growth' in their name" would involve searching for fund names that contain the word "Growth." This can be done using a simple query on the "fund_reported_info" table, specifically on the "series_name" column. Since this query only involves a single table and does not require any joins or nested queries, it can be classified as "EASY."
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='First, we need to identify the main tables required. Since we are looking for funds, we need to determine which table contains fund names.', helpful=True), Thought(thought='Next, we need to determine if any joins or additional tables are necessary. Based on the schema information, it seems we only need the table that contains fund names.', helpful=True), Thought(thought="We need to construct a WHERE clause that filters fund names containing the word 'Growth'. This requires a LIKE clause with a wildcard.", helpful=True), Thought(thought='Since the question is straightforward and does not require aggregations or complex joins, a simple SELECT statement with a WHERE clause will suffice.', helpful=True), Thought(thought='Finally, we need to ensure that the SQL query is correctly formatted and syntactically valid.', helpful=True)]
+================================================================================
+SQL: SELECT fund_name FROM funds WHERE fund_name LIKE '%Growth%';
+================================================================================
+final_output: SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE SERIES_NAME LIKE '%Growth%'
+================================================================================
+True, all ground truth columns exist, and rows match
+================================================================================
+Result: True
+================================================================================

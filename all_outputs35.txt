@@ -1,0 +1,32 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    ISSUER_NAME
+FROM 
+    FUND_REPORTED_HOLDING 
+WHERE 
+    ASSET_CAT = 'DBT';
+================================================================================
+Schema Links for Question: Show all issuers categorized as DBT securities.
+{'table_columns': ['fund_reported_info.assets_attrbt_to_misc_security', 'fund_reported_holding.issuer_name', 'debt_security_ref_instrument.debt_security_ref_id'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.DEBT_SECURITY_REF_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'IDENTIFIERS.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DEBT_SECURITY_REF_INSTRUMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'CONVERTIBLE_SECURITY_CURRENCY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_AGREEMENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'REPURCHASE_COLLATERAL.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DERIVATIVE_COUNTERPARTY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SWAPTION_OPTION_WARNT_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_BASKET.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_INDEX_COMPONENT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'DESC_REF_OTHER.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FUT_FWD_NONFOREIGNCUR_CONTRACT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FWD_FOREIGNCUR_CONTRACT_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'NONFOREIGN_EXCHANGE_SWAP.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'FLOATING_RATE_RESET_TENOR.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'OTHER_DERIV_NOTIONAL_AMOUNT.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show all issuers categorized as DBT securities" needs to identify issuers that fall under the category of DBT securities. This involves checking the asset category of holdings, which is likely stored in the "fund_reported_holding" table under the "ASSET_CAT" column. Since the query only requires information from a single table and does not involve any joins or nested queries, it can be classified as "EASY." 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required for the query. The question involves issuers and DBT securities, so we should focus on the 'fund_reported_holding' and 'debt_security_ref_instrument' tables.", helpful=True), Thought(thought="Next, we need to determine the relationship between these tables. The schema indicates that 'debt_security_ref_instrument' is linked to 'fund_reported_holding' via the 'HOLDING_ID'.", helpful=True), Thought(thought="We should then identify the columns needed for the SELECT clause. The 'issuer_name' from 'fund_reported_holding' is required to show the issuers.", helpful=True), Thought(thought="To filter for DBT securities, we need to ensure that the 'debt_security_ref_instrument' table is used to identify securities categorized as DBT. This might involve checking a specific column or value that indicates a DBT security.", helpful=True), Thought(thought="Finally, we should construct the SQL query using a JOIN between the two tables on 'HOLDING_ID' and apply the necessary WHERE clause to filter for DBT securities.", helpful=True)]
+================================================================================
+SQL: SELECT DISTINCT fund_reported_holding.issuer_name FROM fund_reported_holding JOIN debt_security_ref_instrument ON fund_reported_holding.holding_id = debt_security_ref_instrument.holding_id WHERE debt_security_ref_instrument.debt_security_ref_id IS NOT NULL;
+================================================================================
+final_output: SELECT DISTINCT fund_reported_holding.issuer_name 
+FROM fund_reported_holding 
+JOIN debt_security_ref_instrument 
+ON fund_reported_holding.holding_id = debt_security_ref_instrument.holding_id 
+WHERE debt_security_ref_instrument.debt_security_ref_id IS NOT NULL
+================================================================================
+Similar, all ground truth columns exist, but rows mismatch
+================================================================================
+Result: Similar
+================================================================================

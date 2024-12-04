@@ -1,0 +1,44 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: WITH AvgEquityCashRatio AS (
+    SELECT AVG(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS AVG_CASH_RATIO
+    FROM FUND_REPORTED_INFO
+    WHERE SERIES_NAME LIKE '%EQUITY%' AND TOTAL_ASSETS > 0
+)
+SELECT SERIES_NAME
+FROM FUND_REPORTED_INFO
+WHERE (CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) > (SELECT AVG_CASH_RATIO FROM AvgEquityCashRatio);
+================================================================================
+Schema Links for Question: Identify funds whose cash proportion is higher than the average cash proportion of equity funds.
+{'table_columns': ['debt_security.is_any_portion_interest_paid', 'securities_lending.is_loan_by_fund', 'fund_reported_info.cash_not_rptd_in_c_or_d', 'fund_reported_info.assets_attrbt_to_misc_security'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'DEBT_SECURITY.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The query "Identify funds whose cash proportion is higher than the average cash proportion of equity funds" involves comparing the cash proportion of funds to the average cash proportion of a specific category of funds (equity funds). This requires calculating the average cash proportion for equity funds and then comparing each fund's cash proportion to this average.
+
+To achieve this, we need to:
+1. Calculate the average cash proportion for equity funds, which involves aggregating data.
+2. Compare each fund's cash proportion to this calculated average.
+
+This process involves using a subquery to calculate the average cash proportion of equity funds, which is then used in the main query to filter funds based on this average. Therefore, this query requires a nested query.
+
+So, the SQL query can be classified as "NESTED."
+================================================================================
+classification: "NESTED"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required. The schema information provided does not explicitly mention a table for funds or their cash proportions. However, the 'fund_reported_info' table seems relevant as it contains columns related to cash and assets.", helpful=True), Thought(thought='Next, determine if any joins or aggregations are needed. Since we need to compare cash proportions of funds to the average cash proportion of equity funds, we will need to calculate the average cash proportion for equity funds first, likely using a subquery or CTE.', helpful=True), Thought(thought="We need to identify the columns that represent cash proportion and fund type. The schema does not provide explicit column names for these, so we will assume 'cash_not_rptd_in_c_or_d' could be related to cash, and we may need to infer fund type from other data or assume a default.", helpful=True), Thought(thought='A nested query will be used to first calculate the average cash proportion of equity funds. This will involve filtering for equity funds and then calculating the average of their cash proportions.', helpful=True), Thought(thought="Finally, the outer query will select funds whose cash proportion exceeds this average. This involves comparing each fund's cash proportion to the calculated average from the subquery.", helpful=True)]
+================================================================================
+SQL: WITH AverageEquityCashProportion AS ( SELECT AVG(cash_not_rptd_in_c_or_d / assets_attrbt_to_misc_security) AS avg_cash_proportion FROM fund_reported_info WHERE fund_type = 'Equity' ) SELECT fund_id FROM fund_reported_info, AverageEquityCashProportion WHERE (cash_not_rptd_in_c_or_d / assets_attrbt_to_misc_security) > AverageEquityCashProportion.avg_cash_proportion;
+================================================================================
+final_output: WITH AverageEquityCashProportion AS (
+    SELECT AVG(CAST(cash_not_rptd_in_c_or_d AS FLOAT) / CAST(total_assets AS FLOAT)) AS avg_cash_proportion
+    FROM fund_reported_info
+    JOIN fund_reported_holding ON fund_reported_info.accession_number = fund_reported_holding.accession_number
+    WHERE fund_reported_holding.asset_cat = 'Equity'
+)
+SELECT fund_reported_info.series_name
+FROM fund_reported_info, AverageEquityCashProportion
+WHERE (CAST(cash_not_rptd_in_c_or_d AS FLOAT) / CAST(total_assets AS FLOAT)) > AverageEquityCashProportion.avg_cash_proportion
+================================================================================
+Similar, all ground truth columns exist, but rows mismatch
+================================================================================
+Result: Similar
+================================================================================

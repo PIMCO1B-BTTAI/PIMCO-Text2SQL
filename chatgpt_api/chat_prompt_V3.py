@@ -786,7 +786,7 @@ Default assumptions:
 # Example Natural Language Queries and Corresponding SQL Translations
 example_queries = """
 ```
-Example queries set, where Natural language request is encased in double quotations " and desired output is the SQL query after 'SQL:'
+Example queries set, where Natural language Question is encased in double quotations " and desired output is the SQL query after 'SQL:'
 1. "List the top 5 registrants by total net assets, including their CIK and country."
    SQL: 
    WITH FundAssets AS (
@@ -983,16 +983,16 @@ Example queries set, where Natural language request is encased in double quotati
     SELECT 
         IR.ACCESSION_NUMBER, 
         -- Calculating composite risk score by summing absolute values of DV01 and DV100 columns
-        (ABS(CAST(IR.INTRST_RATE_CHANGE_3MON_DV01 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_1YR_DV01 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_5YR_DV01 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_3MON_DV100 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_1YR_DV100 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_5YR_DV100 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_10YR_DV100 AS FLOAT)) +
-         ABS(CAST(IR.INTRST_RATE_CHANGE_30YR_DV100 AS FLOAT))
+        (ABS(IR.INTRST_RATE_CHANGE_3MON_DV01) +
+         ABS(IR.INTRST_RATE_CHANGE_1YR_DV01) +
+         ABS(IR.INTRST_RATE_CHANGE_5YR_DV01) +
+         ABS(IR.INTRST_RATE_CHANGE_10YR_DV01) +
+         ABS(IR.INTRST_RATE_CHANGE_30YR_DV01) +
+         ABS(IR.INTRST_RATE_CHANGE_3MON_DV100) +
+         ABS(IR.INTRST_RATE_CHANGE_1YR_DV100) +
+         ABS(IR.INTRST_RATE_CHANGE_5YR_DV100) +
+         ABS(IR.INTRST_RATE_CHANGE_10YR_DV100) +
+         ABS(IR.INTRST_RATE_CHANGE_30YR_DV100)
         ) AS Composite_Risk_Score
     FROM 
         INTEREST_RATE_RISK IR
@@ -1028,7 +1028,7 @@ Example queries set, where Natural language request is encased in double quotati
     SELECT 
         ACCESSION_NUMBER, 
         ASSET_CAT, 
-        SUM(CAST(CURRENCY_VALUE AS FLOAT)) AS Total_Value
+        SUM(CURRENCY_VALUE) AS Total_Value
     FROM 
         FUND_REPORTED_HOLDING
     GROUP BY 
@@ -1064,7 +1064,7 @@ ORDER BY
     WITH TotalAssets AS (
     SELECT 
         ACCESSION_NUMBER, 
-        SUM(CAST(CURRENCY_VALUE AS FLOAT)) AS Total_Value
+        SUM(CURRENCY_VALUE) AS Total_Value
     FROM 
         FUND_REPORTED_HOLDING
     GROUP BY 
@@ -1074,7 +1074,7 @@ CategoryAllocation AS (
     SELECT 
         FH.ACCESSION_NUMBER, 
         FH.ASSET_CAT, 
-        SUM(CAST(FH.CURRENCY_VALUE AS FLOAT)) AS Category_Value
+        SUM(FH.CURRENCY_VALUE) AS Category_Value
     FROM 
         FUND_REPORTED_HOLDING FH
     GROUP BY 

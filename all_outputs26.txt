@@ -1,0 +1,31 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    ACCESSION_NUMBER,
+    INTRST_RATE_CHANGE_3MON_DV01 
+FROM 
+    INTEREST_RATE_RISK 
+WHERE 
+    INTRST_RATE_CHANGE_3MON_DV01 > 1000000;
+================================================================================
+Schema Links for Question: Show me all interest rate risks with a 3-month DV01 value exceeding 1 million
+{'table_columns': ['interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.interest_rate_risk_id', 'borrower.aggregate_value', 'interest_rate_risk.interest_rate_risk_id', 'interest_rate_risk.intrst_rate_change_3mon_dv01'], 'primary_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'BORROWER.ACCESSION_NUMBER', 'BORROWER.BORROWER_ID'], 'foreign_keys': ['INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "Show me all interest rate risks with a 3-month DV01 value exceeding 1 million" involves only the "interest_rate_risk" table. We need to filter the records based on the condition that the "intrst_rate_change_3mon_dv01" column exceeds 1 million. This query does not require any JOIN operations or nested queries, as it involves a simple selection and filtering operation on a single table.
+
+Therefore, the SQL query can be classified as "EASY."
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main table required for this query, which is the 'interest_rate_risk' table, as it contains the 'intrst_rate_change_3mon_dv01' column.", helpful=True), Thought(thought='Next, we need to determine if any joins or aggregations are needed. In this case, no joins or aggregations are necessary because the query only requires filtering based on a single column value.', helpful=True), Thought(thought="We need to construct the WHERE clause to filter records where the 'intrst_rate_change_3mon_dv01' value exceeds 1 million.", helpful=True), Thought(thought='Since the query is straightforward and does not require any complex operations like grouping or subqueries, we can directly select the relevant columns and apply the filter.', helpful=True), Thought(thought='Finally, we ensure that the SQL query is properly formatted and syntactically correct to retrieve the desired results.', helpful=True)]
+================================================================================
+SQL: SELECT interest_rate_risk_id, intrst_rate_change_3mon_dv01 FROM interest_rate_risk WHERE intrst_rate_change_3mon_dv01 > 1000000;
+================================================================================
+final_output: SELECT interest_rate_risk_id, intrst_rate_change_3mon_dv01 
+FROM INTEREST_RATE_RISK 
+WHERE INTRST_RATE_CHANGE_3MON_DV01 > 1000000
+================================================================================
+False, not all ground truth columns are in generated csv
+================================================================================
+Result: False
+================================================================================

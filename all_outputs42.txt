@@ -1,0 +1,41 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME
+FROM 
+    REGISTRANT R
+    JOIN FUND_REPORTED_INFO F 
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;
+================================================================================
+Schema Links for Question: List all funds with their registrant names
+{'table_columns': ['registrant.registrant_name', 'registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The question "List all funds with their registrant names" requires information from two tables: "fund_reported_info" for fund details and "registrant" for registrant names. To achieve this, we need to join these tables based on the common column "ACCESSION_NUMBER." Since this involves a JOIN operation but does not require nested queries, the SQL query can be classified as "NON-NESTED." 
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+Thoughts: [Thought(thought='First, we need to identify the main tables required for the query. The question asks for funds and their registrant names, so we need to consider tables that contain information about funds and registrants.', helpful=True), Thought(thought='Next, we need to determine the relationships between these tables. The schema information provides foreign key relationships that can help us join the necessary tables.', helpful=True), Thought(thought='We should identify the columns needed for the SELECT clause. Based on the question, we need the fund information and the registrant name.', helpful=True), Thought(thought='We need to decide if a GROUP BY clause is necessary. Since the question does not ask for any aggregation, a GROUP BY clause is not required.', helpful=True), Thought(thought='Finally, we should ensure that the SQL query is structured correctly with the appropriate JOINs to link the tables based on the foreign key relationships.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    FUND_REPORTED_INFO.FUND_NAME, 
+    REGISTRANT.REGISTRANT_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+JOIN 
+    REGISTRANT ON REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER;
+================================================================================
+final_output: SELECT 
+    FUND_REPORTED_INFO.SERIES_NAME, 
+    REGISTRANT.REGISTRANT_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+JOIN 
+    REGISTRANT ON REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER
+================================================================================
+Similar, all ground truth columns exist, but rows mismatch
+================================================================================
+Result: Similar
+================================================================================

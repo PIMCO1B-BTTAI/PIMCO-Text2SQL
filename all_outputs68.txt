@@ -1,0 +1,51 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    R.REGISTRANT_NAME,
+    F.SERIES_NAME,
+    S.FILING_DATE
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+    JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
+ORDER BY 
+    S.FILING_DATE DESC;
+================================================================================
+Schema Links for Question: List all funds and their associated registrants, sorted by filing date
+{'table_columns': ['securities_lending.is_loan_by_fund', 'registrant.registrant_name', 'submission.filing_date', 'submission.filing_date'], 'primary_keys': ['SUBMISSION.ACCESSION_NUMBER', 'REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The query requires information from multiple tables: "fund_reported_info" for fund details and "registrant" for registrant details. Additionally, we need to sort the results by the filing date, which is found in the "submission" table. This requires joining these tables based on their relationships. Since the query involves joining multiple tables but does not require nested queries, it can be classified as "NON-NESTED." 
+
+Label: "NON-NESTED"
+================================================================================
+classification: "NON-NESTED"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required. The question involves funds and registrants, so we need to consider the 'registrant' and 'submission' tables.", helpful=True), Thought(thought="Next, determine if any joins are needed. Based on the schema information, we need to join 'registrant' and 'submission' tables using the 'ACCESSION_NUMBER' as a common key.", helpful=True), Thought(thought="We need to select the relevant columns: 'registrant_name' from the 'registrant' table and 'filing_date' from the 'submission' table.", helpful=True), Thought(thought="The query should be sorted by 'filing_date', which is straightforward as we have the 'filing_date' column in the 'submission' table.", helpful=True), Thought(thought='No complex aggregations or groupings are required, so a simple SELECT with JOIN and ORDER BY will suffice.', helpful=True)]
+================================================================================
+SQL: SELECT 
+    registrant.registrant_name, 
+    submission.filing_date 
+FROM 
+    registrant 
+JOIN 
+    submission ON registrant.accession_number = submission.accession_number 
+ORDER BY 
+    submission.filing_date;
+================================================================================
+final_output: SELECT 
+    fri.series_name, 
+    r.registrant_name, 
+    s.filing_date 
+FROM 
+    fund_reported_info fri
+JOIN 
+    registrant r ON fri.accession_number = r.accession_number
+JOIN 
+    submission s ON fri.accession_number = s.accession_number
+ORDER BY 
+    s.filing_date
+================================================================================
+Similar, all ground truth columns exist, but rows mismatch
+================================================================================
+Result: Similar
+================================================================================

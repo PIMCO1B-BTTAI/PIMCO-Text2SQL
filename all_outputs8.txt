@@ -1,0 +1,28 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INCOME%';
+================================================================================
+Schema Links for Question: List all funds with 'Income' in their name
+{'table_columns': ['registrant.registrant_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "List all funds with 'Income' in their name" needs to identify funds with 'Income' in their name. This information can be found in the "fund_reported_info" table, specifically in the "series_name" column. The query will filter the "series_name" column to find entries containing the word 'Income'. Since this operation involves only one table and does not require any joins or nested queries, the SQL query can be classified as "EASY". 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='First, we need to identify the main tables required. Since we are looking for funds, we should focus on tables that likely contain fund names.', helpful=True), Thought(thought="Next, determine if any joins or aggregations are needed. Based on the schema information, there is no direct mention of a table containing fund names, but we can infer that 'registrant.registrant_name' might contain fund names.", helpful=True), Thought(thought="Finally, consider how to structure the WHERE clause. We need to filter the results to only include those with 'Income' in their name, which can be done using a LIKE clause.", helpful=True)]
+================================================================================
+SQL: SELECT registrant_name FROM registrant WHERE registrant_name LIKE '%Income%';
+================================================================================
+final_output: SELECT SERIES_NAME FROM FUND_REPORTED_INFO WHERE SERIES_NAME LIKE '%Income%'
+================================================================================
+True, all ground truth columns exist, and rows match
+================================================================================
+Result: True
+================================================================================

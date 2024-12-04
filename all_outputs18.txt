@@ -1,0 +1,28 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    SERIES_NAME 
+FROM 
+    FUND_REPORTED_INFO 
+WHERE 
+    SERIES_NAME LIKE '%INDEX%';
+================================================================================
+Schema Links for Question: List all funds with 'Index' in their name
+{'table_columns': ['registrant.registrant_name', 'fund_var_info.designated_index_name', 'securities_lending.is_loan_by_fund'], 'primary_keys': ['REGISTRANT.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: The SQL query for the question "List all funds with 'Index' in their name" needs to identify the table that contains fund names. Based on the schema, the relevant table is "FUND_REPORTED_INFO" with the column "SERIES_NAME" that likely contains fund names. The query will filter fund names containing the word 'Index'. This operation can be performed using a simple SELECT statement with a WHERE clause, without requiring any JOIN or nested queries. Therefore, the SQL query can be classified as "EASY". 
+
+Label: "EASY"
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought='First, we need to identify the main tables required. The question asks for funds, so we should focus on tables related to fund information.', helpful=True), Thought(thought="Next, determine if any joins or aggregations are needed. Since we are only looking for fund names containing 'Index', we do not need to perform any joins or aggregations.", helpful=True), Thought(thought="Finally, consider how to structure the WHERE clause. We need to filter fund names that contain the word 'Index'.", helpful=True)]
+================================================================================
+SQL: SELECT designated_index_name FROM fund_var_info WHERE designated_index_name LIKE '%Index%';
+================================================================================
+final_output: SELECT designated_index_name FROM fund_var_info WHERE designated_index_name LIKE '%Index%'
+================================================================================
+False, not all ground truth columns are in generated csv
+================================================================================
+Result: False
+================================================================================

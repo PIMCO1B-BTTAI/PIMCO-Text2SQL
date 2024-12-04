@@ -1,52 +1,35 @@
 Ground_Truth_Query,LLM_Query,Comparison_Result
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 ORDER BY 
-    CAST(TOTAL_ASSETS AS FLOAT) DESC
-<<<<<<< HEAD
-LIMIT 20;",Show me the top 20 largest funds by total assets,False
-=======
-LIMIT 20;",Show me the top 20 largest funds by total assets,Error
->>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
+    TOTAL_ASSETS DESC
+LIMIT 20;",Show me the top 20 largest funds by total assets,True
 "SELECT 
-    SERIES_NAME,
-    NET_ASSETS 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-<<<<<<< HEAD
-    CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,False
-=======
-    CAST(NET_ASSETS AS FLOAT) > 1000000000;",List all funds with net assets over 1 billion dollars,Error
->>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
+    NET_ASSETS > 1000000000;",List all funds with net assets over 1 billion dollars,True
 "SELECT 
-    ASSET_CAT,
-    SUM(CAST(CURRENCY_VALUE AS FLOAT))
+    ASSET_CAT
 FROM 
     FUND_REPORTED_HOLDING
 GROUP BY 
     ASSET_CAT
 ORDER BY 
-    SUM(CAST(CURRENCY_VALUE AS FLOAT)) DESC
-<<<<<<< HEAD
-LIMIT 1;",Which asset categories have the highest total investment value?,False
-=======
-LIMIT 1;",Which asset categories have the highest total investment value?,Error
->>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
+    SUM(CURRENCY_VALUE) DESC
+LIMIT 1;",Which asset categories have the highest total investment value?,Similar
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     SERIES_NAME LIKE '%BOND%'
 ORDER BY 
-    CAST(TOTAL_ASSETS AS FLOAT) DESC
-<<<<<<< HEAD
-LIMIT 1;",Show me the largest bond funds,False
+    TOTAL_ASSETS DESC
+LIMIT 1;",Show me the largest bond funds,Similar
 "SELECT 
     REGISTRANT_NAME,
     PHONE 
@@ -60,7 +43,7 @@ WHERE
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    CAST(TOTAL_ASSETS AS FLOAT) BETWEEN 100000000 AND 500000000;",Which funds have assets between 100M and 500M?,False
+    TOTAL_ASSETS BETWEEN 100000000 AND 500000000;",Which funds have assets between 100M and 500M?,False
 "SELECT 
     REGISTRANT_NAME,
     CITY
@@ -73,37 +56,33 @@ FROM
 WHERE 
     TOTAL_ASSETS = NET_ASSETS;",Which funds have total assets equal to net assets?,True
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    SERIES_NAME LIKE '%INCOME%';",List all funds with 'Income' in their name,False
+    SERIES_NAME LIKE '%INCOME%';",List all funds with 'Income' in their name,True
 "SELECT 
-    SERIES_NAME,
-    CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     TOTAL_ASSETS != '0'
 ORDER BY 
-    CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) DESC
-LIMIT 1;",Which funds have the highest liabilities to assets ratio?,False
+    TOTAL_LIABILITIES / TOTAL_ASSETS DESC
+LIMIT 1;",Which funds have the highest liabilities to assets ratio?,Similar
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    SERIES_NAME LIKE '%GROWTH%';",Show me all funds with 'Growth' in their name,False
+    SERIES_NAME LIKE '%GROWTH%';",Show me all funds with 'Growth' in their name,True
 "SELECT 
-    SERIES_NAME,
-    NET_ASSETS 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 ORDER BY 
-    CAST(NET_ASSETS AS FLOAT) DESC 
-LIMIT 10;",List the top 10 funds by net assets,False
+    NET_ASSETS DESC 
+LIMIT 10;",List the top 10 funds by net assets,True
 "SELECT 
     SERIES_NAME 
 FROM 
@@ -112,56 +91,49 @@ WHERE
     TOTAL_LIABILITIES = '0' 
     OR TOTAL_LIABILITIES IS NULL;",Which funds have zero liabilities?,True
 "SELECT 
-    SERIES_NAME,
-    CASH_NOT_RPTD_IN_C_OR_D
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL
 ORDER BY 
-    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) DESC
-LIMIT 1;",Which funds have the most cash on hand?,False
+    CASH_NOT_RPTD_IN_C_OR_D DESC
+LIMIT 1;",Which funds have the most cash on hand?,Similar
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
     TOTAL_ASSETS IS NOT NULL
 ORDER BY 
-    CAST(TOTAL_ASSETS AS FLOAT) ASC 
-LIMIT 5;",Show me the smallest 5 funds by total assets,False
+    TOTAL_ASSETS ASC 
+LIMIT 5;",Show me the smallest 5 funds by total assets,True
 "SELECT 
-    REGISTRANT_NAME,
-    COUNT(DISTINCT PHONE)
+    REGISTRANT_NAME
 FROM 
     REGISTRANT
 GROUP BY 
     REGISTRANT_NAME
 HAVING 
-    COUNT(DISTINCT PHONE) > 1;",Which registrants have multiple phone numbers?,False
+    COUNT(DISTINCT PHONE) > 1;",Which registrants have multiple phone numbers?,True
 "SELECT 
-    REGISTRANT_NAME,
-    CITY,
-    ADDRESS1 
+    REGISTRANT_NAME
 FROM 
     REGISTRANT 
 WHERE 
-    STATE = 'FL';",Show me all registrants from Florida,False
+    STATE = 'FL';",Show me all registrants from Florida,True
 "SELECT 
-    SERIES_NAME,
-    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL 
     AND TOTAL_ASSETS > 0
 ORDER BY 
-    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) DESC
-LIMIT 1;",Show me funds with the highest ratio of cash to total assets,False
+    CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS DESC
+LIMIT 1;",Show me funds with the highest ratio of cash to total assets,Similar
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS 
+    SERIES_NAME 
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
@@ -172,103 +144,94 @@ WHERE
 FROM 
     REGISTRANT;",List all registrants with their ZIP codes,True
 "SELECT 
-    SERIES_NAME,
-    TOTAL_ASSETS
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     SERIES_NAME LIKE '%EQUITY%'
     OR SERIES_NAME LIKE '%STOCK%'
 ORDER BY 
-    CAST(TOTAL_ASSETS AS FLOAT) DESC;",Show me all equity-focused funds,False
+    TOTAL_ASSETS DESC;",Show me all equity-focused funds,Similar
 "SELECT 
     REGISTRANT_NAME,
     COUNTRY
 FROM 
     REGISTRANT;",List all registrants with their country,True
-"SELECT 
-    COUNT(*),
-    SUM(CAST(TOTAL_ASSETS AS FLOAT))
+"SELECT
+    SUM(TOTAL_ASSETS)
 FROM 
     FUND_REPORTED_INFO
 WHERE 
     SERIES_NAME LIKE '%SUSTAINABLE%'
-    OR SERIES_NAME LIKE '%ESG%';",I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?,False
+    OR SERIES_NAME LIKE '%ESG%';",I'm looking for any funds with 'sustainable' or 'ESG' in their name what's their total AUM?,True
 "SELECT 
-    STATE,
-    COUNT(DISTINCT REGISTRANT_NAME)
+    STATE
 FROM 
     REGISTRANT
 GROUP BY 
     STATE
 ORDER BY 
     COUNT(DISTINCT REGISTRANT_NAME) DESC
-LIMIT 5;",Could you check which states have the most fund registrants? Top 5 is fine.,False
+LIMIT 5;",Could you check which states have the most fund registrants? Top 5 is fine.,Similar
 "SELECT 
     DISTINCT REGISTRANT_NAME
 FROM 
     REGISTRANT 
 WHERE 
-    STATE = 'US-CA';",Which registrants are based in California?,False
+    STATE = 'US-CA';",Which registrants are based in California?,Similar
 "SELECT 
     SERIES_NAME 
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
     TOTAL_LIABILITIES = '0' 
-    OR TOTAL_LIABILITIES IS NULL;",List all funds with no reported liabilities.,False
+    OR TOTAL_LIABILITIES IS NULL;",List all funds with no reported liabilities.,True
 "SELECT 
     ACCESSION_NUMBER,
     INTRST_RATE_CHANGE_3MON_DV01 
 FROM 
     INTEREST_RATE_RISK 
 WHERE 
-    CAST(INTRST_RATE_CHANGE_3MON_DV01 AS FLOAT) > 1000000;",Show me all interest rate risks with a 3-month DV01 value exceeding 1 million,False
+    INTRST_RATE_CHANGE_3MON_DV01 > 1000000;",Show me all interest rate risks with a 3-month DV01 value exceeding 1 million,False
 "SELECT 
     CURRENCY_CODE,
-    SUM(CAST(CURRENCY_VALUE AS FLOAT))
+    SUM(CURRENCY_VALUE)
 FROM 
     FUND_REPORTED_HOLDING 
 GROUP BY 
     CURRENCY_CODE;",Show the total investment values grouped by currency code.,False
 "SELECT 
-    NAME,
-    AGGREGATE_VALUE 
+    NAME 
 FROM 
     BORROWER 
 WHERE 
-    CAST(AGGREGATE_VALUE AS FLOAT) > 200000000;",List all borrowers with an aggregate value over 200 million.,False
+    AGGREGATE_VALUE > 200000000;",List all borrowers with an aggregate value over 200 million.,False
 "SELECT 
-    HOLDING_ID,
-    UNREALIZED_APPRECIATION 
+    HOLDING_ID 
 FROM 
     NONFOREIGN_EXCHANGE_SWAP 
 WHERE 
-    CAST(UNREALIZED_APPRECIATION AS FLOAT) > 10000000;",Which funds have unrealized appreciation in nonforeign currency swaps exceeding $10 million?,False
+    UNREALIZED_APPRECIATION > 10000000;",Which funds have unrealized appreciation in nonforeign currency swaps exceeding $10 million?,False
 "SELECT 
-    SERIES_NAME,
-    LIQUIDATION_PREFERENCE 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    CAST(LIQUIDATION_PREFERENCE AS FLOAT) > 1000000000;",List all funds with a liquidation preference exceeding $1 billion.,False
+    LIQUIDATION_PREFERENCE > 1000000000;",List all funds with a liquidation preference exceeding $1 billion.,True
 "SELECT 
-    HOLDING_ID,
-    ANNUALIZED_RATE 
+    HOLDING_ID 
 FROM 
     DEBT_SECURITY 
 WHERE 
-    CAST(ANNUALIZED_RATE AS FLOAT) > 5.0;",Show me all debt securities with an annualized rate above 5%.,False
+    ANNUALIZED_RATE > 5.0;",Show me all debt securities with an annualized rate above 5%.,True
 "SELECT 
-    ISSUER_NAME,
-    BALANCE 
+    ISSUER_NAME
 FROM 
     FUND_REPORTED_HOLDING 
 WHERE 
-    CAST(BALANCE AS FLOAT) > 1000;","Show all holding records with a balance over 1,000.",False
+    BALANCE > 1000;","Show all holding records with a balance over 1,000.",False
 "SELECT 
-    SERIES_NAME,
-    IS_NON_CASH_COLLATERAL 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
@@ -284,21 +247,19 @@ WHERE
 FROM 
     FUND_REPORTED_HOLDING 
 WHERE 
-    ASSET_CAT = 'DBT';",Show all issuers categorized as DBT securities.,False
+    ASSET_CAT = 'DBT';",Show all issuers categorized as DBT securities.,Similar
 "SELECT 
     SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    CAST(REDEMPTION_FLOW_MON2 AS FLOAT) = 0;",Find all funds where redemption flows in the second month are zero.,False
+    REDEMPTION_FLOW_MON2 = 0;",Find all funds where redemption flows in the second month are zero.,True
 "SELECT 
-    SERIES_NAME,
-    CASH_NOT_RPTD_IN_C_OR_D,
-    TOTAL_LIABILITIES 
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO 
 WHERE 
-    CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) > CAST(TOTAL_LIABILITIES AS FLOAT);",Show all funds with cash not reported exceeding total liabilities.,False
+    CASH_NOT_RPTD_IN_C_OR_D > TOTAL_LIABILITIES;",Show all funds with cash not reported exceeding total liabilities.,Similar
 "SELECT 
     ISSUER_NAME
 FROM 
@@ -306,12 +267,11 @@ FROM
 WHERE 
     IS_RESTRICTED_SECURITY = 'Y';",Show all issuers with restricted securities.,True
 "SELECT 
-    SERIES_NAME,
-    SALES_FLOW_MON2 
+    SERIES_NAME
 FROM 
-    FUND_REPORTED_INFO 
+    FUND_REPORTED_INFO
 WHERE 
-    CAST(SALES_FLOW_MON2 AS FLOAT) > 0;",Find all funds where monthly sales flow for the second month is positive.,False
+    SALES_FLOW_MON2 > 0;",Find all funds where monthly sales flow for the second month is positive.,True
 "SELECT 
     REGISTRANT_NAME,
     COUNT(F.SERIES_NAME)
@@ -322,7 +282,7 @@ FROM
 GROUP BY 
     REGISTRANT_NAME;",How many funds does each registrant have?,False
 "SELECT 
-    SUM(CAST(TOTAL_ASSETS AS FLOAT))
+    SUM(TOTAL_ASSETS)
 FROM 
     FUND_REPORTED_INFO F
     JOIN REGISTRANT R 
@@ -335,7 +295,7 @@ WHERE
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
-        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;",List all funds with their registrant names,True
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;",List all funds with their registrant names,Similar
 "SELECT 
     F.SERIES_NAME,
     MAX(S.FILING_DATE)
@@ -353,33 +313,32 @@ FROM
     JOIN SUBMISSION S 
         ON R.ACCESSION_NUMBER = S.ACCESSION_NUMBER
 GROUP BY 
-    R.REGISTRANT_NAME;",Show me the earliest filing date for each registrant,False
+    R.REGISTRANT_NAME;",Show me the earliest filing date for each registrant.,False
 "SELECT 
     R.REGISTRANT_NAME,
     COUNT(F.SERIES_NAME),
-    SUM(CAST(F.TOTAL_ASSETS AS FLOAT))
+    SUM(F.TOTAL_ASSETS)
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
         ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
 GROUP BY 
-    R.REGISTRANT_NAME;",List all registrants with their fund count and total assets,False
+    R.REGISTRANT_NAME;",List all registrants with their fund count and total assets.,False
 "SELECT 
-    F.SERIES_NAME,
-    F.TOTAL_ASSETS
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN REGISTRANT R 
         ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
 WHERE 
-    R.REGISTRANT_NAME LIKE '%FIDELITY%';",Show me all Fidelity funds,False
+    R.REGISTRANT_NAME LIKE '%FIDELITY%';",Show me all Fidelity funds.,Similar
 "SELECT 
     R.REGISTRANT_NAME,
     F.TOTAL_ASSETS
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
-        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;",List all registrants with their latest fund's assets,False
+        ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER;",List all registrants with their latest fund's assets.,Similar
 "SELECT 
     F.SERIES_NAME,
     S.FILING_DATE
@@ -421,19 +380,15 @@ ORDER BY
     Fund_Type_Count DESC
 LIMIT 1;",Find out which investment firms manage the most diverse portfolio of fund types?,False
 "SELECT 
-    F.SERIES_NAME,
-    H.ISSUER_NAME,
-    H.PERCENTAGE
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN FUND_REPORTED_HOLDING H 
         ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
 WHERE 
-    CAST(H.PERCENTAGE AS FLOAT) > 10.0;",I need to check which funds may be too concentrated - find ones where a single holding is more than 10% of their portfolio?,False
+    H.PERCENTAGE > 10.0;",I need to check which funds may be too concentrated - find ones where a single holding is more than 10% of their portfolio?,Similar
 "SELECT 
-    R.REGISTRANT_NAME,
-    COUNT(DISTINCT H.INVESTMENT_COUNTRY),
-    COUNT(DISTINCT H.HOLDING_ID)
+    R.REGISTRANT_NAME
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
@@ -446,41 +401,32 @@ GROUP BY
     R.REGISTRANT_NAME
 ORDER BY 
     COUNT(DISTINCT H.INVESTMENT_COUNTRY) DESC
-LIMIT 1;",Check which investment firms have the most diverse geographic exposure in their holdings,False
+LIMIT 1;",Check which investment firms have the most diverse geographic exposure in their holdings,Similar
 "SELECT 
-    SERIES_NAME,
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT),
-    CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT)
+    SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN INTEREST_RATE_RISK IR 
         ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
 WHERE 
-    CAST(INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 1.0
-    OR CAST(INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 1.0;",Find me funds that might be too exposed to interest rate changes - check their duration risk,False
+    INTRST_RATE_CHANGE_10YR_DV01 > 1.0
+    OR INTRST_RATE_CHANGE_30YR_DV01 > 1.0;",Find me funds that might be too exposed to interest rate changes - check their duration risk,Similar
 "SELECT 
-    F.SERIES_NAME,
-    M.MONTHLY_TOTAL_RETURN1,
-    M.MONTHLY_TOTAL_RETURN2,
-    M.MONTHLY_TOTAL_RETURN3,
-    (CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) + 
-     CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
-     CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 3
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN MONTHLY_TOTAL_RETURN M 
         ON F.ACCESSION_NUMBER = M.ACCESSION_NUMBER
 WHERE 
-    CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) > 0
-    AND CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) > 0
-    AND CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT) > 0
+    M.MONTHLY_TOTAL_RETURN1 > 0
+    AND M.MONTHLY_TOTAL_RETURN2 > 0
+    AND M.MONTHLY_TOTAL_RETURN3 > 0
 ORDER BY 
-    (CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT) + 
-     CAST(M.MONTHLY_TOTAL_RETURN2 AS FLOAT) + 
-     CAST(M.MONTHLY_TOTAL_RETURN3 AS FLOAT)) / 3 DESC;",I need to find funds with strong and consistent returns over all three months,Error
+    (M.MONTHLY_TOTAL_RETURN1 + 
+     M.MONTHLY_TOTAL_RETURN2 + 
+     M.MONTHLY_TOTAL_RETURN3) / 3 DESC;",I need to find funds with strong and consistent returns over all three months,Similar
 "SELECT 
-    H.ASSET_CAT,
-    AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT))
+    H.ASSET_CAT
 FROM 
     FUND_REPORTED_HOLDING H
     JOIN FUND_REPORTED_INFO F 
@@ -492,14 +438,10 @@ WHERE
 GROUP BY 
     H.ASSET_CAT
 ORDER BY 
-    AVG(CAST(M.MONTHLY_TOTAL_RETURN1 AS FLOAT)) DESC
+    AVG(M.MONTHLY_TOTAL_RETURN1) DESC
 LIMIT 1;",Show me which asset categories had the best returns last month?,False
 "SELECT 
-    R.REGISTRANT_NAME,
-    COUNT(CASE WHEN H.INVESTMENT_COUNTRY != 'US' THEN 1 END),
-    COUNT(*),
-    SUM(CASE WHEN H.INVESTMENT_COUNTRY != 'US' 
-        THEN CAST(H.CURRENCY_VALUE AS FLOAT) ELSE 0 END)
+    R.REGISTRANT_NAME
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
@@ -512,11 +454,9 @@ HAVING
     COUNT(*) > 10
 ORDER BY 
     COUNT(CASE WHEN H.INVESTMENT_COUNTRY != 'US' THEN 1 END) DESC
-LIMIT 1;",Which investment companies are most exposed to international markets?,False
+LIMIT 1;",Which investment companies are most exposed to international markets?,Similar
 "SELECT 
-    F.SERIES_NAME,
-    H.ASSET_CAT,
-    CAST(SUM(H.CURRENCY_VALUE) AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT) * 100
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN FUND_REPORTED_HOLDING H 
@@ -526,22 +466,18 @@ WHERE
 GROUP BY 
     F.SERIES_NAME, H.ASSET_CAT, F.TOTAL_ASSETS
 ORDER BY 
-    CAST(SUM(H.CURRENCY_VALUE) AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT) * 100 DESC;",Help me find funds that might be too concentrated in specific sectors,False
+    SUM(H.CURRENCY_VALUE) / F.TOTAL_ASSETS * 100 DESC;",Help me find funds that might be too concentrated in specific sectors,Similar
 "SELECT 
-    F.SERIES_NAME,
-    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) + CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT)
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN INTEREST_RATE_RISK IR 
         ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
 ORDER BY 
-    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) + CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) DESC
-LIMIT 1;",Which funds are taking on the most interest rate risk?,False
+    IR.INTRST_RATE_CHANGE_10YR_DV01 + IR.INTRST_RATE_CHANGE_30YR_DV01 DESC
+LIMIT 1;",Which funds are taking on the most interest rate risk?,Similar
 "SELECT 
-    F.SERIES_NAME,
-    (SUM(CAST(F.SALES_FLOW_MON1 AS FLOAT) + 
-         CAST(F.SALES_FLOW_MON2 AS FLOAT) + 
-         CAST(F.SALES_FLOW_MON3 AS FLOAT)) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
 WHERE 
@@ -553,9 +489,9 @@ GROUP BY
 HAVING 
     F.TOTAL_ASSETS > 0
 ORDER BY 
-    (SUM(CAST(F.SALES_FLOW_MON1 AS FLOAT) + 
-         CAST(F.SALES_FLOW_MON2 AS FLOAT) + 
-         CAST(F.SALES_FLOW_MON3 AS FLOAT)) / NULLIF(CAST(F.TOTAL_ASSETS AS FLOAT), 0)) * 100 DESC
+    (SUM(F.SALES_FLOW_MON1 + 
+         F.SALES_FLOW_MON2 + 
+         F.SALES_FLOW_MON3) / NULLIF(F.TOTAL_ASSETS, 0)) * 100 DESC
 LIMIT 1;",Identify funds with highest portfolio turnover based on their trading activity?,Error
 "SELECT 
     R.REGISTRANT_NAME
@@ -571,9 +507,8 @@ ORDER BY
     (COUNT(DISTINCT CASE WHEN SL.IS_LOAN_BY_FUND = 'Y' THEN F.SERIES_NAME END) * 100.0 / COUNT(DISTINCT F.SERIES_NAME)) DESC
 LIMIT 1;",See which fund families are most active in securities lending,False
 "SELECT 
-    REGISTRANT_NAME,
-    COUNT(DISTINCT SERIES_NAME),
-    COUNT(DISTINCT SERIES_ID)
+    R.REGISTRANT_NAME,
+    COUNT(DISTINCT F.SERIES_ID)
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F 
@@ -588,16 +523,12 @@ FROM
         ON F.ACCESSION_NUMBER = IR.ACCESSION_NUMBER
 WHERE 
     IR.CURRENCY_CODE = 'USD'
-    AND (
-        CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) > 100000
-        OR CAST(IR.INTRST_RATE_CHANGE_30YR_DV01 AS FLOAT) > 100000
-    )
 ORDER BY 
-    CAST(IR.INTRST_RATE_CHANGE_10YR_DV01 AS FLOAT) DESC
-LIMIT 1;",Which USD funds are most exposed to interest rate changes?,False
+    IR.INTRST_RATE_CHANGE_10YR_DV01 DESC
+LIMIT 1;",Which USD funds are most exposed to interest rate changes in 10 years?,Similar
 "SELECT 
     R.STATE,
-    SUM(CAST(F.TOTAL_ASSETS AS FLOAT))
+    SUM(F.TOTAL_ASSETS)
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
@@ -618,7 +549,7 @@ HAVING
     COUNT(*) > 1
 ORDER BY 
     COUNT(*) DESC,
-    SUM(CAST(H.CURRENCY_VALUE AS FLOAT)) DESC
+    SUM(H.CURRENCY_VALUE) DESC
 LIMIT 1;",Which securities are most actively lent out?,False
 "SELECT 
     F.SERIES_NAME,
@@ -628,9 +559,9 @@ FROM
     JOIN FUND_REPORTED_HOLDING H ON F.ACCESSION_NUMBER = H.ACCESSION_NUMBER
     JOIN CONVERTIBLE_SECURITY_CURRENCY CSC ON H.HOLDING_ID = CSC.HOLDING_ID
 WHERE 
-    CAST(CSC.CONVERSION_RATIO AS FLOAT) > 1
+    CSC.CONVERSION_RATIO > 1
 ORDER BY 
-    CAST(CSC.CONVERSION_RATIO AS FLOAT) DESC;",Let's look at convertible securities with high conversion ratios - could be significant upside.,False
+    CSC.CONVERSION_RATIO DESC;",Let's look at convertible securities with high conversion ratios - could be significant upside.,False
 "SELECT
     h.ISSUER_TYPE,
     (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*))
@@ -640,9 +571,19 @@ FROM
 WHERE 
     h.ISSUER_TYPE IS NOT NULL
 GROUP BY 
-    h.ISSUER_TYPE
-ORDER BY 
-    (COUNT(CASE WHEN d.ARE_ANY_INTEREST_PAYMENT = 'Y' THEN 1 END) * 100.0 / COUNT(*)) DESC;",What percentage of bonds have missed interest payments by sector?,False
+    h.ISSUER_TYPE;",What percentage of bonds have missed interest payments by sector?,False
+"SELECT 
+    R.STATE,
+    COUNT(DISTINCT R.REGISTRANT_NAME),
+    AVG(F.TOTAL_ASSETS)
+FROM 
+    REGISTRANT R
+LEFT JOIN 
+    FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
+WHERE 
+    R.STATE IS NOT NULL
+GROUP BY 
+    R.STATE;",Find the total number of registrants and their average assets per state.,False
 "SELECT 
     R.REGISTRANT_NAME,
     F.SERIES_NAME,
@@ -652,10 +593,10 @@ FROM
     JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
     JOIN SUBMISSION S ON F.ACCESSION_NUMBER = S.ACCESSION_NUMBER
 ORDER BY 
-    S.FILING_DATE DESC;","List all funds and their associated registrants, sorted by filing date",False
+    S.FILING_DATE DESC;","List all funds and their associated registrants, sorted by filing date",Similar
 "SELECT 
     R.STATE,
-    AVG(CAST(F.TOTAL_ASSETS AS FLOAT))
+    AVG(F.TOTAL_ASSETS)
 FROM 
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
@@ -664,13 +605,12 @@ WHERE
 GROUP BY 
     R.STATE;",What are the average total assets per state?,False
 "SELECT 
-    F.SERIES_NAME,
-    R.REGISTRANT_NAME
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
 WHERE 
-    R.STATE = 'US-CA';",List all funds managed by registrants in California.,False
+    R.STATE = 'US-CA';",List all funds managed by registrants in California.,Similar
 "SELECT 
     R.REGISTRANT_NAME
 FROM 
@@ -681,15 +621,14 @@ GROUP BY
     R.REGISTRANT_NAME
 ORDER BY 
     COUNT(CSC.CONVERTIBLE_SECURITY_ID) DESC
-LIMIT 1;",Which registrants are most active in convertible securities?,True
+LIMIT 1;",Which registrants are most active in convertible securities?,Similar
 "SELECT 
-    R.REGISTRANT_NAME,
     F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
 WHERE 
-    F.IS_NON_CASH_COLLATERAL = 'Y';",Show funds exposed to non-cash collateral.,False
+    F.IS_NON_CASH_COLLATERAL = 'Y';",Show funds exposed to non-cash collateral.,True
 "SELECT 
     F.SERIES_NAME
 FROM 
@@ -699,7 +638,7 @@ GROUP BY
     F.SERIES_NAME
 ORDER BY 
     COUNT(H.HOLDING_ID) DESC
-LIMIT 1;",Which funds have the highest number of holdings?,False
+LIMIT 1;",Which funds have the highest number of holdings?,Similar
 "SELECT 
     F.SERIES_NAME,
     F.TOTAL_LIABILITIES
@@ -707,17 +646,16 @@ FROM
     REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
 WHERE 
-    R.REGISTRANT_NAME LIKE '%BLACKROCK%';",List all funds managed by BlackRock and their total liabilities.,False
+    R.REGISTRANT_NAME LIKE '%BLACKROCK%';",List all funds managed by BlackRock and their total liabilities.,Similar
 "SELECT 
-    F.SERIES_NAME,
-    COUNT(DISTINCT R.REGISTRANT_NAME) AS REGISTRANT_COUNT
+    F.SERIES_NAME
 FROM 
     FUND_REPORTED_INFO F
     JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
 GROUP BY 
     F.SERIES_NAME
 HAVING 
-    COUNT(DISTINCT R.REGISTRANT_NAME) > 1;",Identify funds managed by multiple registrants.,False
+    COUNT(DISTINCT R.REGISTRANT_NAME) > 1;",Identify funds managed by multiple registrants.,True
 "SELECT 
     F.SERIES_NAME
 FROM 
@@ -726,7 +664,7 @@ FROM
 GROUP BY 
     F.SERIES_NAME
 ORDER BY
-		MAX(CAST(F.BORROWING_PAY_WITHIN_1YR AS FLOAT)) DESC
+	MAX(F.BORROWING_PAY_WITHIN_1YR) DESC
 LIMIT 1;",Which funds reported the highest borrowing within one year?,True
 "SELECT 
     R.REGISTRANT_NAME
@@ -746,7 +684,7 @@ FROM
 WHERE 
     F.TOTAL_LIABILITIES = '0'
 GROUP BY 
-    R.REGISTRANT_NAME;",Which registrants have zero liabilities but manage funds?,False
+    R.REGISTRANT_NAME;",Which registrants have zero liabilities but manage funds?,Similar
 "SELECT 
     R.REGISTRANT_NAME,
     COUNT(F.SERIES_NAME)
@@ -756,12 +694,12 @@ FROM
 GROUP BY 
     R.REGISTRANT_NAME;",List all registrants along with the number of funds they manage.,False
 "WITH AvgAssets AS (
-    SELECT AVG(CAST(TOTAL_ASSETS AS FLOAT)) AS AVG_TOTAL_ASSETS
+    SELECT AVG(TOTAL_ASSETS) AS AVG_TOTAL_ASSETS
     FROM FUND_REPORTED_INFO
 )
 SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_ASSETS AS FLOAT) > (SELECT AVG_TOTAL_ASSETS FROM AvgAssets);",Find funds whose total assets exceed the average total assets of all funds.,False
+WHERE TOTAL_ASSETS > (SELECT AVG_TOTAL_ASSETS FROM AvgAssets);",Find funds whose total assets exceed the average total assets of all funds.,True
 "WITH AvgFundCount AS (
     SELECT AVG(FUND_COUNT) AS AVG_COUNT
     FROM (SELECT REGISTRANT_NAME, COUNT(*) AS FUND_COUNT FROM REGISTRANT R
@@ -776,96 +714,96 @@ HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgFundCount)
 ORDER BY COUNT(*) DESC
 LIMIT 5;","List the top 5 registrants by fund count, excluding those with below-average counts.",False
 "WITH AvgLiabilities AS (
-    SELECT AVG(CAST(TOTAL_LIABILITIES AS FLOAT)) AS AVG_LIABILITY
+    SELECT AVG(TOTAL_LIABILITIES) AS AVG_LIABILITY
     FROM FUND_REPORTED_INFO
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) > 2 * (SELECT AVG_LIABILITY FROM AvgLiabilities);",Show funds whose liabilities are more than twice the average liability of all funds.,False
+WHERE TOTAL_LIABILITIES > 2 * (SELECT AVG_LIABILITY FROM AvgLiabilities);",Show funds whose liabilities are more than twice the average liability of all funds.,True
 "WITH StateFundCount AS (
     SELECT STATE, COUNT(*) AS FUND_COUNT
     FROM REGISTRANT
     GROUP BY STATE
 )
-SELECT REGISTRANT_NAME, STATE
+SELECT REGISTRANT_NAME
 FROM REGISTRANT
-WHERE STATE = (SELECT STATE FROM StateFundCount ORDER BY FUND_COUNT DESC LIMIT 1);",Identify registrants whose states have the most funds.,Error
+WHERE STATE = (SELECT STATE FROM StateFundCount ORDER BY FUND_COUNT DESC LIMIT 1);",Identify registrants whose states have the most funds.,True
 "WITH StateMaxAssets AS (
-    SELECT STATE, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY STATE
 )
-SELECT SERIES_NAME, TOTAL_ASSETS, STATE
+SELECT SERIES_NAME, STATE
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(TOTAL_ASSETS AS FLOAT) = (SELECT MAX_ASSETS FROM StateMaxAssets WHERE STATE = R.STATE);",Find funds whose total assets match the maximum total assets of their registrant's state.,Error
+WHERE TOTAL_ASSETS = (SELECT MAX_ASSETS FROM StateMaxAssets WHERE STATE = R.STATE);",Find funds whose total assets match the maximum total assets of their registrant's state.,False
 "WITH TotalAssets AS (
-    SELECT SUM(CAST(TOTAL_ASSETS AS FLOAT)) AS GLOBAL_TOTAL
+    SELECT SUM(TOTAL_ASSETS) AS GLOBAL_TOTAL
     FROM FUND_REPORTED_INFO
 )
-SELECT REGISTRANT_NAME, SUM(CAST(F.TOTAL_ASSETS AS FLOAT))
+SELECT REGISTRANT_NAME, SUM(F.TOTAL_ASSETS)
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
 GROUP BY REGISTRANT_NAME
-HAVING SUM(CAST(F.TOTAL_ASSETS AS FLOAT)) > 0.05 * (SELECT GLOBAL_TOTAL FROM TotalAssets);",List the registrants whose funds account for more than 5% of total reported assets.,Error
+HAVING SUM(F.TOTAL_ASSETS) > 0.05 * (SELECT GLOBAL_TOTAL FROM TotalAssets);",List the registrants whose funds account for more than 5% of total reported assets.,False
 "WITH LargestFunds AS (
-    SELECT REGISTRANT_NAME, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT REGISTRANT_NAME, MAX(TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
 )
-SELECT REGISTRANT_NAME, SERIES_NAME, TOTAL_ASSETS
+SELECT REGISTRANT_NAME, SERIES_NAME
 FROM FUND_REPORTED_INFO F
 JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-WHERE CAST(TOTAL_ASSETS AS FLOAT) = (SELECT MAX_ASSETS FROM LargestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",Find the largest fund for each registrant.,Error
+WHERE TOTAL_ASSETS = (SELECT MAX_ASSETS FROM LargestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",Find the largest fund for each registrant.,False
 "WITH MaxLiability AS (
-    SELECT MAX(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MAX_LIABILITY
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_LIABILITY
     FROM FUND_REPORTED_INFO
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) > 0.9 * (SELECT MAX_LIABILITY FROM MaxLiability);",Show funds with liabilities exceeding 90% of the largest liability among all funds.,Error
+WHERE TOTAL_LIABILITIES > 0.9 * (SELECT MAX_LIABILITY FROM MaxLiability);",Show funds with liabilities exceeding 90% of the largest liability among all funds.,True
 "WITH MaxNetAssets AS (
-    SELECT REGISTRANT_NAME, MAX(CAST(NET_ASSETS AS FLOAT)) AS MAX_NET_ASSETS
+    SELECT REGISTRANT_NAME, MAX(NET_ASSETS) AS MAX_NET_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
 )
-SELECT SERIES_NAME, NET_ASSETS
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO F
 JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-WHERE CAST(NET_ASSETS AS FLOAT) = (SELECT MAX_NET_ASSETS FROM MaxNetAssets WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",List funds whose net assets match their registrant's highest net asset fund.,Error
+WHERE NET_ASSETS = (SELECT MAX_NET_ASSETS FROM MaxNetAssets WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",List funds whose net assets match their registrant's highest net asset fund.,Similar
 "WITH StateAvgAssets AS (
-    SELECT STATE, AVG(CAST(TOTAL_ASSETS AS FLOAT)) AS AVG_STATE_ASSETS
+    SELECT STATE, AVG(TOTAL_ASSETS) AS AVG_STATE_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY STATE
 )
-SELECT R.REGISTRANT_NAME, R.STATE, F.TOTAL_ASSETS
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_ASSETS AS FLOAT) > (SELECT AVG_STATE_ASSETS FROM StateAvgAssets WHERE STATE = R.STATE);",List registrants with above-average total assets in their state.,Error
+WHERE F.TOTAL_ASSETS > (SELECT AVG_STATE_ASSETS FROM StateAvgAssets WHERE STATE = R.STATE);",List registrants with above-average total assets in their state.,Similar
 "WITH MaxBondLiability AS (
-    SELECT MAX(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MAX_BOND_LIABILITY
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_BOND_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%BOND%'
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) > (SELECT MAX_BOND_LIABILITY FROM MaxBondLiability);",Identify funds whose liabilities exceed the largest liability for any bond fund.,Error
+WHERE TOTAL_LIABILITIES > (SELECT MAX_BOND_LIABILITY FROM MaxBondLiability);",Identify funds whose liabilities exceed the largest liability for any bond fund.,Similar
 "WITH LargestFundPerState AS (
-    SELECT R.STATE, MAX(CAST(F.TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT R.STATE, MAX(F.TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY R.STATE
 )
-SELECT R.REGISTRANT_NAME, R.STATE, F.SERIES_NAME, F.TOTAL_ASSETS
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MAX_ASSETS FROM LargestFundPerState WHERE STATE = R.STATE);",Show registrants managing the largest fund in each state.,Error
+WHERE F.TOTAL_ASSETS = (SELECT MAX_ASSETS FROM LargestFundPerState WHERE STATE = R.STATE);",Show registrants managing the largest fund in each state.,Similar
 "WITH SmallestFunds AS (
-    SELECT REGISTRANT_NAME, MIN(CAST(TOTAL_ASSETS AS FLOAT)) AS MIN_ASSETS
+    SELECT REGISTRANT_NAME, MIN(TOTAL_ASSETS) AS MIN_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
@@ -873,17 +811,17 @@ WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MAX_ASSETS FROM LargestFundPerStat
 SELECT R.REGISTRANT_NAME, F.SERIES_NAME
 FROM FUND_REPORTED_INFO F
 JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MIN_ASSETS FROM SmallestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",Find the smallest fund for each registrant.,Error
+WHERE F.TOTAL_ASSETS = (SELECT MIN_ASSETS FROM SmallestFunds WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",Find the smallest fund for each registrant.,False
 "WITH RegistrantAvgCash AS (
-    SELECT REGISTRANT_NAME, AVG(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS AVG_CASH
+    SELECT REGISTRANT_NAME, AVG(CASH_NOT_RPTD_IN_C_OR_D) AS AVG_CASH
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
 )
-SELECT R.REGISTRANT_NAME, F.SERIES_NAME
+SELECT F.SERIES_NAME
 FROM FUND_REPORTED_INFO F
 JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-WHERE CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) > (SELECT AVG_CASH FROM RegistrantAvgCash WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",List funds whose cash exceeds the average cash for their registrant.,Error
+WHERE F.CASH_NOT_RPTD_IN_C_OR_D > (SELECT AVG_CASH FROM RegistrantAvgCash WHERE REGISTRANT_NAME = R.REGISTRANT_NAME);",List funds whose cash exceeds the average cash for their registrant.,Similar
 "WITH AvgRegistrantsPerState AS (
     SELECT AVG(REG_COUNT) AS AVG_COUNT
     FROM (SELECT STATE, COUNT(*) AS REG_COUNT FROM REGISTRANT GROUP BY STATE) Subquery
@@ -891,233 +829,230 @@ WHERE CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) > (SELECT AVG_CASH FROM Registran
 SELECT STATE
 FROM REGISTRANT
 GROUP BY STATE
-HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgRegistrantsPerState);",Show states with above-average registrant counts.,Error
+HAVING COUNT(*) > (SELECT AVG_COUNT FROM AvgRegistrantsPerState);",Show states with above-average registrant counts.,True
 "WITH MaxEquityNetAssets AS (
-    SELECT MAX(CAST(NET_ASSETS AS FLOAT)) AS MAX_NET_ASSETS
+    SELECT MAX(NET_ASSETS) AS MAX_NET_ASSETS
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%EQUITY%'
 )
-SELECT SERIES_NAME, NET_ASSETS
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(NET_ASSETS AS FLOAT) > (SELECT MAX_NET_ASSETS FROM MaxEquityNetAssets);",Find funds with net assets exceeding the maximum for equity funds.,Error
+WHERE NET_ASSETS > (SELECT MAX_NET_ASSETS FROM MaxEquityNetAssets);",Find funds with net assets exceeding the maximum for equity funds.,Similar
 "WITH LargestFund AS (
-    SELECT MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_TOTAL_ASSETS
+    SELECT MAX(TOTAL_ASSETS) AS MAX_TOTAL_ASSETS
     FROM FUND_REPORTED_INFO
 )
-SELECT R.REGISTRANT_NAME, F.SERIES_NAME, F.TOTAL_ASSETS
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MAX_TOTAL_ASSETS FROM LargestFund);",List registrants managing the largest fund across all registrants.,Error
+WHERE F.TOTAL_ASSETS = (SELECT MAX_TOTAL_ASSETS FROM LargestFund);",List registrants managing the largest fund across all registrants.,True
 "WITH MinBondLiability AS (
-    SELECT MIN(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MIN_BOND_LIABILITY
+    SELECT MIN(TOTAL_LIABILITIES) AS MIN_BOND_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%BOND%'
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) < (SELECT MIN_BOND_LIABILITY FROM MinBondLiability);",Identify funds with liabilities less than the smallest liability for bond funds.,Error
+WHERE TOTAL_LIABILITIES < (SELECT MIN_BOND_LIABILITY FROM MinBondLiability);",Identify funds with liabilities less than the smallest liability for bond funds.,Similar
 "WITH StateLargestFund AS (
-    SELECT STATE, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY STATE
 )
-SELECT R.STATE, F.SERIES_NAME, F.TOTAL_ASSETS
+SELECT R.STATE, F.SERIES_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_ASSETS AS FLOAT) = (SELECT MAX_ASSETS FROM StateLargestFund WHERE STATE = R.STATE);",Find the largest fund in each state.,Error
+WHERE F.TOTAL_ASSETS = (SELECT MAX_ASSETS FROM StateLargestFund WHERE STATE = R.STATE);",Find the largest fund in each state.,False
 "WITH CashPercentage AS (
-    SELECT SERIES_NAME, (CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) AS CASH_RATIO
+    SELECT SERIES_NAME, (CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS CASH_RATIO
     FROM FUND_REPORTED_INFO
-    WHERE CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL AND CAST(TOTAL_ASSETS AS FLOAT) > 0
+    WHERE CASH_NOT_RPTD_IN_C_OR_D IS NOT NULL AND TOTAL_ASSETS > 0
 )
-SELECT SERIES_NAME, CASH_RATIO
+SELECT SERIES_NAME
 FROM CashPercentage
-WHERE CASH_RATIO > 0.2;",Show funds with a percentage of their portfolio in cash exceeding 20%.,Error
+WHERE CASH_RATIO > 0.2;",Show funds with a percentage of their portfolio in cash exceeding 20%.,Similar
 "WITH AvgRedemptionFlow AS (
-    SELECT AVG(CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) AS AVG_FLOW
+    SELECT AVG(REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) AS AVG_FLOW
     FROM FUND_REPORTED_INFO
 )
-SELECT SERIES_NAME, REDEMPTION_FLOW_MON1, REDEMPTION_FLOW_MON2, REDEMPTION_FLOW_MON3
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE (CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) > (SELECT AVG_FLOW FROM AvgRedemptionFlow);",Identify funds with above-average monthly redemption flows.,Error
+WHERE (REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) > (SELECT AVG_FLOW FROM AvgRedemptionFlow);",Identify funds with above-average monthly redemption flows.,True
 "WITH LargestFundPerRegistrant AS (
-    SELECT REGISTRANT_NAME, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT REGISTRANT_NAME, MAX(TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
 )
-SELECT REGISTRANT_NAME, MAX_ASSETS
+SELECT REGISTRANT_NAME
 FROM LargestFundPerRegistrant
-WHERE MAX_ASSETS > 1000000000;",Find registrants whose largest fund exceeds $1 billion in total assets.,Error
+WHERE MAX_ASSETS > 1000000000;",Find registrants whose largest fund exceeds $1 billion in total assets.,True
 "WITH MinBondFundLiability AS (
-    SELECT MIN(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MIN_LIABILITY
+    SELECT MIN(TOTAL_LIABILITIES) AS MIN_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%BOND%'
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) < (SELECT MIN_LIABILITY FROM MinBondFundLiability);",Show funds with liabilities smaller than the smallest liability of any bond fund.,Error
+WHERE TOTAL_LIABILITIES < (SELECT MIN_LIABILITY FROM MinBondFundLiability);",Show funds with liabilities smaller than the smallest liability of any bond fund.,Similar
 "WITH RegistrantsWithLargeFunds AS (
     SELECT REGISTRANT_NAME
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
-    HAVING MAX(CAST(F.TOTAL_ASSETS AS FLOAT)) > 500000000
+    HAVING MAX(F.TOTAL_ASSETS) > 500000000
 )
-SELECT R.REGISTRANT_NAME, SUM(CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT)) AS TOTAL_CASH
+SELECT R.REGISTRANT_NAME, SUM(F.CASH_NOT_RPTD_IN_C_OR_D) AS TOTAL_CASH
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
 WHERE R.REGISTRANT_NAME IN (SELECT REGISTRANT_NAME FROM RegistrantsWithLargeFunds)
-GROUP BY R.REGISTRANT_NAME;",Find the total cash held by registrants whose largest fund exceeds $500 million.,Error
+GROUP BY R.REGISTRANT_NAME;",Find the total cash held by registrants whose largest fund exceeds $500 million.,False
 "WITH MaxEquityCashRatio AS (
-    SELECT MAX(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_EQUITY_CASH_RATIO
+    SELECT MAX(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS MAX_EQUITY_CASH_RATIO
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%EQUITY%'
 )
-SELECT SERIES_NAME, CASH_NOT_RPTD_IN_C_OR_D, TOTAL_ASSETS
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT) > (SELECT MAX_EQUITY_CASH_RATIO FROM MaxEquityCashRatio);",List funds that have a greater percentage of cash compared to any equity fund.,Error
+WHERE CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS > (SELECT MAX_EQUITY_CASH_RATIO FROM MaxEquityCashRatio);",List funds that have a greater percentage of cash compared to any equity fund.,Similar
 "WITH AvgNetAssets AS (
-    SELECT AVG(CAST(NET_ASSETS AS FLOAT)) AS AVG_NET_ASSETS
+    SELECT AVG(NET_ASSETS) AS AVG_NET_ASSETS
     FROM FUND_REPORTED_INFO
 )
 SELECT R.STATE, COUNT(*) AS REGISTRANT_COUNT
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.NET_ASSETS AS FLOAT) > (SELECT AVG_NET_ASSETS FROM AvgNetAssets)
+WHERE F.NET_ASSETS > (SELECT AVG_NET_ASSETS FROM AvgNetAssets)
 GROUP BY R.STATE
-HAVING COUNT(*) > 10;",Identify states with more than 10 registrants having net assets above the average.,Error
+HAVING COUNT(*) > 10;",Identify states with more than 10 registrants having net assets above the average.,False
 "WITH PortfolioTurnover AS (
     SELECT REGISTRANT_NAME, 
-           MAX((CAST(F.SALES_FLOW_MON1 AS FLOAT) + CAST(F.SALES_FLOW_MON2 AS FLOAT) + CAST(F.SALES_FLOW_MON3 AS FLOAT)) 
-               / CAST(F.TOTAL_ASSETS AS FLOAT)) AS TURNOVER_RATIO
+           MAX((F.SALES_FLOW_MON1 + F.SALES_FLOW_MON2 + F.SALES_FLOW_MON3) 
+               / F.TOTAL_ASSETS) AS TURNOVER_RATIO
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY REGISTRANT_NAME
 )
-SELECT REGISTRANT_NAME, TURNOVER_RATIO
+SELECT REGISTRANT_NAME
 FROM PortfolioTurnover
 ORDER BY TURNOVER_RATIO DESC
 LIMIT 1;",Show registrants with the largest portfolio turnover ratio.,Error
 "WITH AvgBondLiability AS (
-    SELECT AVG(CAST(TOTAL_LIABILITIES AS FLOAT)) AS AVG_BOND_LIABILITY
+    SELECT AVG(TOTAL_LIABILITIES) AS AVG_BOND_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%BOND%'
 )
-SELECT SERIES_NAME, TOTAL_LIABILITIES
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE CAST(TOTAL_LIABILITIES AS FLOAT) > (SELECT AVG_BOND_LIABILITY FROM AvgBondLiability);",Find funds whose liabilities are larger than the average liabilities of bond funds.,Error
+WHERE TOTAL_LIABILITIES > (SELECT AVG_BOND_LIABILITY FROM AvgBondLiability);",Find funds whose liabilities are larger than the average liabilities of bond funds.,Similar
 "WITH VanguardLargestFund AS (
-    SELECT STATE, MAX(CAST(TOTAL_ASSETS AS FLOAT)) AS MAX_ASSETS
+    SELECT STATE, MAX(TOTAL_ASSETS) AS MAX_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     WHERE R.REGISTRANT_NAME LIKE '%VANGUARD%'
     GROUP BY STATE
 )
-SELECT STATE, MAX_ASSETS
-FROM VanguardLargestFund;",Identify states where the largest fund is managed by Vanguard.,Error
+SELECT STATE
+FROM VanguardLargestFund;",Identify states where the largest fund is managed by Vanguard.,False
 "WITH LiabilityToNetAssets AS (
     SELECT SERIES_NAME, 
-           (CAST(TOTAL_LIABILITIES AS FLOAT) / CAST(NET_ASSETS AS FLOAT)) AS LIABILITY_RATIO
+           (TOTAL_LIABILITIES / NET_ASSETS) AS LIABILITY_RATIO
     FROM FUND_REPORTED_INFO
-    WHERE CAST(NET_ASSETS AS FLOAT) > 0
+    WHERE NET_ASSETS > 0
 )
 SELECT SERIES_NAME, LIABILITY_RATIO
 FROM LiabilityToNetAssets
 WHERE SERIES_NAME != 'N/A'
 ORDER BY LIABILITY_RATIO DESC
-LIMIT 1;",Find exisiting funds with the highest proportion of liabilities to net assets.,Error
+LIMIT 1;",Find exisiting funds with the highest proportion of liabilities to net assets.,False
 "WITH MaxETFSalesFlow AS (
-    SELECT MAX(CAST(SALES_FLOW_MON1 AS FLOAT) + CAST(SALES_FLOW_MON2 AS FLOAT) + CAST(SALES_FLOW_MON3 AS FLOAT)) AS MAX_ETF_FLOW
+    SELECT MAX(SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) AS MAX_ETF_FLOW
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%ETF%'
 )
-SELECT SERIES_NAME, SALES_FLOW_MON1, SALES_FLOW_MON2, SALES_FLOW_MON3
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE (CAST(SALES_FLOW_MON1 AS FLOAT) + CAST(SALES_FLOW_MON2 AS FLOAT) + CAST(SALES_FLOW_MON3 AS FLOAT)) > (SELECT MAX_ETF_FLOW FROM MaxETFSalesFlow);",Identify funds with monthly sales flows larger than any ETF.,Error
+WHERE (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) > (SELECT MAX_ETF_FLOW FROM MaxETFSalesFlow);",Identify funds with monthly sales flows larger than any ETF.,Similar
 "WITH AvgEquityCashRatio AS (
-    SELECT AVG(CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) AS AVG_CASH_RATIO
+    SELECT AVG(CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) AS AVG_CASH_RATIO
     FROM FUND_REPORTED_INFO
-    WHERE SERIES_NAME LIKE '%EQUITY%' AND CAST(TOTAL_ASSETS AS FLOAT) > 0
+    WHERE SERIES_NAME LIKE '%EQUITY%' AND TOTAL_ASSETS > 0
 )
-SELECT SERIES_NAME, CASH_NOT_RPTD_IN_C_OR_D, TOTAL_ASSETS
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE (CAST(CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(TOTAL_ASSETS AS FLOAT)) > (SELECT AVG_CASH_RATIO FROM AvgEquityCashRatio);",Identify funds whose cash proportion is higher than the average cash proportion of equity funds.,Error
+WHERE (CASH_NOT_RPTD_IN_C_OR_D / TOTAL_ASSETS) > (SELECT AVG_CASH_RATIO FROM AvgEquityCashRatio);",Identify funds whose cash proportion is higher than the average cash proportion of equity funds.,Similar
 "WITH MaxConvertibleLiability AS (
-    SELECT MAX(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MAX_CONVERTIBLE_LIABILITY
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_CONVERTIBLE_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%CONVERTIBLE%'
 )
-SELECT R.REGISTRANT_NAME, F.SERIES_NAME, F.TOTAL_LIABILITIES
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_LIABILITIES AS FLOAT) > (SELECT MAX_CONVERTIBLE_LIABILITY FROM MaxConvertibleLiability);",Show registrants managing funds with liabilities higher than any convertible security fund.,Error
+WHERE F.TOTAL_LIABILITIES > (SELECT MAX_CONVERTIBLE_LIABILITY FROM MaxConvertibleLiability);",Show registrants managing funds with liabilities higher than any convertible security fund.,Similar
 "WITH AvgSalesFlow AS (
-    SELECT AVG(CAST(SALES_FLOW_MON1 AS FLOAT) + CAST(SALES_FLOW_MON2 AS FLOAT) + CAST(SALES_FLOW_MON3 AS FLOAT)) AS AVG_SALES_FLOW
+    SELECT AVG(SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) AS AVG_SALES_FLOW
     FROM FUND_REPORTED_INFO
 )
-SELECT SERIES_NAME, SALES_FLOW_MON1, SALES_FLOW_MON2, SALES_FLOW_MON3
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE (CAST(SALES_FLOW_MON1 AS FLOAT) + CAST(SALES_FLOW_MON2 AS FLOAT) + CAST(SALES_FLOW_MON3 AS FLOAT)) > (SELECT AVG_SALES_FLOW FROM AvgSalesFlow);",List funds with monthly sales flows higher than the average for all funds.,Error
+WHERE (SALES_FLOW_MON1 + SALES_FLOW_MON2 + SALES_FLOW_MON3) > (SELECT AVG_SALES_FLOW FROM AvgSalesFlow);",List funds with monthly sales flows higher than the average for all funds.,Similar
 "WITH AvgStateLiability AS (
-    SELECT R.STATE, AVG(CAST(F.TOTAL_LIABILITIES AS FLOAT)) AS AVG_LIABILITY
+    SELECT R.STATE, AVG(F.TOTAL_LIABILITIES) AS AVG_LIABILITY
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY R.STATE
 )
-SELECT F.SERIES_NAME, F.TOTAL_LIABILITIES, R.STATE
+SELECT F.SERIES_NAME
 FROM FUND_REPORTED_INFO F
 JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_LIABILITIES AS FLOAT) < (SELECT AVG_LIABILITY FROM AvgStateLiability WHERE STATE = R.STATE);",Find funds with liabilities less than the average liabilities of all funds in their state.,Error
+WHERE F.TOTAL_LIABILITIES < (SELECT AVG_LIABILITY FROM AvgStateLiability WHERE STATE = R.STATE);",Find funds with liabilities less than the average liabilities of all funds in their state.,Similar
 "WITH StateMaxCash AS (
-    SELECT R.STATE, MAX(CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT)) AS MAX_CASH_RATIO
+    SELECT R.STATE, MAX(F.CASH_NOT_RPTD_IN_C_OR_D / F.TOTAL_ASSETS) AS MAX_CASH_RATIO
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-    WHERE CAST(F.TOTAL_ASSETS AS FLOAT) > 0
+    WHERE F.TOTAL_ASSETS > 0
     GROUP BY R.STATE
 )
-SELECT R.REGISTRANT_NAME, R.STATE, F.SERIES_NAME, F.CASH_NOT_RPTD_IN_C_OR_D
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.CASH_NOT_RPTD_IN_C_OR_D AS FLOAT) / CAST(F.TOTAL_ASSETS AS FLOAT) = 
-      (SELECT MAX_CASH_RATIO FROM StateMaxCash WHERE STATE = R.STATE);",Identify registrants managing funds with the highest cash proportion in their state.,Error
+WHERE F.CASH_NOT_RPTD_IN_C_OR_D / F.TOTAL_ASSETS = 
+      (SELECT MAX_CASH_RATIO FROM StateMaxCash WHERE STATE = R.STATE);",Identify registrants managing funds with the highest cash proportion in their state.,Similar
 "WITH AvgStateLiability AS (
-    SELECT R.STATE, AVG(CAST(F.TOTAL_LIABILITIES AS FLOAT)) AS AVG_STATE_LIABILITY
+    SELECT R.STATE, AVG(F.TOTAL_LIABILITIES) AS AVG_STATE_LIABILITY
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     GROUP BY R.STATE
 )
 SELECT STATE
 FROM AvgStateLiability
-WHERE AVG_STATE_LIABILITY > (SELECT AVG(AVG_STATE_LIABILITY) FROM AvgStateLiability);",Find states with total liabilities higher than the average liabilities for all states.,Error
+WHERE AVG_STATE_LIABILITY > (SELECT AVG(AVG_STATE_LIABILITY) FROM AvgStateLiability);",Find states with total liabilities higher than the average liabilities for all states.,Similar
 "WITH MaxIndexFundLiability AS (
-    SELECT MAX(CAST(TOTAL_LIABILITIES AS FLOAT)) AS MAX_INDEX_LIABILITY
+    SELECT MAX(TOTAL_LIABILITIES) AS MAX_INDEX_LIABILITY
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%INDEX%'
 )
-SELECT R.REGISTRANT_NAME, F.SERIES_NAME, F.TOTAL_LIABILITIES
+SELECT R.REGISTRANT_NAME
 FROM REGISTRANT R
 JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
-WHERE CAST(F.TOTAL_LIABILITIES AS FLOAT) > (SELECT MAX_INDEX_LIABILITY FROM MaxIndexFundLiability);",Show registrants managing funds with liabilities larger than the maximum liabilities of any index fund.,Error
+WHERE F.TOTAL_LIABILITIES > (SELECT MAX_INDEX_LIABILITY FROM MaxIndexFundLiability);",Show registrants managing funds with liabilities larger than the maximum liabilities of any index fund.,Similar
 "WITH MaxBondRedemptionFlow AS (
-    SELECT MAX(CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) AS MAX_BOND_FLOW
+    SELECT MAX(REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) AS MAX_BOND_FLOW
     FROM FUND_REPORTED_INFO
     WHERE SERIES_NAME LIKE '%BOND%'
 )
-SELECT SERIES_NAME, REDEMPTION_FLOW_MON1, REDEMPTION_FLOW_MON2, REDEMPTION_FLOW_MON3
+SELECT SERIES_NAME
 FROM FUND_REPORTED_INFO
-WHERE (CAST(REDEMPTION_FLOW_MON1 AS FLOAT) + CAST(REDEMPTION_FLOW_MON2 AS FLOAT) + CAST(REDEMPTION_FLOW_MON3 AS FLOAT)) > (SELECT MAX_BOND_FLOW FROM MaxBondRedemptionFlow);",Find funds whose redemption flows exceed the highest redemption flow for any bond fund.,Error
+WHERE (REDEMPTION_FLOW_MON1 + REDEMPTION_FLOW_MON2 + REDEMPTION_FLOW_MON3) > (SELECT MAX_BOND_FLOW FROM MaxBondRedemptionFlow);",Find funds whose redemption flows exceed the highest redemption flow for any bond fund.,Similar
 "WITH StateAvgNetAssets AS (
-    SELECT R.STATE, AVG(CAST(F.NET_ASSETS AS FLOAT)) AS AVG_NET_ASSETS
+    SELECT R.STATE, AVG(F.NET_ASSETS) AS AVG_NET_ASSETS
     FROM REGISTRANT R
     JOIN FUND_REPORTED_INFO F ON R.ACCESSION_NUMBER = F.ACCESSION_NUMBER
     WHERE F.NET_ASSETS IS NOT NULL
     GROUP BY R.STATE
 )
-SELECT STATE, AVG_NET_ASSETS
+SELECT STATE
 FROM StateAvgNetAssets
-WHERE AVG_NET_ASSETS = (SELECT MAX(AVG_NET_ASSETS) FROM StateAvgNetAssets);",List states with the highest average net assets per fund.,Error
-=======
-LIMIT 1;",Show me the largest bond funds,Error
->>>>>>> 203dcdef334a2a21b8d46047e2ce5fc213165f86
+WHERE AVG_NET_ASSETS = (SELECT MAX(AVG_NET_ASSETS) FROM StateAvgNetAssets);",List states with the highest average net assets per fund.,Similar

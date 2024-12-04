@@ -1,0 +1,33 @@
+Test_Din Output Log
+================================================================================
+Ground Truth Query: SELECT 
+    F.SERIES_NAME
+FROM 
+    FUND_REPORTED_INFO F
+    JOIN REGISTRANT R ON F.ACCESSION_NUMBER = R.ACCESSION_NUMBER
+WHERE 
+    F.IS_NON_CASH_COLLATERAL = 'Y';
+================================================================================
+Schema Links for Question: Show funds exposed to non-cash collateral.
+{'table_columns': ['fund_reported_info.is_non_cash_collateral', 'securities_lending.is_loan_by_fund', 'interest_rate_risk.interest_rate_risk_id'], 'primary_keys': ['FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.INTEREST_RATE_RISK_ID', 'SECURITIES_LENDING.HOLDING_ID'], 'foreign_keys': ['REGISTRANT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'INTEREST_RATE_RISK.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROWER.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'BORROW_AGGREGATE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_TOTAL_RETURN.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'MONTHLY_RETURN_CAT_INSTRUMENT.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_VAR_INFO.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'FUND_REPORTED_HOLDING.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'EXPLANATORY_NOTE.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SUBMISSION.ACCESSION_NUMBER = FUND_REPORTED_INFO.ACCESSION_NUMBER', 'SECURITIES_LENDING.HOLDING_ID = FUND_REPORTED_HOLDING.HOLDING_ID'], 'schema_links': '[]'}
+================================================================================
+classification reasoning: To answer the question "Show funds exposed to non-cash collateral," we need to identify funds that have non-cash collateral. The relevant column for this information is `fund_reported_info.is_non_cash_collateral`. 
+
+The query involves only the `FUND_REPORTED_INFO` table, as we are interested in funds with non-cash collateral exposure. We do not need to join with other tables or use nested queries, as the information is contained within a single table.
+
+Therefore, the SQL query can be classified as "EASY" because it does not require JOINs or nested queries.
+================================================================================
+classification: "EASY"
+================================================================================
+Thoughts: [Thought(thought="First, we need to identify the main tables required for this query. The 'fund_reported_info' table is crucial because it contains the 'is_non_cash_collateral' column, which directly relates to the user's request.", helpful=True), Thought(thought="Next, we need to determine if any joins are necessary. The 'securities_lending' table might be relevant if we need to filter funds that are involved in lending activities, but the primary focus is on the 'is_non_cash_collateral' column.", helpful=True), Thought(thought="We should focus on the 'is_non_cash_collateral' column to filter the funds. The query should include a WHERE clause that checks for non-cash collateral exposure.", helpful=True), Thought(thought='Since the question does not specify a time period or require aggregation, a simple SELECT statement with a WHERE clause should suffice.', helpful=True), Thought(thought='The query should be straightforward without the need for CTEs or nested queries, as the requirement is to filter based on a single column condition.', helpful=True)]
+================================================================================
+SQL: SELECT * FROM fund_reported_info WHERE is_non_cash_collateral = 'Y';
+================================================================================
+final_output: SELECT SERIES_NAME 
+FROM FUND_REPORTED_INFO 
+WHERE IS_NON_CASH_COLLATERAL = 'Y'
+================================================================================
+True, all ground truth columns exist, and rows match
+================================================================================
+Result: True
+================================================================================
