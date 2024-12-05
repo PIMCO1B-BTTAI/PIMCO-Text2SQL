@@ -12,6 +12,7 @@ from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from typing import Optional
 from . import chat_prompt, chat_prompt_revised
+from chatgpt_api import chat_prompt_V3
 
 
 
@@ -124,13 +125,11 @@ nltk.download('wordnet')
 nltk.download('stopwords')
 
 
-current_dir = os.path.dirname(os.path.abspath("/d/GithubRepos/PIMCO-Text2SQL"))
-din_modules_path = os.path.join(current_dir, 'chatgpt_api')
-sys.path.append(din_modules_path)
+# current_dir = os.path.dirname(os.path.abspath("/d/GithubRepos/PIMCO-Text2SQL"))
+# din_modules_path = os.path.join(current_dir, 'chatgpt_api')
+# sys.path.append(din_modules_path)
 
-
-
-output_file = os.path.join(din_modules_path, 'api_backend_logs.txt')
+output_file = os.path.join(os.getcwd(), 'api_backend_logs.txt')
 def append_to_file(output, filename=output_file):
     # Check if file exists
     if not os.path.exists(filename):
@@ -237,11 +236,12 @@ def GPT4_generation(prompt, max_retries=3):
     return None
 
 ############################################ VALUE RETRIEVAL AND SCHEMA LINKING
+############################################ VALUE RETRIEVAL AND SCHEMA LINKING
 def schema_linking_prompt_maker(question):
   instruction = "# Find the schema_links for generating SQL queries for each question based on the database schema and Foreign keys.\n"
   fields = format_schema_for_gpt(db_schema)
   foreign_keys = "Foreign_keys = " + foreign_keys + '\n'
-  prompt = instruction + chat_prompt_revised.schema_linking_prompt + fields +foreign_keys+ 'Q: "' + question + """"\nA: Let’s think step by step."""
+  prompt = instruction + chat_prompt_V3.schema_linking_prompt + fields +foreign_keys+ 'Q: "' + question + """"\nA: Let’s think step by step."""
   return prompt
 
 class PSLsh:
@@ -285,7 +285,7 @@ class PSLsh:
             candidates.update(self.hash_tables[i].get(h, []))
         return candidates
 
-
+import re
 class ValueRetrieval:
     financial_terms = {
             'total': ['total', 'sum', 'aggregate', 'combined'],
@@ -304,9 +304,7 @@ class ValueRetrieval:
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
         # Load schema
-        print("DEBUG: Loading schema file:", schema_path)
-        with open(schema_path, 'r') as f:
-            self.schema = json.load(f)
+        self.schema = db_schema
 
         # Initialize lemmatizer and stop words
         self.lemmatizer = WordNetLemmatizer()
@@ -522,9 +520,9 @@ class ValueRetrieval:
         matches.sort(key=lambda x: x[1], reverse=True)
         
         # Print debug info
-        print(f"Found {len(matches)} matches for '{word}':")
-        for match, score in matches[:5]:
-            print(f"  {match}: {score:.4f}")
+        #print(f"Found {len(matches)} matches for '{word}':")
+        #for match, score in matches[:5]:
+            #print(f"  {match}: {score:.4f}")
         
         return matches[:5] if matches else [('fund_reported_info.total_assets', 0.6)] if word in ['total', 'asset', 'assets'] else []
     
@@ -616,7 +614,7 @@ class ValueRetrieval:
             lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in filtered_tokens]
             return lemmatized_tokens
         except Exception as e:
-            print(f"Error in preprocessing text '{text}': {str(e)}")
+            #print(f"Error in preprocessing text '{text}': {str(e)}")
             return []  # Return empty list instead of None on error
        
        
@@ -663,19 +661,19 @@ class ValueRetrieval:
             tables_in_fk = set(part.split('.')[0] for part in fk.split(' = '))
             if tables_in_fk.intersection(tables_needed):
                 relevant_foreign_keys.append(fk)
-        print("Attempting to generate schema_links")
+        #print("Attempting to generate schema_links")
         counterIndex = 0
         schema_links = None
         while schema_links is None and counterIndex<3:
             try:
                 schema_links = GPT4_generation(schema_linking_prompt_maker(question))
             except:
-                print("Error while generating schema_link")
+                #print("Error while generating schema_link")
                 counterIndex+=1
         try:
             schema_links = schema_links.split("Schema_links: ")[1]
         except:
-            print("Slicing error for the schema_linking module")
+            #print("Slicing error for the schema_linking module")
             schema_links = "[]"
 
         # Format output with sections
@@ -686,10 +684,10 @@ class ValueRetrieval:
             "schema_links": schema_links
         }
         
-        print("\nProcessed Schema Links:")
-        print("Table Columns:", table_columns)
-        print("Primary Keys:", relevant_primary_keys)
-        print("Foreign Keys:", relevant_foreign_keys)
+        #print("\nProcessed Schema Links:")
+        #print("Table Columns:", table_columns)
+        #print("Primary Keys:", relevant_primary_keys)
+        #print("Foreign Keys:", relevant_foreign_keys)
         
         return schema_dict
 
@@ -730,6 +728,7 @@ class ValueRetrieval:
     
 global_vr = ValueRetrieval(schema_path='chatgpt_api/schema.json')
 
+############################################ CLASSIFICATION
 ############################################ CLASSIFICATION
 classification_prompt = '''
 ```
@@ -794,7 +793,7 @@ Consider table relationships and what joins would be needed.
 
 def process_question_classification(question, schema_dict):
     def extract_classification(text):
-        print(f"Trying to extract classification from: {text}")
+        #print(f"Trying to extract classification from: {text}")
         # Common patterns in GPT's response
         patterns = [
             "Label:", 
@@ -827,7 +826,7 @@ def process_question_classification(question, schema_dict):
     attempts = 0
     while classification is None and attempts < 3:
         try:
-            print("Attempting classification...")
+            #print("Attempting classification...")
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{
@@ -843,10 +842,10 @@ def process_question_classification(question, schema_dict):
                 presence_penalty=0.0
             )
             raw_response = response.choices[0].message.content
-            print("Raw response:", raw_response)
+            #print("Raw response:", raw_response)
             classification = extract_classification(raw_response)
         except Exception as e:
-            print(f"Error occurred: {str(e)}")
+            #print(f"Error occurred: {str(e)}")
             time.sleep(3)
             attempts += 1
             if attempts == 3:
@@ -944,7 +943,7 @@ Schema Links:
        primary_keys=schema_dict["primary_keys"],
        foreign_keys=schema_dict["foreign_keys"],
        schema_links=schema_dict["schema_links"]
-   )+chat_prompt_revised.common_part_prompt
+   )+chat_prompt_V3.common_part_prompt
    
    #if sub_questions=="":
        #stepping = "A: Let's think step by step." # {question} can be solved by first solving a sub-question using nested queries.
@@ -985,7 +984,7 @@ Schema Links:
        primary_keys=schema_dict["primary_keys"],
        foreign_keys=schema_dict["foreign_keys"],
        schema_links=schema_dict["schema_links"]
-   )+chat_prompt_revised.common_part_prompt
+   )+chat_prompt_V3.common_part_prompt
 
    prompt = f"""{instruction}{medium_example}
 ```
@@ -1021,7 +1020,7 @@ Schema Links:
        primary_keys=schema_dict["primary_keys"],
        foreign_keys=schema_dict["foreign_keys"],
        schema_links=schema_dict["schema_links"]
-   )+chat_prompt_revised.common_part_prompt
+   )+chat_prompt_V3.common_part_prompt
 
    prompt = f"""{instruction}{easy_example} 
 ```
@@ -1033,78 +1032,372 @@ schema_links: {schema_dict["schema_links"]}
 SQL: """ #### ADD SCHEMA LINKS
    return prompt
 
-def process_question_sql(question, predicted_class, schema_dict, max_retries=3):
-    def extract_sql(text):
-        print(f"\nTrying to extract SQL from: {text}")  # Debug print
-        if not text:
-            return "SELECT"
-            
-        markers = ["SQL:", "Query:", "QUERY:", "SQL Query:", "Final SQL:"]
-        for marker in markers:
-            if marker in text:
-                parts = text.split(marker)
-                if len(parts) > 1:
-                    sql = parts[-1].strip()
-                    print(f"Found SQL after {marker}: {sql}")  # Debug print
-                    return sql
-        print("No SQL marker found, returning full text")  # Debug print
-        return text.strip()
+from pydantic import BaseModel, Field
+from typing import Optional, Literal, List, Dict, Any
 
-    if '"EASY"' in predicted_class:
-        print("EASY")
-        for attempt in range(max_retries):
-            try:
-                SQL = GPT4_generation(easy_prompt_maker(
-                    question=question,
-                    schema_dict=schema_dict
-                ))
-                if SQL:
-                    SQL = extract_sql(SQL)
-                    break
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed: {str(e)}")
-                if attempt < max_retries - 1:
-                    time.sleep(3)
-                else:
-                    SQL = "SELECT"
-                    
-    elif '"NON-NESTED"' in predicted_class:
-        print("NON-NESTED")
-        for attempt in range(max_retries):
-            try:
-                SQL = GPT4_generation(medium_prompt_maker(
-                    question=question,
-                    schema_dict=schema_dict
-                ))
-                if SQL:
-                    SQL = extract_sql(SQL)
-                    break
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed: {str(e)}")
-                if attempt < max_retries - 1:
-                    time.sleep(3)
-                else:
-                    SQL = "SELECT"
-                    
+thought_instructions = f"""
+```
+Thought Instructions:
+```
+
+```
+Generate thoughts of increasing complexity.
+Each thought should build on the previous ones and thoughts 
+should progressively cover the nuances of the problem at hand.
+```
+
+```
+First set of thoughts should be on whether a the query requires 
+Common Table Expressions (CTEs) to calculate the
+results for sub queries. 
+
+Prefer using Common Table Expressions rather than
+case when statements or nested subqueries.
+
+If CTEs are required then for each CTE, an analysis of the purpose of each
+CTE should be done.
+An overall structure should be outlined as to what will be calculated in 
+each CTE.
+```
+
+```
+Next set of thoughts should on 
+extracting out the names of as many of 
+the relevant columns as possible for all CTEs and for all the sql clauses such as the 
+`select`, `where` and `group_by` clauses.
+There might be additions or deletions from this list based on the 
+following additional thoughts to be generated.
+```
+
+
+```
+Generate a thought to figure out the possible phrases in the query 
+which can be used as values of the columns present in the table so as to use them 
+in the `where` clause.
+```
+
+```
+Generate a thought to compare these extracted values with the list of possible values
+of columns listed in the information for the columns so as to use the exact string
+in the `where` clause.
+```
+
+```
+Generate a thought to reason whether `IS_TOP_TIER_ENTITY` flag is required or not.
+```
+
+```
+Generate a thought to figure out which time period is being queried.
+If nothing is specified use `PERIOD_ID = 2023Y`.
+```
+
+```
+Generate a thought to figure out if a group_by clause is required.
+```
+
+```
+The above thoughts about 
+1. phrases for values of columns
+2. query phrase to column value mapping
+3. filters such as `ASSET_CAT` and others in the where clause
+4. Period_id value to use
+5. Group by column
+
+should be generated for each of the CTE separately.
+```
+
+```
+If the input question is similar to any of the examples given above,
+then a thought should be generated to detect that and then that example 
+should be followed closely to get the SQL for the input question given.
+```
+
+```
+Closing Thoughts and Observations
+```
+These should summarize:
+1. The structure of the SQL query:
+    - This states whether the query has any nested query.
+    If so, the structure of the nested query is also mentioned.
+    If not, a summary of the function of each of the select`, `where`, `group_by` etc. clauses
+    should be mentioned.
+2. An explanation of how the query solves the user question.
+"""
+
+reasoning_instructions = """
+```
+1. Reasoning you provide should first focus on why a nested query was chosen or why it wasn't chosen.
+2. It should give a query plan on how to solve this question - explain 
+the mapping of the columns to the words in the input question.
+3. It should explain each of the clauses and why they are structured the way they are structured. 
+For example, if there is a `group_by`, an explanation should be given as to why it exists.
+4. If there's any sum() or any other function used it should be explained as to why it was required.
+```
+
+```
+Format the generated sql with proper indentation - the columns in the
+(`select` statement should have more indentation than keyword `select`
+and so on for each SQL clause.)
+```
+"""
+
+# Final Output Schema
+final_output_schema_json = json.dumps({
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "user_nlp_query": {
+            "type": "string",
+            "description": "The original natural language query to be translated into SQL"
+        },
+        "reasonings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "thought": {
+                        "type": "string",
+                        "description": "A thought about the user's question"
+                    },
+                    "helpful": {
+                        "type": "boolean",
+                        "description": "Whether the thought is helpful to solving the user's question"
+                    }
+                }
+            },
+            "description": "Step-by-step reasoning process for query generation"
+        },
+        "generated_sql_query": {
+            "type": "string",
+            "description": "The final SQL query that answers the natural language question"
+        }
+    }
+})
+
+class Thought(BaseModel):
+    """A thought about the user's question"""
+    thought: str = Field(
+        description="Text of the thought"
+    )
+    helpful: bool = Field(
+        description="Whether the thought is helpful to solving the user's question"
+    )
+
+class FinalOutput(BaseModel):
+    """Complete output structure containing the query, reasoning, and SQL"""
+    user_nlp_query: str = Field(
+        description="The original natural language query to be translated into SQL"
+    )
+    reasonings: List[Thought] = Field(
+        description="Step-by-step reasoning process for query generation"
+    )
+    generated_sql_query: str = Field(
+        description="The final SQL query that answers the natural language question"
+    )
+
+def make_prompt(question: str, schema_dict: Dict[str, Any], complexity: str) -> str:
+    """
+    Create prompt with appropriate instructions based on complexity
+    """
+    example_output = {
+        "user_nlp_query": question,
+        "reasonings": [
+            {
+                "thought": "First, we need to identify the main tables required",
+                "helpful": True
+            },
+            {
+                "thought": "Next, determine if any joins or aggregations are needed",
+                "helpful": True
+            },
+            {
+                "thought": "Finally, consider how to structure the WHERE clause",
+                "helpful": True
+            }
+        ],
+        "generated_sql_query": "SELECT column FROM table WHERE condition;"
+    }
+
+    base_prompt = f"""
+You are an expert SQL developer with deep knowledge of database querying.
+Your task is to generate a SQL query with clear reasoning steps.
+
+QUESTION: {question}
+
+SCHEMA INFORMATION:
+{schema_dict}
+
+THOUGHT INSTRUCTIONS
+{thought_instructions}
+
+REASONING INSTRUCTIONS
+{reasoning_instructions}
+
+REQUIRED OUTPUT FORMAT:
+The response must be a valid JSON object exactly matching this schema:
+{final_output_schema_json}
+
+Example of properly formatted response:
+{json.dumps(example_output, indent=2)}
+
+REASONING REQUIREMENTS:
+1. Provide 3-5 thoughts explaining your strategy
+2. Each thought should explain WHY you're taking an approach
+3. Focus on query planning, not implementation details
+4. Consider table relationships and data types
+
+QUERY COMPLEXITY LEVEL: {complexity}
+"""
+
+    if complexity == "EASY":
+        base_prompt += "\nRESTRICTIONS: No JOINs or nested queries allowed."
+    elif complexity == "NON-NESTED":
+        base_prompt += "\nRESTRICTIONS: JOINs allowed but no nested queries."
     else:
-        print("NESTED")
-        for attempt in range(max_retries):
-            try:
-                SQL = GPT4_generation(hard_prompt_maker(
-                    question=question,
-                    schema_dict=schema_dict
-                ))
-                if SQL:
-                    SQL = extract_sql(SQL)
-                    break
-            except Exception as e:
-                print(f"Attempt {attempt + 1} failed: {str(e)}")
-                if attempt < max_retries - 1:
-                    time.sleep(3)
-                else:
-                    SQL = "SELECT"
+        base_prompt += "\nRESTRICTIONS: Both JOINs and nested queries allowed if needed."
+        
+    base_prompt += "\n\nIMPORTANT: Return only valid JSON with no additional text."
+    
+    return base_prompt
 
-    return SQL if SQL else "SELECT"
+def generate_gpt_response(prompt, max_retries=3):
+    """
+    Generate response from OpenAI API with retries
+    """
+    system_prompt = """You are an expert SQL developer. Always return responses as valid JSON matching the specified schema. Include detailed reasoning steps before generating SQL queries."""
+    
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o", 
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt}
+                ],
+                n=1,
+                stream=False,
+                temperature=0.0,
+                top_p=1.0,
+                frequency_penalty=0.0,
+                presence_penalty=0.0,
+                response_format={"type": "json_object"}
+            )
+            content = response.choices[0].message.content
+            #print(f"Raw GPT response:\n{content}")  
+            return content
+        except Exception as e:
+            #print(f"Attempt {attempt + 1} failed: {str(e)}")
+            if attempt < max_retries - 1:
+                time.sleep(3)
+            else:
+                #print("Max retries reached")
+                return None
+    return None
+
+def validate_gpt_response(response: str) -> bool:
+    """
+    Validate that GPT response contains all required fields
+    """
+    try:
+        data = json.loads(response)
+        required_fields = ["user_nlp_query", "reasonings", "generated_sql_query"]
+        
+        # Check all required fields exist in the output
+        if not all(field in data for field in required_fields):
+            #print("Missing required fields in response")
+            return False
+            
+        if not isinstance(data["reasonings"], list) or len(data["reasonings"]) < 1:
+            #print("Invalid reasonings array")
+            return False
+            
+        # Check that each reasoning has required fields
+        for reason in data["reasonings"]:
+            if not all(field in reason for field in ["thought", "helpful"]):
+                #print("Invalid reasoning format")
+                return False
+                
+        return True
+    except Exception as e:
+        #print(f"Validation error: {str(e)}")
+        return False
+
+def process_question_sql(
+    question: str,
+    predicted_class: str,
+    schema_dict: Dict[str, Any],
+    max_retries: int = 3
+) -> FinalOutput:
+    """Generate SQL with thoughts and reasoning"""
+    
+    for attempt in range(max_retries):
+        try:
+            # Create appropriate prompt depending on classification module
+            prompt = make_prompt(
+                question=question,
+                schema_dict=schema_dict,
+                complexity=predicted_class
+            )
+            
+            # Get GPT response
+            response = generate_gpt_response(prompt)
+            if response is None:
+                continue
+                
+            # Validate format
+            if not validate_gpt_response(response):
+                #print(f"Invalid response format on attempt {attempt + 1}")
+                continue
+                
+            try:
+                result = json.loads(response)
+                return FinalOutput(
+                    user_nlp_query=result["user_nlp_query"],
+                    reasonings=[
+                        Thought(**thought) for thought in result["reasonings"]
+                    ],
+                    generated_sql_query=result["generated_sql_query"]
+                )
+            except Exception as e:
+                #print(f"Error parsing response: {str(e)}")
+                if attempt == max_retries - 1:
+                    return FinalOutput(
+                        user_nlp_query=question,
+                        reasonings=[
+                            Thought(
+                                thought=f"Failed to parse response: {str(e)}",
+                                helpful=False
+                            )
+                        ],
+                        generated_sql_query="SELECT 1"
+                    )
+                continue
+                
+        except Exception as e:
+            #print(f"Process error: {str(e)}")
+            if attempt == max_retries - 1:
+                return FinalOutput(
+                    user_nlp_query=question,
+                    reasonings=[
+                        Thought(
+                            thought=f"Error in process: {str(e)}",
+                            helpful=False
+                        )
+                    ],
+                    generated_sql_query="SELECT 1"
+                )
+            continue
+    
+    return FinalOutput(
+        user_nlp_query=question,
+        reasonings=[
+            Thought(
+                thought="Maximum retries exceeded",
+                helpful=False
+            )
+        ],
+        generated_sql_query="SELECT 1"
+    )
 
 ############################################ SELF CORRECTION
 def debuger(question,sql, predicted_class, schema_dict):
@@ -1151,8 +1444,6 @@ Prompt Used to Generate the Candidate SQLite SQL Query:
 """
 	return prompt
 
-
-
 def GPT4_debug(prompt):
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -1181,7 +1472,6 @@ def refine_query(question, sql, classification, schema_dict):
 	except:
 		raise IndexError
 		
-
 
 ############################################ HERE ENDS DIN-CHASE HYBRID
 ############################################ Compare CSV and processing
@@ -1215,7 +1505,39 @@ def compare_csv_strings(csv_data1: str, csv_data2: str) -> bool:
 
     return True  # CSVs are identical
 
+import pandas as pd
+import re
 
+def get_aggregate_columns(sql_query):
+    """
+    Extract resulting output column names of aggregate functions in the SQL query,
+    handling duplicates and default naming conventions.
+    """
+    aggregate_functions = ["SUM", "AVG", "COUNT", "MAX", "MIN"]
+    output_columns = []
+
+    # Regex to match aggregate functions with optional aliasing
+    pattern = rf"({'|'.join(aggregate_functions)})\((.*?)\)(?:\s+AS\s+([\w_]+))?"
+    
+    matches = re.findall(pattern, sql_query, re.IGNORECASE)
+    function_counter = {}  # Track occurrences of each aggregate function
+    
+    for func, inner, alias in matches:
+        func_lower = func.lower()
+        if alias:  # Explicit alias defined
+            output_columns.append(alias)
+        else:  # No alias, use default naming conventions
+            if func_lower not in function_counter:
+                function_counter[func_lower] = 0
+            else:
+                function_counter[func_lower] += 1
+            # Generate default name (e.g., sum, sum_1, sum_2, etc.)
+            if function_counter[func_lower] == 0:
+                output_columns.append(f"{func_lower}({inner.strip()})")  # Default naming for SQLite
+            else:
+                output_columns.append(f"{func_lower}({inner.strip()})_{function_counter[func_lower]}")  # Add suffix
+
+    return output_columns
 
 ############################################
 # LLM prompting for SQL generation
@@ -1370,15 +1692,15 @@ async def root():
 @app.post("/din-query")
 async def process_din_query(llm_query: Query):
     try: 
-        schema_dict = global_vr.process_schema(llm_query)
-        append_to_file(f"Schema Links for Question: {llm_query}\n{schema_dict}")
+        schema_dict = global_vr.process_schema(llm_query.question)
+        append_to_file(f"Schema Links for Question: {llm_query.question}\n{schema_dict}")
     except Exception as e:
         err_string = (f"Error in process_schema of Value Retrieval: {e}")
         print(err_string)
         append_to_file(err_string)
         raise e
     try:
-        classification, class_reasoning = process_question_classification(llm_query, schema_dict)
+        classification, class_reasoning = process_question_classification(llm_query.question, schema_dict)
         append_to_file(f"classification reasoning: {class_reasoning}")
         append_to_file(f"classification: {classification}")
     except Exception as e:
@@ -1387,7 +1709,8 @@ async def process_din_query(llm_query: Query):
         append_to_file(err_string)
         raise e
     try:
-        process_thesql = process_question_sql(llm_query, classification, schema_dict)
+        process_thesql = process_question_sql(llm_query.question, classification, schema_dict)
+        append_to_file(f"Thoughts: {process_thesql.reasonings}")
         append_to_file(f"process_thesql: {process_thesql}")
     except Exception as e:
         err_string = (f"Error in process_question_sql of SQL Generation: {e}")
@@ -1395,7 +1718,7 @@ async def process_din_query(llm_query: Query):
         append_to_file(err_string)
         raise e
     try:
-        final_output = refine_query(llm_query, process_thesql, classification, schema_dict)
+        final_output = refine_query(llm_query.question, process_thesql, classification, schema_dict)
         append_to_file(f"final_output: {final_output}")
     except Exception as e:
         err_string = (f"Error in refine_query of Self-Correction: {e}")
@@ -1413,9 +1736,6 @@ async def process_din_query(llm_query: Query):
         "sql_query": final_output.replace("```sql", "").replace("```", "").strip(),
         "csv_results": llm_csv  # CSV data embedded as a JSON field
     }
-
-
-
 
 @app.post("/query")
 async def process_query(query: Query):
