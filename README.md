@@ -1,5 +1,10 @@
 # Extracting Sturctured Information Using LLM
 
+### Provisional Writeup Slide Deck
+
+https://drive.google.com/file/d/16NBGP9QB7r07YMzmxbgcXHkuAwh0oOit/view?usp=sharing
+
+
 ### Setup
 1. Follow the `MASTER_SETUP_SCRIPT.ipynb` in `setup/`
 2. set up openAI API Key:  
